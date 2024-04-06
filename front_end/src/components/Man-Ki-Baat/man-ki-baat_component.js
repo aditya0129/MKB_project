@@ -8,10 +8,11 @@ import {  } from "@fortawesome/free-brands-svg-icons";
 export function ManKiBaatComponent() {
     return(
         <>
+        <div id="header">
         <div className="container">
             <div className="row">
                 <div className="col-md-6 form-group mt-2 d-flex" >
-                    <h1>MAN-KI-BAAT</h1>
+                    <h1>MKB</h1>
                     <input type="" className="form-control ms-5" placeholder="Search" style={{width:"200px",height:"50px"}}/>
                 </div>
                 <div className="col-md-6">
@@ -24,6 +25,7 @@ export function ManKiBaatComponent() {
                     </ul>
                 </div>
             </div>
+        </div>
         </div>
 
         <div className="container">
