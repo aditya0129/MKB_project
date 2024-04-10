@@ -1,0 +1,29 @@
+#header {
+    background: #fbfbfb;
+    height: 70px;
+}
+
+.dropdown-menu {
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown .dropdown-item:hover {
+    background: linear-gradient(135deg, cyan,blue);
+    color: white;
+}
+
+.dropdown .dropdown-menu {
+    border-bottom: 15px solid cyan;
+    border-top: 15px solid blue;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+}
+
+.user {
+    background: #fbfbfb;
+    border-radius: 30px;
+    border-bottom: 3px solid cyan;
+    border-top: 3px solid blue;
+}
