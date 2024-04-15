@@ -217,4 +217,27 @@ const Advisor_Login = async function (req, res) {
   }
 };
 
-module.exports={Advisor_register,Advisor_Login}
+
+const get_Advisor = async function (req, res) {
+  try {
+    let userId = req.params.userId;
+
+    if (!isValidObjectId(userId))
+      return res
+        .status(400)
+        .send({ status: false, message: "User is invalid" });
+
+    let getData = await Advisor_Model.find({ _id: userId });
+
+    if (!getData)
+      return res.status(404).send({ status: false, message: "user not found" });
+      
+    return res
+      .status(200)
+      .send({ status: true, message: "User profile details", data: getData });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+module.exports={Advisor_register,Advisor_Login, get_Advisor}
