@@ -236,7 +236,7 @@ h2
 	color: #45f3ff;
 }
 
-input[type="submit"]
+button[type="submit"]
 {
 	border: 2px solid #1c1c1c;
 	outline: none;
@@ -251,7 +251,7 @@ input[type="submit"]
     transition: all 0.5s ease-in-out;
 }
 
-input[type="submit"]:hover
+button[type="submit"]:hover
 {
     background: linear-gradient(135deg,blue,cyan);
     color: white;

@@ -1,6 +1,8 @@
 import React from "react";
 import "./man-ki-baat_component.css";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom"
+import { useCookies } from "react-cookie"
+import { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope,faLocationDot,faStar,faMessage,faEye,faUser,faPhoneVolume,faVideo,faWallet } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +14,19 @@ export function ManKiBaatComponent() {
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
+
+    const [cookies, setCookie, removeCookie] = useCookies();
+    const navigate = useNavigate();
+
+    useEffect(()=>{
+        if(cookies["userid"]===undefined){
+            navigate("/login");
+        }
+    },);
+    function SignoutClick(){
+        removeCookie("userid");
+        navigate("/login");
+    }
 
     return(
         <>
@@ -102,6 +117,9 @@ export function ManKiBaatComponent() {
                     <p>Gender <span style={{marginLeft:"55px"}}>Male</span></p>
                 </div>
             </div>
+        </div>
+        <div>
+            <button onClick={SignoutClick} className="btn btn-outline-danger mt-2">Signout</button>
         </div>
         </>
     )

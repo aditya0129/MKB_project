@@ -1,6 +1,8 @@
 import React from "react";
 import "./advisor-man-ki-baat_component.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom"
+import { useCookies } from "react-cookie"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope,faStar,faPhone,faComment,faVideo,faMinus,faPlus} from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +14,15 @@ export function AdvisorManKiBaatComponent() {
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
+
+    const [cookies, setCookie, removeCookie] = useCookies();
+    const navigate = useNavigate();
+
+    useEffect(()=>{
+        if(cookies["userid"]===undefined){
+            navigate("/login");
+        }
+    },);
 
     return(
         <>

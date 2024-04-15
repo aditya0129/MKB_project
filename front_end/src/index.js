@@ -18,6 +18,7 @@ root.render(
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<ManKiBaatComponent />} />
+      <Route path="home" element={<ManKiBaatComponent />} />
       <Route path="advisor" element={<AdvisorManKiBaatComponent />} />
       <Route path="login" element={<LoginManKiBaatComponent />} />
       <Route path="signup" element={<SignupManKiBaatComponent />} />
