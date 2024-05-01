@@ -49,7 +49,7 @@ const Advisor_register = async function (req, res) {
           "Phone_number is mandatory and Phone_number Should not be Empty",
       });
     }
-    if (!validateMobileNo(Phone_number.trim())) {
+    if (!validateMobileNo(Phone_number)) {
       return res
         .status(400)
         .send({ status: false, MSG: "please provide valid Phone_number" });
@@ -108,20 +108,21 @@ const Advisor_register = async function (req, res) {
       });
     }
 
-    if (!profile_description || profile_description == "") {
-      return res.status(400).send({
-        status: false,
-        message:
-          "profile_description is mandatory and profile_description Should not be Empty",
-      });
-    }
-    if (!profile_picture || profile_picture == "") {
-      return res.status(400).send({
-        status: false,
-        message:
-          "profile_picture is mandatory and profile_picture Should not be Empty",
-      });
-    }
+    // if (!profile_description || profile_description == "") {
+    //   return res.status(400).send({
+    //     status: false,
+    //     message:
+    //       "profile_description is mandatory and profile_description Should not be Empty",
+    //   });
+    // }
+    // if (!profile_picture || profile_picture == "") {
+    //   return res.status(400).send({
+    //     status: false,
+    //     message:
+    //       "profile_picture is mandatory and profile_picture Should not be Empty",
+    //   });
+   // }
+
     if (!availability_schedule || availability_schedule == "") {
       return res.status(400).send({
         status: false,
@@ -240,4 +241,16 @@ const get_Advisor = async function (req, res) {
   }
 };
 
-module.exports={Advisor_register,Advisor_Login, get_Advisor}
+
+const Advisor_Data= async function(req,res){
+  try{
+  
+    const All_Data = await Advisor_Model.find()
+    return res.status(200).send({status:true,data:All_Data})
+
+  }catch(error){
+    return res.status(500).send({ status: false, Msg  :  error.message })
+  }
+}
+
+module.exports={Advisor_register,Advisor_Login, get_Advisor, Advisor_Data}
