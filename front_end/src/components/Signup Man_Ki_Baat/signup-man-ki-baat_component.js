@@ -3,7 +3,7 @@ import "./signup-man-ki-baat_component.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import axios from "axios";
 import * as yup from "yup";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
@@ -24,17 +24,17 @@ export function SignupManKiBaatComponent() {
 
   // function VerifyUserId(e) {
   //   if (!Array.isArray(users)) {
-  //     return; 
+  //     return;
   //   }
   //   for (var user of users) {
   //     if (user.name === e.target.value) {
   //       setUseError('User Name Taken - Try Another');
-  //       return; 
+  //       return;
   //     }
   //   }
-  //   setUseError('User Name Available'); 
+  //   setUseError('User Name Available');
   // }
-  
+
   return (
     <>
       <div className="box" id="body">
@@ -45,28 +45,40 @@ export function SignupManKiBaatComponent() {
             password: "",
             number: "",
             age: 0,
-            gender: ""
+            gender: "",
           }}
-
-          validationSchema={
-            yup.object({
-              name: yup.string().required("User Name Required"),
-              password: yup.string().required("Password Required").matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/, "Password 8 to 15 Chars with Uppercase letter,Special character & Number"),
-              email: yup.string().required("Email Required").email("Invalid Email"),
-              age: yup.number().required("Age Required"),
-              number: yup.string().required("Mobile Required").matches(/^((\+91)?|91)?[6789][0-9]{9}$/g, "Invalid Mobile Number"),
-              gender: yup.string().required("Gender Is Required")
-            })
-          }
-
+          validationSchema={yup.object({
+            name: yup.string().required("User Name Required"),
+            password: yup
+              .string()
+              .required("Password Required")
+              .matches(
+                /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/,
+                "Password 8 to 15 Chars with Uppercase letter,Special character & Number"
+              ),
+            email: yup
+              .string()
+              .required("Email Required")
+              .email("Invalid Email"),
+            age: yup.number().required("Age Required"),
+            number: yup
+              .string()
+              .required("Mobile Required")
+              .matches(
+                /^((\+91)?|91)?[6789][0-9]{9}$/g,
+                "Invalid Mobile Number"
+              ),
+            gender: yup.string().required("Gender Is Required"),
+          })}
           onSubmit={(values, { setSubmitting }) => {
-            axios.post("http://localhost:3001/Register", values)
+            axios
+              .post("http://localhost:3001/Register", values)
               .then(() => {
                 alert("Registered Successfully..");
                 navigate("/login");
               })
-              .catch(error => {
-                console.error('Error:', error);
+              .catch((error) => {
+                console.error("Error:", error);
                 alert("Registration failed. Please try again.");
               })
               .finally(() => {

@@ -1,8 +1,9 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const route = require("./routes/route.js");
 const mongoose = require("mongoose");
 const cors = require("cors");
+
 const app = express();
 
 mongoose.set("strictQuery", true);
@@ -18,10 +19,12 @@ mongoose
     }
   )
   .then(() => console.log("MongoDB is connected..."))
+  .catch((err) => console.log(err));
 
-  app.use("/",route);
+app.use("/", route);
 
-
-  app.listen(process.env.PORT || 3001, function () {
-    console.log("Express app running on port " + " " + (process.env.PORT || 3001));
-  });
+app.listen(process.env.PORT || 3001, function () {
+  console.log(
+    "Express app running on port " + " " + (process.env.PORT || 3001)
+  );
+});

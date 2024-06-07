@@ -4,7 +4,7 @@ const express = require("express");
 const router = express.Router();
 const { Register_User, Login_user,get_Users,Update_User}=require('../Controllers/UserControllers')
 const {  sendotp ,VerifyOtp}=require("../Controllers/OtpVerfy")
-const {Advisor_register,Advisor_Login,get_Advisor, Advisor_Data}=require('../Controllers/Advisor_controller')
+const {Advisor_register,Advisor_Login,get_Advisor,Get_All_Advisor}=require('../Controllers/Advisor_controller')
 const {isAuthenticated, isAuthorized }=require("../Auth/Middi")
 
 
@@ -27,8 +27,9 @@ router.post('/Verify_otp',VerifyOtp)
 ///Advisor Apis
 router.post('/Advisor_register',Advisor_register)
 router.post('/Advisor_login',Advisor_Login)
-router.get( "/user/:userId/profile", get_Advisor );
-router.get("/Advisor_All_Data",Advisor_Data)
+//router.get( "/user/:userId/profile", get_Advisor );
+router.get( "/user/profile", isAuthenticated, get_Advisor );
+router.get("/Advisor_All_Data",Get_All_Advisor)
 
 router.all('/*', function ( req , res )  {
     res.status(400).send({ status: false, message: " Path invalid." });

@@ -18,6 +18,8 @@ const validatePassword = (password) => {
   const validateName = (name) => {
     return /^(?=.{1,50}$)[a-z]+(?:['_.\s][a-z]+)*$/i.test(name);
   };
+
+  
   
   const validateMobileNo = (Number) => {
     return ((/^((\+91)?|91)?[6789][0-9]{9}$/g).test(Number));

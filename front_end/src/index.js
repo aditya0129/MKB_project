@@ -11,6 +11,7 @@ import { AdvisorManKiBaatComponent } from './components/Advisor Man_Ki_Baat/advi
 import { LoginManKiBaatComponent } from './components/Login Man_Ki_Baat/login-man-ki-baat_component';
 import { SignupManKiBaatComponent } from './components/Signup Man_Ki_Baat/signup-man-ki-baat_component';
 import { InvalidManKiBaatComponent } from './components/Invalid Man_Ki_Baat/invalid-man-ki-baat_component';
+import VideoChatManKiBaatComponent from './components/Video Chat Man_Ki_Baat/video-chat-man-ki-baat_component';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,11 +19,11 @@ root.render(
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<ManKiBaatComponent />} />
-      <Route path="home" element={<ManKiBaatComponent />} />
       <Route path="advisor" element={<AdvisorManKiBaatComponent />} />
       <Route path="login" element={<LoginManKiBaatComponent />} />
       <Route path="signup" element={<SignupManKiBaatComponent />} />
       <Route path="invalid" element={<InvalidManKiBaatComponent />} />
+      <Route path="video-chat" element={<VideoChatManKiBaatComponent />} />
     </Routes>
     </BrowserRouter>
   </React.StrictMode>

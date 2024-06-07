@@ -26,13 +26,21 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
-    age: {
-      type: Number,
+    birthdate: {
+      type: Date,
       required: true,
     },
+    age: {
+      type: Number,
+    },
+    place: {
+      type: String,
+      required: true,
+    },
+
     gender: {
       type: String,
-      enum: ["Male", "Female", "Lgbtq"],
+      enum: ["Male", "Female", "Lgbtq", "male", "female"],
       required: true,
     },
   },
@@ -40,4 +48,3 @@ const UserSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("UserData", UserSchema);
- 

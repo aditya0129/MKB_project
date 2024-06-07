@@ -1,14 +1,16 @@
 const Advisor_Model = require("../models/Advisor_Model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const {isValidObjectId} = require('mongoose')
 const {
   validateEmail,
   validateName,
   validatePassword,
-  validateMobileNo
+  validateMobileNo,
 } = require("../Validation/Validate");
 ///const { Module } = require("module");
 
+///**********************************************----------Advisor_register---------**********************************///
 const Advisor_register = async function (req, res) {
   try {
     let data = req.body;
@@ -58,12 +60,10 @@ const Advisor_register = async function (req, res) {
       Phone_number: Phone_number,
     });
     if (check_Number) {
-      return res
-        .status(200)
-        .send({
-          status: false,
-          MSg: "this number is Allready in use please provide Another Phone_Number",
-        });
+      return res.status(200).send({
+        status: false,
+        MSg: "this number is Allready in use please provide Another Phone_Number",
+      });
     }
 
     if (!password || password == "") {
@@ -73,12 +73,10 @@ const Advisor_register = async function (req, res) {
       });
     }
     if (!validatePassword(password.trim())) {
-      return res
-        .status(400)
-        .send({
-          status: false,
-          MSG: "Please provide valid password,it should contain uppercase,number and special character and 8-15 length",
-        });
+      return res.status(400).send({
+        status: false,
+        MSG: "Please provide valid password,it should contain uppercase,number and special character and 8-15 length",
+      });
     }
     let hashing = bcrypt.hashSync(password, 8);
     data.password = hashing;
@@ -152,87 +150,92 @@ const Advisor_register = async function (req, res) {
   }
 };
 
+
+///**********************************************----------Advisor_Login---------**********************************///
+
 const Advisor_Login = async function (req, res) {
   try {
-    const data=req.body;
+    const data = req.body;
     if (Object.keys(data).length == 0) {
-        return res.status(400).send({
-          status: "false",
-          message: "Please enter the data in request body",
-        })
-    };
-    const{email,password}=data
+      return res.status(400).send({
+        status: "false",
+        message: "Please enter the data in request body",
+      });
+    }
+    const { email, password } = data;
 
     if (!email || email == "") {
-        return res.status(400).send({
-          status: false,
-          message: "email is mandatory and email Should not be Empty",
-        });
-      }
-      if (!validateEmail(email.trim())) {
-        return res
-          .status(400)
-          .send({ status: false, MSG: "Please provide valid email" });
-      }
-      let check_Email = await Advisor_Model.findOne({ email: email });
-      if (!check_Email) {
-        return res.status(400).send({
-          status: false,
-          MSG: "this email is not present our data please provide email",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "email is mandatory and email Should not be Empty",
+      });
+    }
+    if (!validateEmail(email.trim())) {
+      return res
+        .status(400)
+        .send({ status: false, MSG: "Please provide valid email" });
+    }
+    let verifyUser = await Advisor_Model.findOne({ email: email });
+    console.log(verifyUser._id)
+    if (!verifyUser) {
+      return res.status(400).send({
+        status: false,
+        MSG: "this email is not present our data please provide email",
+      });
     }
     if (!password) {
-        return res
-          .status(400)
-          .send({ status: false, MSG: "please provide password" });
-      }
-      if (!validatePassword(password)) {
-        return res
-          .status(400)
-          .send({
-            status: false,
-            MSG: "Please provide valid password,it should contain uppercase,number and special character and 8-15 length",
-          });
-      }
-      let hash = verifyUser.password;
-  
-      let isCorrect = bcrypt.compareSync(password, hash);
-      if (!isCorrect) {
-        return res
-          .status(400)
-          .send({ status: false, message: "Password is incorrect" });
-      }
-  
-      let token = jwt.sign(
-        {
-          userId: check_Email._id.toString(),
-        },
-        "man-ki-baat"
-      );
-      res.setHeader("x-api-key", token);
-      res.send({ status: true, Token: token, msg: "login successfully" });
+      return res
+        .status(400)
+        .send({ status: false, MSG: "please provide password" });
+    }
+    if (!validatePassword(password)) {
+      return res.status(400).send({
+        status: false,
+        MSG: "Please provide valid password,it should contain uppercase,number and special character and 8-15 length",
+      });
+    }
+    let hash = verifyUser.password;
 
+    let isCorrect = bcrypt.compareSync(password, hash);
+    if (!isCorrect) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Password is incorrect" });
+    }
 
+    let token = jwt.sign(
+      {
+        userId:verifyUser._id,
+      },
+      "man-ki-baat"
+    );
+   // res.setHeader("x-api-key", token);
+
+    res.send({ status: true, Token: token, msg: "login successfully" });
   } catch (error) {
     return res.status(500).send({ status: false, Msg: error.message });
   }
 };
 
 
+///**********************************************----------get_Advisor---------**********************************///
+
 const get_Advisor = async function (req, res) {
   try {
-    let userId = req.params.userId;
+    //let userId = req.params.userId;
 
+    let userId = req.token.userId
+console.log(userId)
     if (!isValidObjectId(userId))
       return res
         .status(400)
         .send({ status: false, message: "User is invalid" });
 
     let getData = await Advisor_Model.find({ _id: userId });
-
+console.log(getData)
     if (!getData)
       return res.status(404).send({ status: false, message: "user not found" });
-      
+
     return res
       .status(200)
       .send({ status: true, message: "User profile details", data: getData });
@@ -242,15 +245,18 @@ const get_Advisor = async function (req, res) {
 };
 
 
-const Advisor_Data= async function(req,res){
-  try{
-  
-    const All_Data = await Advisor_Model.find()
-    return res.status(200).send({status:true,data:All_Data})
 
-  }catch(error){
-    return res.status(500).send({ status: false, Msg  :  error.message })
+///**********************************************----------Get_All_Advisor---------**********************************///
+
+const Get_All_Advisor=async function(req,res){
+  try {
+
+    const Advisor=await Advisor_Model.find();
+    return res.status(200).send({status:true,Data:Advisor})
+    
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
   }
 }
 
-module.exports={Advisor_register,Advisor_Login, get_Advisor, Advisor_Data}
+module.exports={Advisor_register,Advisor_Login, get_Advisor, Get_All_Advisor}
