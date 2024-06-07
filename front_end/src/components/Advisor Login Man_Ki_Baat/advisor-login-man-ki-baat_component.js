@@ -1,5 +1,5 @@
 import React from "react";
-import "./login-man-ki-baat_component.css";
+import "./advisor-login-man-ki-baat_component.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
@@ -8,12 +8,13 @@ import * as yup from "yup";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 
-export function LoginManKiBaatComponent() {
+export function AdvisorLoginManKiBaatComponent() {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["token"]);
+  // const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie] = useCookies(["token", "_id"]);
 
   const SignupClick = () => {
-    navigate("/signup");
+    navigate("/advisor-register");
   };
 
   return (
@@ -43,20 +44,21 @@ export function LoginManKiBaatComponent() {
                 onSubmit={async (values, { setSubmitting }) => {
                   try {
                     const authResponse = await axios.post(
-                      "http://localhost:3001/Login",
+                      "http://localhost:3001/Advisor_login",
                       {
                         email: values.email,
                         password: values.password,
                       }
                     );
-
-                    const token = authResponse.data.token;
-
+                    const { _id, token } = authResponse.data;
+                    // const userIdString = userId.toString();
+                    // const token = authResponse.data.token;
                     localStorage.setItem("token", token);
-
+                    localStorage.setItem("_id", _id);
                     setCookie("token", token, { path: "/" });
+                    setCookie("_id", _id, { path: "/" });
                     alert("Login Successfully..");
-                    navigate("/");
+                    navigate("/advisor-profile");
                   } catch (error) {
                     console.error("Error:", error);
                     navigate("/invalid");
@@ -87,7 +89,7 @@ export function LoginManKiBaatComponent() {
                     </div>
                     <div className="links">
                       <a href="forget-password">Forgot Password?</a>
-                      <a href="signup" onClick={SignupClick}>
+                      <a href="advisor-register" onClick={SignupClick}>
                         Signup
                       </a>
                     </div>

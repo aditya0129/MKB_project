@@ -19,7 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {} from "@fortawesome/free-brands-svg-icons";
 
-export function ManKiBaatComponent() {
+export function ManKiBaatComponent({ data }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showStress, setShowStress] = useState(false);
   const [showAnxiety, setShowAnxiety] = useState(false);
@@ -51,18 +51,42 @@ export function ManKiBaatComponent() {
 
   useEffect(() => {
     if (cookies["token"] === undefined) {
-      navigate("/login");
+      navigate("/register-case");
     }
   });
   function SignoutClick() {
     alert("Logout Successfully..");
     removeCookie("token");
-    navigate("/login");
+    navigate("/register-case");
+  }
+
+  function handleAdvisorClick() {
+    navigate("/advisor");
   }
 
   const redirectToVideoChat = () => {
     window.location.href = "http://localhost:3030";
   };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState(data);
+
+  const handleSearchInputChange = (event) => {
+    const value = event.target.value;
+    setSearchQuery(value);
+    filterData(value);
+  };
+
+  const filterData = (query) => {
+    const filtered = data.filter((item) =>
+      item.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
+
+  function handleContactsClick() {
+    navigate("/contacts");
+  }
 
   return (
     <>
@@ -106,6 +130,9 @@ export function ManKiBaatComponent() {
                   aria-labelledby="dropdownMenuButton"
                   style={{ cursor: "pointer" }}
                 >
+                  <a className="dropdown-item" onClick={handleAdvisorClick}>
+                    All Advisor
+                  </a>
                   <a
                     className="dropdown-item"
                     onClick={handleStressButtonClick}
@@ -163,6 +190,7 @@ export function ManKiBaatComponent() {
                 <FontAwesomeIcon icon={faEnvelope} style={{ color: "blue" }} />
                 <li
                   className="ms-4"
+                  onClick={handleContactsClick}
                   style={{
                     display: "inline-block",
                     color: "black",
@@ -255,6 +283,7 @@ export function ManKiBaatComponent() {
                 width: "70px",
                 height: "40px",
                 color: "white",
+                boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
             >
               <FontAwesomeIcon className="me-2" icon={faMessage} />
@@ -270,6 +299,7 @@ export function ManKiBaatComponent() {
                 width: "70px",
                 height: "40px",
                 color: "white",
+                boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
             >
               <FontAwesomeIcon className="me-2" icon={faPhoneVolume} />
@@ -285,6 +315,7 @@ export function ManKiBaatComponent() {
                 width: "70px",
                 height: "40px",
                 color: "white",
+                boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
               onClick={redirectToVideoChat}
             >
@@ -360,6 +391,7 @@ export function ManKiBaatComponent() {
                   height: "40px",
                   color: "white",
                   marginLeft: "110px",
+                  boxShadow: "0 0 3px rgb(81, 80, 82)",
                 }}
               >
                 <FontAwesomeIcon className="me-2" icon={faMessage} />
@@ -375,6 +407,7 @@ export function ManKiBaatComponent() {
                   width: "70px",
                   height: "40px",
                   color: "white",
+                  boxShadow: "0 0 3px rgb(81, 80, 82)",
                 }}
               >
                 <FontAwesomeIcon className="me-2" icon={faVideo} />
@@ -438,6 +471,7 @@ export function ManKiBaatComponent() {
                   height: "40px",
                   color: "white",
                   marginLeft: "110px",
+                  boxShadow: "0 0 3px rgb(81, 80, 82)",
                 }}
               >
                 <FontAwesomeIcon className="me-2" icon={faMessage} />
@@ -453,6 +487,7 @@ export function ManKiBaatComponent() {
                   width: "70px",
                   height: "40px",
                   color: "white",
+                  boxShadow: "0 0 3px rgb(81, 80, 82)",
                 }}
               >
                 <FontAwesomeIcon className="me-2" icon={faVideo} />
@@ -516,6 +551,7 @@ export function ManKiBaatComponent() {
                   height: "40px",
                   color: "white",
                   marginLeft: "110px",
+                  boxShadow: "0 0 3px rgb(81, 80, 82)",
                 }}
               >
                 <FontAwesomeIcon className="me-2" icon={faMessage} />
@@ -531,6 +567,7 @@ export function ManKiBaatComponent() {
                   width: "70px",
                   height: "40px",
                   color: "white",
+                  boxShadow: "0 0 3px rgb(81, 80, 82)",
                 }}
               >
                 <FontAwesomeIcon className="me-2" icon={faVideo} />

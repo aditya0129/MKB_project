@@ -1,6 +1,46 @@
-.advisor {
+/* .advisor {
   background: #fbfbfb;
   border-radius: 30px;
   border-bottom: 3px solid cyan;
   border-top: 3px solid blue;
+  border-left: 3px solid blue;
+  border-right: 3px solid cyan;
+  height: 450px;
+  width: 380px;
+} */
+
+.card {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 30px;
+  /* border-bottom: 3px solid cyan;
+  border-top: 3px solid blue;
+  border-left: 3px solid blue;
+  border-right: 3px solid cyan; */
+  box-shadow: 0 0 8px rgb(145, 144, 146);
+  width: 380px;
+  display: grid;
+  grid-template-columns: 6fr 6fr;
+}
+
+.card img {
+  height: 70px;
+  width: 70px;
+  border-radius: 100px;
+}
+
+.card-body h5 {
+  font-weight: bold;
+  font-family: Arial;
+}
+
+.card-footer {
+  box-shadow: 0 0 8px rgb(81, 80, 82);
+  background: linear-gradient(135deg, blue, cyan);
+  color: #ffffff;
+}
+
+.card-footer p {
+  font-weight: bold;
 }

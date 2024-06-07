@@ -7,13 +7,17 @@
   font-family: "Poppins", sans-serif;
 }
 
+.container-fluid {
+  background-color: #23242a;
+}
+
 #body {
   display: flex;
   margin: auto;
   margin-top: 70px;
 }
 
-.box {
+.boxing {
   position: relative;
   width: 380px;
   height: 950px;
@@ -22,27 +26,27 @@
   overflow: hidden;
 }
 
-.box::before {
+.boxing::before {
   content: "";
   z-index: 1;
   position: absolute;
   top: -50%;
   left: -50%;
   width: 380px;
-  height: 420px;
+  height: 950px;
   transform-origin: bottom right;
   background: linear-gradient(0deg, transparent, #45f3ff, #45f3ff);
   animation: animate 6s linear infinite;
 }
 
-.box::after {
+.boxing::after {
   content: "";
   z-index: 1;
   position: absolute;
   top: -50%;
   left: -50%;
   width: 380px;
-  height: 420px;
+  height: 950px;
   transform-origin: bottom right;
   background: linear-gradient(0deg, transparent, #dd033a, #dd033a);
   animation: animate 6s linear infinite;
@@ -76,19 +80,19 @@ h2 {
   letter-spacing: 0.1em;
 }
 
-.inputBox {
+.inputBoxing {
   position: relative;
   width: 300px;
   margin-top: 35px;
 }
 
-#inputBox {
+#inputBoxing {
   position: relative;
   width: 300px;
   margin-top: 35px;
 }
 
-.inputBox input {
+.inputBoxing input {
   position: relative;
   width: 100%;
   padding: 20px 10px 10px;
@@ -103,7 +107,7 @@ h2 {
   z-index: 10;
 }
 
-#inputBox input {
+#inputBoxing input {
   position: relative;
   width: 100%;
   padding: 20px 10px 10px;
@@ -118,7 +122,7 @@ h2 {
   z-index: 10;
 }
 
-.inputBox span {
+.inputBoxing span {
   position: absolute;
   left: 0;
   padding: 20px 0px 10px;
@@ -129,7 +133,7 @@ h2 {
   transition: 0.5s;
 }
 
-#inputBox span {
+#inputBoxing span {
   position: absolute;
   left: 0;
   padding: 20px 0px 10px;
@@ -140,21 +144,21 @@ h2 {
   transition: 0.5s;
 }
 
-#inputBox input:valid ~ span,
-#inputBox input:focus ~ span {
+#inputBoxing input:valid ~ span,
+#inputBoxing input:focus ~ span {
   color: #dd033a;
   transform: translateX(0px) translateY(-34px);
   font-size: 0.75em;
 }
 
-.inputBox input:valid ~ span,
-.inputBox input:focus ~ span {
+.inputBoxing input:valid ~ span,
+.inputBoxing input:focus ~ span {
   color: #45f3ff;
   transform: translateX(0px) translateY(-34px);
   font-size: 0.75em;
 }
 
-.inputBox i {
+.inputBoxing i {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -169,7 +173,7 @@ h2 {
   opacity: 0.8;
 }
 
-#inputBox i {
+#inputBoxing i {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -184,13 +188,13 @@ h2 {
   opacity: 0.8;
 }
 
-.inputBox input:valid ~ i,
-.inputBox input:focus ~ i {
+.inputBoxing input:valid ~ i,
+.inputBoxing input:focus ~ i {
   height: 44px;
 }
 
-#inputBox input:valid ~ i,
-#inputBox input:focus ~ i {
+#inputBoxing input:valid ~ i,
+#inputBoxing input:focus ~ i {
   height: 44px;
 }
 
@@ -225,6 +229,7 @@ button[type="submit"] {
   transition: all 0.5s ease-in-out;
   display: flex;
   justify-content: center;
+  border: none;
 }
 
 button[type="submit"]:hover {

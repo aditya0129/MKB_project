@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import "./advisor-man-ki-baat_component.css";
-import axios from "axios";
+import React from "react";
+import "./contacts-man-ki-baat_component.css";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
@@ -13,49 +12,32 @@ import {
   faVideo,
   faMinus,
   faPlus,
+  faAnglesRight,
   faPowerOff,
+  faMapMarkerAlt,
+  faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 
-export function AdvisorManKiBaatComponent() {
+export function ContactsManKiBaat() {
   const [isOpen, setIsOpen] = useState(false);
-  const [advisors, setAdvisors] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
-
-  // Authentication check
-  useEffect(() => {
-    if (cookies["token"] === undefined) {
-      navigate("/register-case");
-    }
-  }, [cookies, navigate]);
-
-  // Fetch advisors data
-  useEffect(() => {
-    async function fetchAdvisors() {
-      try {
-        const response = await axios.get(`http://localhost:3001/advisor`);
-        setAdvisors(response.data.data);
-      } catch (error) {
-        console.error("Error fetching advisors data:", error);
-      }
-    }
-
-    fetchAdvisors();
-  }, []);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const SignoutClick = () => {
+  useEffect(() => {
+    if (cookies["token"] === undefined) {
+      navigate("/register-case");
+    }
+  });
+
+  function SignoutClick() {
     alert("Logout Successfully..");
     removeCookie("token");
     navigate("/register-case");
-  };
-
-  const handleContactsClick = () => {
-    navigate("/contacts");
-  };
+  }
 
   return (
     <>
@@ -149,7 +131,6 @@ export function AdvisorManKiBaatComponent() {
                 <FontAwesomeIcon icon={faEnvelope} style={{ color: "blue" }} />
                 <li
                   className="ms-4"
-                  onClick={handleContactsClick}
                   style={{
                     display: "inline-block",
                     color: "black",
@@ -186,7 +167,7 @@ export function AdvisorManKiBaatComponent() {
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "150px" }}
         >
-          <h3 className="display-3 font-weight-bold text-white">Advisor</h3>
+          <h3 className="display-3 font-weight-bold text-white">My Contacts</h3>
           <div className="d-inline-flex text-white">
             <p className="m-0">
               <a className="text-white" href="/">
@@ -194,122 +175,88 @@ export function AdvisorManKiBaatComponent() {
               </a>
             </p>
             <p className="m-0 px-2">/</p>
-            <p className="m-0">Advisor</p>
+            <p className="m-0">My Contacts</p>
           </div>
         </div>
       </div>
 
-      <div
-        className="container-fluid mt-5 m-auto d-flex justify-content-center advisor"
-        style={{ background: "white" }}
-      >
+      <div className="container">
         <div className="row">
-          {advisors.map((advisor) => (
-            <div className="col-md-4 mt-3" key={advisor._id}>
-              <div className="card mb-3" style={{}}>
-                <div className="card-body">
-                  <div className="text-center">
-                    <img
-                      src="boy-img.jpg"
-                      alt=""
-                      style={{
-                        height: "70px",
-                        width: "70px",
-                        borderRadius: "100px",
-                      }}
-                    />
-                  </div>
-                  <h5
-                    className="mt-3"
-                    style={{ fontWeight: "bold", fontFamily: "Arial" }}
-                  >
-                    {advisor.name}
-                  </h5>
-                  <p>
-                    {advisor.rating}{" "}
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "darkgray" }}
-                    />
-                  </p>
-                  <button
-                    className="btn btn-primary me-2"
-                    type="button"
-                    style={{
-                      background: "linear-gradient(135deg,cyan,blue)",
-                      border: "none",
-                      borderRadius: "7px",
-                      width: "100px",
-                      height: "45px",
-                      color: "white",
-                      boxShadow: "0 0 3px rgb(81, 80, 82)",
-                    }}
-                  >
-                    <FontAwesomeIcon className="me-2" icon={faPhone} />
-                    Call
-                  </button>
-                  <button
-                    className="btn btn-primary mt-2"
-                    type="button"
-                    style={{
-                      background: "linear-gradient(135deg,cyan,blue)",
-                      border: "none",
-                      borderRadius: "7px",
-                      width: "150px",
-                      height: "45px",
-                      color: "white",
-                      boxShadow: "0 0 3px rgb(81, 80, 82)",
-                    }}
-                  >
-                    <FontAwesomeIcon className="me-2" icon={faPhone} />
-                    Waiting Call
-                  </button>
-                  <p className="mt-3">
-                    <FontAwesomeIcon icon={faComment} /> No. of chats
-                  </p>
-                  <p className="mt-3">
-                    <FontAwesomeIcon icon={faVideo} /> No. of video-calls
-                  </p>
-                  <p className="mt-3">
-                    <FontAwesomeIcon icon={faMinus} /> review{" "}
-                    <FontAwesomeIcon className="" icon={faPlus} /> review
-                  </p>
-                </div>
-                <div
-                  className="card-footer ms-4"
-                  style={{ borderRadius: "30px" }}
-                >
-                  <p style={{ fontWeight: "bold" }}>Year of Experience:</p>
-                  <p>{advisor.experience} Years</p>
-                  <p style={{ fontWeight: "bold" }}>Expertise:</p>
-                  <p>{advisor.expertise}</p>
-                  <p style={{ fontWeight: "bold" }}>Income:</p>
-                  <p>Rs. {advisor.income}/- month</p>
-                </div>
+          <div className="col-md-6 mt-5 mb-5">
+            <img
+              src="boy-img.jpg"
+              alt=""
+              style={{
+                height: "350px",
+                width: "350px",
+                borderTopRightRadius: "50px",
+                borderBottomLeftRadius: "50px",
+              }}
+            />
+          </div>
+          <div className="col-md-6 mt-5">
+            <p>
+              For any queries or further information, please feel free to
+              contact us through the following channels:
+            </p>
+            <div className="d-flex">
+              <div
+                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                style={{ width: "45px", height: "45px" }}
+              >
+                <FontAwesomeIcon
+                  icon={faUserTie}
+                  style={{ color: "#fbfbfb" }}
+                />
+              </div>
+              <div className="pl-3 ms-3">
+                <h5>Name</h5>
+                <p>Jeremy Rose</p>
               </div>
             </div>
-          ))}
+            <div className="d-flex">
+              <div
+                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                style={{ width: "45px", height: "45px" }}
+              >
+                <FontAwesomeIcon
+                  icon={faMapMarkerAlt}
+                  style={{ color: "#fbfbfb" }}
+                />
+              </div>
+              <div className="pl-3 ms-3">
+                <h5>Address</h5>
+                <p>170 William Street New York, NY 10038.78 212.312.51</p>
+              </div>
+            </div>
+            <div className="d-flex">
+              <div
+                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                style={{ width: "45px", height: "45px" }}
+              >
+                <FontAwesomeIcon
+                  icon={faEnvelope}
+                  style={{ color: "#fbfbfb" }}
+                />
+              </div>
+              <div className="pl-3 ms-3">
+                <h5>Email</h5>
+                <p>hello@jeremyrose.com</p>
+              </div>
+            </div>
+            <div className="d-flex">
+              <div
+                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                style={{ width: "45px", height: "45px" }}
+              >
+                <FontAwesomeIcon icon={faPhone} style={{ color: "#fbfbfb" }} />
+              </div>
+              <div className="pl-3 ms-3">
+                <h5>Phone</h5>
+                <p>+1 125 456 7850</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
