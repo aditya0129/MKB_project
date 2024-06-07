@@ -10,10 +10,25 @@ const {
 } = require("../Validation/Validate");
 const { isValidObjectId } = require("mongoose");
 
+// Calculate age from birthdate
+const calculateAge = (birthdate) => {
+  const today = new Date();
+  const birthDate = new Date(birthdate);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+  return age;
+};
+
 const Register_User = async function (req, res) {
   try {
     let data = req.body;
-    let { name, email, password, age, gender, number } = data;
+    let { name, email, password, birthdate, gender, number, place } = data;
 
     if (!name)
       return res
@@ -31,20 +46,23 @@ const Register_User = async function (req, res) {
         .status(400)
         .send({ Status: false, Msg: "please provide your email" });
 
-    if (!validateEmail(email)) {
-      return res.status(400).send({
-        status: false,
-        Msg: "please provide email correct formate like abc012@gmail.com",
-      });
-    }
+    // if (!validateEmail(email)) {
+    //   return res.status(400).send({
+    //     status: false,
+    //     Msg: "please provide email correct formate like abc012@gmail.com",
+    //   });
+    // }
 
     let checkEmail = await UserModel.findOne({ email: email });
     if (checkEmail) {
       return res
         .status(400)
-        .send({ status: false, msg: "email is already registered   please use nother email" });
+        .send({
+          status: false,
+          msg: "email is already registered   please use nother email",
+        });
     }
-    console.log(checkEmail);
+    // console.log(checkEmail);
 
     if (!password)
       return res
@@ -60,16 +78,15 @@ const Register_User = async function (req, res) {
     let hashing = bcrypt.hashSync(password, 8);
     data.password = hashing;
 
-    if (!age)
+    if (!birthdate)
       return res
         .status(400)
-        .send({ Status: false, Msg: "please provide your age" });
-    if (!validateAge(age)) {
-      return res
-        .status(400)
-        .send({ Status: false, Msg: "please provide valid age" });
-    }
+        .send({ Status: false, Msg: "please provide your birthdate" });
 
+    const age = calculateAge(birthdate);
+    if (age < 18) {
+      return res.status(400).send({ status: false, MSG: "you should be 18+" });
+    }
     if (!gender)
       return res
         .status(400)
@@ -90,14 +107,37 @@ const Register_User = async function (req, res) {
         .status(400)
         .send({ status: false, Msg: "this Number is already in use " });
     }
-    let savedata = await UserModel.create(data);
-    return res
-      .status(200)
-      .send({ Status: true, Msg: "succesful Register", Data: savedata });
+    // let savedata = await UserModel.create({data,age});
+    // await savedata.save()
+    // return res
+    //   .status(200)
+    //   .send({ Status: true, Msg: "succesful Register", Data: savedata });
+
+    if (!place)
+      return res
+        .status(400)
+        .send({ status: false, msg: "plcae must be required" });
+    if (!validateName(place))
+      return res
+        .status(400)
+        .send({ status: false, msg: "please provide valid place name" });
+    const newUser = new UserModel({
+      name,
+      email,
+      password,
+      number,
+      gender,
+      birthdate,
+      age,
+    });
+    await newUser.save();
+    res.status(201).json({ status: true, user: newUser });
   } catch (error) {
     return res.status(500).send({ status: false, Msg: error.message });
   }
 };
+
+/////////////////////////////////////////////////////////login----User////////////////////////////////////////////////////
 
 const Login_user = async function (req, res) {
   try {
@@ -148,6 +188,11 @@ const Login_user = async function (req, res) {
   }
 };
 
+
+
+
+//////////////////////////////////////////////////////////////Get--User/////////////////////////////////////////////////////
+
 const get_Users = async function (req, res) {
   try {
     let userId = req.params.userId;
@@ -170,6 +215,12 @@ const get_Users = async function (req, res) {
   }
 };
 
+
+
+
+
+/////////////////////////////////////---------Update-User-----------//////////////////////////////
+
 const Update_User = async function (req, res) {
   try {
     let userId = req.param.userId;
@@ -179,7 +230,7 @@ const Update_User = async function (req, res) {
         .status(400)
         .send({ status: false, message: "User Id is invalid." });
 
-    let getUserId = await userModel.findOne({ _id: userId });
+    let getUserId = await UserModel.findOne({ _id: userId });
     if (!getUserId)
       return res
         .status(404)
@@ -218,7 +269,7 @@ const Update_User = async function (req, res) {
           .send({ status: false, message: "Email can not be empty." });
       }
 
-      let checkEmailId = await userModel.findOne({ email: email });
+      let checkEmailId = await UserModel.findOne({ email: email });
       if (checkEmailId) {
         return res.status(400).send({
           status: false,

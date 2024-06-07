@@ -1,6 +1,7 @@
 const Advisor_Model = require("../models/Advisor_Model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const {isValidObjectId} = require('mongoose')
 const {
   validateEmail,
   validateName,
@@ -9,6 +10,7 @@ const {
 } = require("../Validation/Validate");
 ///const { Module } = require("module");
 
+///**********************************************----------Advisor_register---------**********************************///
 const Advisor_register = async function (req, res) {
   try {
     let data = req.body;
@@ -49,7 +51,7 @@ const Advisor_register = async function (req, res) {
           "Phone_number is mandatory and Phone_number Should not be Empty",
       });
     }
-    if (!validateMobileNo(Phone_number.trim())) {
+    if (!validateMobileNo(Phone_number)) {
       return res
         .status(400)
         .send({ status: false, MSG: "please provide valid Phone_number" });
@@ -104,20 +106,21 @@ const Advisor_register = async function (req, res) {
       });
     }
 
-    if (!profile_description || profile_description == "") {
-      return res.status(400).send({
-        status: false,
-        message:
-          "profile_description is mandatory and profile_description Should not be Empty",
-      });
-    }
-    if (!profile_picture || profile_picture == "") {
-      return res.status(400).send({
-        status: false,
-        message:
-          "profile_picture is mandatory and profile_picture Should not be Empty",
-      });
-    }
+    // if (!profile_description || profile_description == "") {
+    //   return res.status(400).send({
+    //     status: false,
+    //     message:
+    //       "profile_description is mandatory and profile_description Should not be Empty",
+    //   });
+    // }
+    // if (!profile_picture || profile_picture == "") {
+    //   return res.status(400).send({
+    //     status: false,
+    //     message:
+    //       "profile_picture is mandatory and profile_picture Should not be Empty",
+    //   });
+   // }
+
     if (!availability_schedule || availability_schedule == "") {
       return res.status(400).send({
         status: false,
@@ -147,6 +150,9 @@ const Advisor_register = async function (req, res) {
   }
 };
 
+
+///**********************************************----------Advisor_Login---------**********************************///
+
 const Advisor_Login = async function (req, res) {
   try {
     const data = req.body;
@@ -169,8 +175,9 @@ const Advisor_Login = async function (req, res) {
         .status(400)
         .send({ status: false, MSG: "Please provide valid email" });
     }
-    let check_Email = await Advisor_Model.findOne({ email: email });
-    if (!check_Email) {
+    let verifyUser = await Advisor_Model.findOne({ email: email });
+    console.log(verifyUser._id)
+    if (!verifyUser) {
       return res.status(400).send({
         status: false,
         MSG: "this email is not present our data please provide email",
@@ -198,28 +205,34 @@ const Advisor_Login = async function (req, res) {
 
     let token = jwt.sign(
       {
-        userId: check_Email._id.toString(),
+        userId:verifyUser._id,
       },
       "man-ki-baat"
     );
-    res.setHeader("x-api-key", token);
+   // res.setHeader("x-api-key", token);
+
     res.send({ status: true, Token: token, msg: "login successfully" });
   } catch (error) {
     return res.status(500).send({ status: false, Msg: error.message });
   }
 };
 
+
+///**********************************************----------get_Advisor---------**********************************///
+
 const get_Advisor = async function (req, res) {
   try {
-    let userId = req.params.userId;
+    //let userId = req.params.userId;
 
+    let userId = req.token.userId
+console.log(userId)
     if (!isValidObjectId(userId))
       return res
         .status(400)
         .send({ status: false, message: "User is invalid" });
 
     let getData = await Advisor_Model.find({ _id: userId });
-
+console.log(getData)
     if (!getData)
       return res.status(404).send({ status: false, message: "user not found" });
 
@@ -231,4 +244,19 @@ const get_Advisor = async function (req, res) {
   }
 };
 
-module.exports = { Advisor_register, Advisor_Login, get_Advisor };
+
+
+///**********************************************----------Get_All_Advisor---------**********************************///
+
+const Get_All_Advisor=async function(req,res){
+  try {
+
+    const Advisor=await Advisor_Model.find();
+    return res.status(200).send({status:true,Data:Advisor})
+    
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+}
+
+module.exports={Advisor_register,Advisor_Login, get_Advisor, Get_All_Advisor}
