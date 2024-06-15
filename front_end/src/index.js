@@ -16,6 +16,9 @@ import { AdvisorRegisterManKiBaatComponent } from "./components/Advisor Register
 import { AdvisorLoginManKiBaatComponent } from "./components/Advisor Login Man_Ki_Baat/advisor-login-man-ki-baat_component";
 import { RegisterCaseManKiBaatComponent } from "./components/Register Case Man_Ki_Baat/register-case-man-ki-baat_component";
 import { AdvisorProfileManKiBaatComponent } from "./components/Advisor Profile/advisor-profile-man-ki-baat_component";
+import { ForgetPasswordMankiBaatComponent } from "./components/Forgot Password/forgot-password-man-ki-baat_component";
+import { VerifyOTPManKiBaatComponent } from "./components/Verify OTP/verify-otp-man-ki-baat_component";
+import { SetPasswordManKiBaatComponent } from "./components/Set Password/set-password-man-ki-baat_component";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -43,6 +46,15 @@ root.render(
         <Route
           path="advisor-profile"
           element={<AdvisorProfileManKiBaatComponent />}
+        />
+        <Route
+          path="forget-password"
+          element={<ForgetPasswordMankiBaatComponent />}
+        />
+        <Route path="verify-otp" element={<VerifyOTPManKiBaatComponent />} />
+        <Route
+          path="set-password"
+          element={<SetPasswordManKiBaatComponent />}
         />
       </Routes>
     </BrowserRouter>

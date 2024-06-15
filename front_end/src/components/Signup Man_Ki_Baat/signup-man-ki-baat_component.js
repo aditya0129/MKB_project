@@ -94,54 +94,54 @@ export function SignupManKiBaatComponent() {
                     <FontAwesomeIcon className="icon" icon={faUserTie} />
                     <h2>Sign up</h2>
                     <div className="arrange">
-                    <div className="inputBoxing">
-                      <Field type="text" name="name" />
-                      <span>Username</span>
-                      <i></i>
-                    </div>
-                    <div className="text-danger">
-                      <ErrorMessage name="name" />
-                    </div>
-                    <div id="inputBoxing">
-                      <Field type="text" name="email" />
-                      <span>Email</span>
-                      <i></i>
-                    </div>
-                    <div className="text-danger">
-                      <ErrorMessage name="email" />
-                    </div>
-                    <div className="inputBoxing">
-                      <Field type="password" name="password" />
-                      <span>Password</span>
-                      <i></i>
-                    </div>
-                    <div className="text-danger">
-                      <ErrorMessage name="password" />
-                    </div>
-                    <div id="inputBoxing">
-                      <Field type="text" name="number" />
-                      <span>Number</span>
-                      <i></i>
-                    </div>
-                    <div className="text-danger">
-                      <ErrorMessage name="number" />
-                    </div>
-                    <div className="inputBoxing">
-                      <Field type="number" name="age" />
-                      <span>Age</span>
-                      <i></i>
-                    </div>
-                    <div className="text-danger">
-                      <ErrorMessage name="age" />
-                    </div>
-                    <div id="inputBoxing">
-                      <Field type="text" name="gender" />
-                      <span>Gender</span>
-                      <i></i>
-                    </div>
-                    <div className="text-danger">
-                      <ErrorMessage name="gender" />
-                    </div>
+                      <div className="inputBoxing">
+                        <Field type="text" name="name" />
+                        <span>Name</span>
+                        <i></i>
+                      </div>
+                      <div className="text-danger">
+                        <ErrorMessage name="name" />
+                      </div>
+                      <div id="inputBoxing">
+                        <Field type="text" name="email" />
+                        <span>Email</span>
+                        <i></i>
+                      </div>
+                      <div className="text-danger">
+                        <ErrorMessage name="email" />
+                      </div>
+                      <div className="inputBoxing">
+                        <Field type="password" name="password" />
+                        <span>Password</span>
+                        <i></i>
+                      </div>
+                      <div className="text-danger">
+                        <ErrorMessage name="password" />
+                      </div>
+                      <div id="inputBoxing">
+                        <Field type="text" name="number" />
+                        <span>Number</span>
+                        <i></i>
+                      </div>
+                      <div className="text-danger">
+                        <ErrorMessage name="number" />
+                      </div>
+                      <div className="inputBoxing">
+                        <Field type="date" name="age" />
+                        <span>Age</span>
+                        <i></i>
+                      </div>
+                      <div className="text-danger">
+                        <ErrorMessage name="age" />
+                      </div>
+                      <div id="inputBoxing">
+                        <Field type="text" name="gender" />
+                        <span>Gender</span>
+                        <i></i>
+                      </div>
+                      <div className="text-danger">
+                        <ErrorMessage name="gender" />
+                      </div>
                     </div>
                     <button type="submit">Register</button>
                     {/* {useError && <div className="text-danger">{useError}</div>} */}

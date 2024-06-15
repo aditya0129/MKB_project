@@ -33,8 +33,10 @@ export function AdvisorManKiBaatComponent() {
   useEffect(() => {
     async function fetchAdvisors() {
       try {
-        const response = await axios.get(`http://localhost:3001/advisor`);
-        setAdvisors(response.data.data);
+        const response = await axios.get(
+          `http://localhost:3001/Advisor_All_Data`
+        );
+        setAdvisors(response.data.Data);
       } catch (error) {
         console.error("Error fetching advisors data:", error);
       }
@@ -167,6 +169,7 @@ export function AdvisorManKiBaatComponent() {
                     width: "50px",
                     height: "50px",
                     borderRadius: "100px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
                 <FontAwesomeIcon
@@ -200,7 +203,7 @@ export function AdvisorManKiBaatComponent() {
       </div>
 
       <div
-        className="container-fluid mt-5 m-auto d-flex justify-content-center advisor"
+        className="container-fluid mt-5 advisor"
         style={{ background: "white" }}
       >
         <div className="row">
@@ -257,7 +260,7 @@ export function AdvisorManKiBaatComponent() {
                     className="btn btn-primary me-2"
                     type="button"
                     style={{
-                      background: "linear-gradient(135deg,cyan,blue)",
+                      background: "linear-gradient(135deg,blue,cyan)",
                       border: "none",
                       borderRadius: "7px",
                       width: "100px",
@@ -273,7 +276,7 @@ export function AdvisorManKiBaatComponent() {
                     className="btn btn-primary mt-2"
                     type="button"
                     style={{
-                      background: "linear-gradient(135deg,cyan,blue)",
+                      background: "linear-gradient(135deg,blue,cyan)",
                       border: "none",
                       borderRadius: "7px",
                       width: "150px",

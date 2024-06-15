@@ -148,6 +148,7 @@ export function ContactsManKiBaat() {
                     width: "50px",
                     height: "50px",
                     borderRadius: "100px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
                 <FontAwesomeIcon
@@ -191,6 +192,7 @@ export function ContactsManKiBaat() {
                 width: "350px",
                 borderTopRightRadius: "50px",
                 borderBottomLeftRadius: "50px",
+                boxShadow: "0 0 8px rgb(145, 144, 146)",
               }}
             />
           </div>
@@ -202,7 +204,11 @@ export function ContactsManKiBaat() {
             <div className="d-flex">
               <div
                 className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{ width: "45px", height: "45px" }}
+                style={{
+                  width: "45px",
+                  height: "45px",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
+                }}
               >
                 <FontAwesomeIcon
                   icon={faUserTie}
@@ -217,7 +223,11 @@ export function ContactsManKiBaat() {
             <div className="d-flex">
               <div
                 className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{ width: "45px", height: "45px" }}
+                style={{
+                  width: "45px",
+                  height: "45px",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
+                }}
               >
                 <FontAwesomeIcon
                   icon={faMapMarkerAlt}
@@ -232,7 +242,11 @@ export function ContactsManKiBaat() {
             <div className="d-flex">
               <div
                 className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{ width: "45px", height: "45px" }}
+                style={{
+                  width: "45px",
+                  height: "45px",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
+                }}
               >
                 <FontAwesomeIcon
                   icon={faEnvelope}
@@ -247,7 +261,11 @@ export function ContactsManKiBaat() {
             <div className="d-flex">
               <div
                 className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{ width: "45px", height: "45px" }}
+                style={{
+                  width: "45px",
+                  height: "45px",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
+                }}
               >
                 <FontAwesomeIcon icon={faPhone} style={{ color: "#fbfbfb" }} />
               </div>

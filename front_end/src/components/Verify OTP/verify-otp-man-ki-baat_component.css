@@ -1,0 +1,17 @@
+.verify {
+  background: linear-gradient(135deg, cyan, blue);
+  border: none;
+  padding: 10px;
+  color: #ffffff;
+  border-radius: 10px;
+  width: 100px;
+  font-family: "fantasy";
+  box-shadow: 0 0 8px rgb(145, 144, 146);
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.verify:hover {
+  background: linear-gradient(135deg, blue, cyan);
+}

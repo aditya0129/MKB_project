@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./advisor-profile-man-ki-baat_component.css";
 import axios from "axios";
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,7 +10,6 @@ import {
   faPhone,
   faPowerOff,
   faUserTie,
-  faMapMarkerAlt,
   faBrain,
   faFilePrescription,
   faCalendarDays,
@@ -19,13 +17,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 export function AdvisorProfileManKiBaatComponent() {
-  const { userId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [advisors, setAdvisors] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
-  // Authentication check
   useEffect(() => {
     if (cookies["token"] === undefined) {
       navigate("/register-case");
@@ -33,19 +29,24 @@ export function AdvisorProfileManKiBaatComponent() {
   }, [cookies, navigate]);
 
   useEffect(() => {
-    async function fetchAdvisors() {
+    async function fetchAdvisor() {
       try {
-        const response = await axios.get(
-          `http://localhost:3001/user/${userId}/profiles`
-        );
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(`http://localhost:3001/user/profile`, {
+          headers: {
+            "x-auth-token": token,
+          },
+        });
+        console.log("Response:", response);
         setAdvisors(response.data.data);
       } catch (error) {
-        console.error("Error fetching advisors data:", error);
+        console.error("Error fetching advisor data:", error);
       }
     }
 
-    fetchAdvisors();
-  }, [userId]);
+    fetchAdvisor();
+  }, []);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -60,6 +61,7 @@ export function AdvisorProfileManKiBaatComponent() {
   const handleContactsClick = () => {
     navigate("/contacts");
   };
+
   return (
     <>
       <div id="header">
@@ -170,6 +172,7 @@ export function AdvisorProfileManKiBaatComponent() {
                     width: "50px",
                     height: "50px",
                     borderRadius: "100px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
                 <FontAwesomeIcon
@@ -184,214 +187,12 @@ export function AdvisorProfileManKiBaatComponent() {
         </div>
       </div>
 
-      {/* <div
-        className="container mt-5"
-        style={{
-          background: "#ffffff",
-          borderRadius: "30px",
-          boxShadow: "0 0 8px rgb(145, 144, 146)",
-        }}
-      >
-        <div className="row">
-          <div className="col-md-5 mt-5 mb-5">
-            <img
-              src="boy-img.jpg"
-              alt=""
-              style={{
-                height: "350px",
-                width: "350px",
-                borderRadius: "50px",
-                boxShadow: "0 0 8px rgb(145, 144, 146)",
-              }}
-            />
-          </div>
-
-          <div
-            className="col-md-3 mt-5 mb-5"
-            style={{ borderLeft: "5px dotted grey", paddingLeft: "20px" }}
-          >
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faUserTie}
-                  style={{ color: "#fbfbfb" }}
-                />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Name:</h5>
-                <p>Jeremy Rose</p>
-              </div>
-            </div>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon icon={faStar} style={{ color: "#fbfbfb" }} />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Rating:</h5>
-                <p>
-                  8,6{" "}
-                  <FontAwesomeIcon
-                    className="ms-2"
-                    icon={faStar}
-                    style={{ color: "blue" }}
-                  />
-                  <FontAwesomeIcon
-                    className="ms-2"
-                    icon={faStar}
-                    style={{ color: "blue" }}
-                  />
-                  <FontAwesomeIcon
-                    className="ms-2"
-                    icon={faStar}
-                    style={{ color: "blue" }}
-                  />
-                  <FontAwesomeIcon
-                    className="ms-2"
-                    icon={faStar}
-                    style={{ color: "blue" }}
-                  />
-                  <FontAwesomeIcon
-                    className="ms-2"
-                    icon={faStar}
-                    style={{ color: "darkgray" }}
-                  />
-                </p>
-              </div>
-            </div>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faEnvelope}
-                  style={{ color: "#fbfbfb" }}
-                />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Email:</h5>
-                <p>hello@jeremyrose.com</p>
-              </div>
-            </div>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon icon={faPhone} style={{ color: "#fbfbfb" }} />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Phone:</h5>
-                <p>+1 125 456 7850</p>
-              </div>
-            </div>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon icon={faBrain} style={{ color: "#fbfbfb" }} />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Expertise:</h5>
-                <p>Over-Thinking</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-4 mt-5">
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faFilePrescription}
-                  style={{ color: "#fbfbfb" }}
-                />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Description:</h5>
-                <p>Expert in Over-Thinking</p>
-              </div>
-            </div>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faCalendarDays}
-                  style={{ color: "#fbfbfb" }}
-                />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Schedule:</h5>
-                <p>Today at 4pm</p>
-              </div>
-            </div>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faCreditCard}
-                  style={{ color: "#fbfbfb" }}
-                />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Payment:</h5>
-                <p>Only Online Payment Accepted</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       <div
         className="container mt-5"
         style={{
           background: "#ffffff",
-          borderRadius: "30px",
+          borderTopRightRadius: "30px",
+          borderBottomLeftRadius: "30px",
           boxShadow: "0 0 8px rgb(145, 144, 146)",
         }}
       >
@@ -405,6 +206,9 @@ export function AdvisorProfileManKiBaatComponent() {
                 width: "350px",
                 borderRadius: "50px",
                 boxShadow: "0 0 8px rgb(145, 144, 146)",
+                display: "flex",
+                justifyContent: "center",
+                margin: "auto",
               }}
             />
           </div>
@@ -412,10 +216,10 @@ export function AdvisorProfileManKiBaatComponent() {
           {advisors.map((advisor) => (
             <div
               className="col-md-3 mt-5 mb-5"
-              style={{ borderLeft: "10px dotted grey", paddingLeft: "10px" }}
+              style={{ borderLeft: "5px dotted grey", paddingLeft: "15px" }}
               key={advisor._id}
             >
-              <div className="d-flex">
+              <div className="d-flex ">
                 <div
                   className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
@@ -449,31 +253,16 @@ export function AdvisorProfileManKiBaatComponent() {
                   <h5>Rating:</h5>
                   <p>
                     {advisor.rating}{" "}
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "darkgray" }}
-                    />
+                    {[...Array(5)].map((star, i) => (
+                      <FontAwesomeIcon
+                        key={i}
+                        className="ms-2"
+                        icon={faStar}
+                        style={{
+                          color: i < advisor.rating ? "blue" : "darkgray",
+                        }}
+                      />
+                    ))}
                   </p>
                 </div>
               </div>
@@ -532,6 +321,68 @@ export function AdvisorProfileManKiBaatComponent() {
                 <div className="pl-3 ms-3">
                   <h5>Expertise:</h5>
                   <p>{advisor.expertise}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {advisors.map((advisor) => (
+            <div className="col-md-4 mt-5" key={`desc-${advisor._id}`}>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faFilePrescription}
+                    style={{ color: "#fbfbfb" }}
+                  />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>Description:</h5>
+                  <p>{advisor.profile_description}</p>
+                </div>
+              </div>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faCalendarDays}
+                    style={{ color: "#fbfbfb" }}
+                  />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>Schedule:</h5>
+                  <p>{advisor.availability_schedule}</p>
+                </div>
+              </div>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faCreditCard}
+                    style={{ color: "#fbfbfb" }}
+                  />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>Payment:</h5>
+                  <p>{advisor.payment_info}</p>
                 </div>
               </div>
             </div>

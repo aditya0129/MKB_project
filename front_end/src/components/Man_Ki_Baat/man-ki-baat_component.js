@@ -208,6 +208,7 @@ export function ManKiBaatComponent({ data }) {
                     width: "50px",
                     height: "50px",
                     borderRadius: "100px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
                 <FontAwesomeIcon
@@ -228,7 +229,12 @@ export function ManKiBaatComponent({ data }) {
             <img
               src="boy-img.jpg"
               alt=""
-              style={{ height: "350px", width: "350px", borderRadius: "50px" }}
+              style={{
+                height: "350px",
+                width: "350px",
+                borderRadius: "50px",
+                boxShadow: "0 0 8px rgb(145, 144, 146)",
+              }}
             />
           </div>
           <div className="col-md-4 mt-5">

@@ -10,8 +10,7 @@ import { useCookies } from "react-cookie";
 
 export function AdvisorLoginManKiBaatComponent() {
   const navigate = useNavigate();
-  // const [cookies, setCookie] = useCookies(["token"]);
-  const [cookies, setCookie] = useCookies(["token", "_id"]);
+  const [cookies, setCookie] = useCookies(["token"]);
 
   const SignupClick = () => {
     navigate("/advisor-register");
@@ -50,13 +49,9 @@ export function AdvisorLoginManKiBaatComponent() {
                         password: values.password,
                       }
                     );
-                    const { _id, token } = authResponse.data;
-                    // const userIdString = userId.toString();
-                    // const token = authResponse.data.token;
+                    const token = authResponse.data.Token;
                     localStorage.setItem("token", token);
-                    localStorage.setItem("_id", _id);
                     setCookie("token", token, { path: "/" });
-                    setCookie("_id", _id, { path: "/" });
                     alert("Login Successfully..");
                     navigate("/advisor-profile");
                   } catch (error) {

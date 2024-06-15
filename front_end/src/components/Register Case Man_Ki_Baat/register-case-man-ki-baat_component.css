@@ -233,16 +233,13 @@ input[type="submit"] {
   cursor: pointer;
   border-radius: 8px;
   font-weight: 900;
-  /* width: 100px; */
   margin-top: 50px;
-  /* transition: all 0.5s ease-in-out; */
   border: none;
 }
 
 input[type="submit"]:hover {
   background: linear-gradient(135deg, blue, cyan);
   color: white;
-  /* width: 300px; */
 }
 
 input[type="submit"]:active {
