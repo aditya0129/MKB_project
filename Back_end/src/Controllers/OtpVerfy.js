@@ -13,7 +13,7 @@ const twilioClient = new twilio(AccountSid,AuthToken )
 
 
 
-const sendotp = async function (req, res) {
+const sendOtp = async function (req, res) {
     try {
       const { number } = req.body;
   
@@ -73,4 +73,4 @@ const VerifyOtp=async function(req,res){
 
 
 
-module.exports={sendotp,VerifyOtp}
+module.exports={sendOtp,VerifyOtp}

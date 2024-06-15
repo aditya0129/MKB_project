@@ -51,7 +51,7 @@ const isAuthenticated =  async function (req, res, next) {
   jwt.verify(token, "man-ki-baat", async function (err, decoded) {
     if (err) {
         console.log(err.message)
-      return res.status(401).send({ status: false, message: err.message });
+      return res.status(401).send({ status: false, message: err.message});
     } else {
       req.token = decoded;
       let data = req.token;

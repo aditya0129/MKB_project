@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Number } = require("twilio/lib/twiml/VoiceResponse");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -42,6 +43,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ["Male", "Female", "Lgbtq", "male", "female"],
       required: true,
+    },
+    is_verified:{
+      type:Number,
+      default:0
     },
   },
   { timestamps: true }

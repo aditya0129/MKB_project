@@ -3,8 +3,13 @@ const express = require("express");
 const route = require("./routes/route.js");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const session = require('express-session');
+const bodyParser = require('body-parser');
 
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({ secret: 'secret-key', resave: false, saveUninitialized: true }));
 
 mongoose.set("strictQuery", true);
 
