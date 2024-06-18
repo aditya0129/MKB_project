@@ -35,12 +35,14 @@ const sendMail = async (email, subject, content) => {
     });
   } catch (error) {
     return res.status(500).json({ status: false, msg: error.massage });
+    console.log(error.message);
   }
 };
 
 module.exports = {
   sendMail,
 };
+
 
 // const nodemailer = require('nodemailer');
 

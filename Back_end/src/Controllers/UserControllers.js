@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const otp_model = require("../models/Otp_Model");
-const mailer=require('../Validation/mailer')
+const mailer = require("../Validation/mailer");
 const nodemailer = require("nodemailer");
 const {
   validateEmail,
@@ -133,7 +133,7 @@ const Register_User = async function (req, res) {
       gender,
       birthdate,
       age,
-      place
+      place,
     });
     await newUser.save();
     res.status(201).json({ status: true, user: newUser });
@@ -486,37 +486,43 @@ const send_otp_fp = async function (req, res) {
       });
     }
 
+    const g_otp = await genrateOtp();
 
-    const g_otp=await genrateOtp();
-
-    const enter_otp= new otp_model({
-      user_id:userData._id,
-      otp:g_otp
+    const enter_otp = new otp_model({
+      user_id: userData._id,
+      otp: g_otp,
     });
 
     await enter_otp.save();
 
+    const msg = `<p> hii <b>${userData.name}<b/>,<br> <h4>${g_otp}<h4/></p>`;
 
+    const mailerSend = await mailer.sendMail(
+      userData.email,
+      "otp verification",
+      msg
+    );
 
-    const msg = "<p> hii <b>" + userData.name + "<b/><br>, <h4>'+g_otp+'<h4/></p>";
-    const mailerSend =  mailer.sendmail(userData.email, "otp verification", msg);
+    console.log("test", mailerSend);
 
-    console.log("test",mailerSend);
+    // if(mailerSend){
+    //   return res.status(200).json({
+    //     status: mailerSend,
+    //     msg: "verifcation OTP has been send to your email addres, please Check !",
+    //   });
+    // }
+    // else{
+    //   return res.status(200).json({
+    //     status: true,
+    //     msg: "not send",
+    //   });
+    // }
 
-    if(mailerSend){
-      return res.status(200).json({
-        status: mailerSend,
-        msg: "verifcation OTP has been send to your email addres, please Check !",
-      });
-    }else{
-      return res.status(200).json({
-        status: true,
-        msg: "not send",
-      });
-    }
-
-  
-  } catch(error) {
+    return res.status(200).json({
+      status: mailerSend,
+      msg: "verification OTP has been send to your email address, please Check !",
+    });
+  } catch (error) {
     return res.status(500).send({ Status: false, MSg: error.message });
   }
 };
