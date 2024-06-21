@@ -219,6 +219,7 @@ export function AdvisorManKiBaatComponent() {
                         height: "70px",
                         width: "70px",
                         borderRadius: "100px",
+                        boxShadow: "0 0 8px rgb(145, 144, 146)",
                       }}
                     />
                   </div>

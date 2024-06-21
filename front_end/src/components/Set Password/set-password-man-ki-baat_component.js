@@ -14,7 +14,10 @@ export function SetPasswordManKiBaatComponent() {
           color: "#ffffff",
         }}
       >
-        <h1 className="text-center p-2" style={{ fontFamily: "fantasy" }}>
+        <h1
+          className="text-center p-2"
+          style={{ fontFamily: "fantasy", textShadow: "3px 2px 3px blue" }}
+        >
           Update Your Password
         </h1>
         <div className="row">

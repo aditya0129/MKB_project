@@ -16,7 +16,9 @@ export function VerifyOTPManKiBaatComponent() {
           textAlign: "center",
         }}
       >
-        <h3 style={{ fontFamily: "fantasy" }}>Verify OTP</h3>
+        <h3 style={{ fontFamily: "fantasy", textShadow: "3px 2px 3px blue" }}>
+          Verify OTP
+        </h3>
         <div className="row">
           <div className="col d-flex m-auto justify-content-center">
             <div className="form-group">

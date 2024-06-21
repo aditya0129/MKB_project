@@ -353,6 +353,7 @@ export function ManKiBaatComponent({ data }) {
                   borderRadius: "100px",
                   display: "flex",
                   margin: "auto",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
                 }}
               />
               <p className="text-center mt-3">Jeremy Rose</p>
@@ -433,6 +434,7 @@ export function ManKiBaatComponent({ data }) {
                   borderRadius: "100px",
                   display: "flex",
                   margin: "auto",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
                 }}
               />
               <p className="text-center mt-3">Jeremy Rose</p>
@@ -513,6 +515,7 @@ export function ManKiBaatComponent({ data }) {
                   borderRadius: "100px",
                   display: "flex",
                   margin: "auto",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
                 }}
               />
               <p className="text-center mt-3">Jeremy Rose</p>
