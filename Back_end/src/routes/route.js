@@ -6,7 +6,7 @@ const { Register_User, Login_user,get_Users,Update_User}=require('../Controllers
 const {  sendOtp ,VerifyOtp}=require("../Controllers/OtpVerfy")
 const {Advisor_register,Advisor_Login,get_Advisor,Get_All_Advisor}=require('../Controllers/Advisor_controller')
 const {isAuthenticated, isAuthorized }=require("../Auth/Middi")
-const {otpmailvalidator} = require("../Validation/Validate")
+const {otpmailvalidator, verifymailvalidator} = require("../Validation/Validate")
 const {send_otp_fp,verify_otp_fp}=require("../Controllers/UserControllers")
 
 
@@ -39,7 +39,7 @@ router.get("/Advisor_All_Data",Get_All_Advisor)
 
 // otp_verification for forgot password
 router.post('/send_otp',otpmailvalidator,send_otp_fp)
-router.post('/verify_otp',verify_otp_fp)
+router.post('/verify_otp',verifymailvalidator,verify_otp_fp)
 
 
 router.all('/*', function ( req , res )  {

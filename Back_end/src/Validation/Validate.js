@@ -51,6 +51,11 @@ const otpmailvalidator = [
     .normalizeEmail({ gmail_remove_dots: true }),
 ];
 
+const verifymailvalidator = [
+  check("user_id", "userId is required").not().isEmpty(),
+  check("otp", "otp is required ").not().isEmpty(),
+];
+
 module.exports = {
   validateEmail,
   validateName,
@@ -58,5 +63,6 @@ module.exports = {
   validateMobileNo,
   validateAge,
   OtpVerifing,
-  otpmailvalidator
+  otpmailvalidator,
+  verifymailvalidator,
 };

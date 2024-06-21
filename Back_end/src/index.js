@@ -19,9 +19,9 @@ app.use(cors());
 mongoose
   .connect(
     "mongodb+srv://AdityaDB:Addy0129@project1.jxlvbi5.mongodb.net/Man_Ki_Baat-DB?retryWrites=true&w=majority&appName=project1",
-    {
-      useNewUrlParser: true,
-    }
+    // {
+    //   useNewUrlParser: true,          
+    // }
   )
   .then(() => console.log("MongoDB is connected..."))
   .catch((err) => console.log(err));
