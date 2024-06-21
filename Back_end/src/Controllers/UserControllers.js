@@ -16,6 +16,11 @@ const { isValidObjectId } = require("mongoose");
 const { validationResult } = require("express-validator");
 const userModel = require("../models/userModel");
 
+const {
+  OneMinutExpiry,
+  ThreeMinutExpiry,
+} = require("../Validation/OtpValidate");
+
 // Calculate age from birthdate
 const calculateAge = (birthdate) => {
   const today = new Date();
@@ -479,7 +484,7 @@ const send_otp_fp = async function (req, res) {
         MSG: "email doesn't exits!",
       });
     }
-    if (userData.is_verified == 1) {
+    if (userData.is_verified == 5) {
       return res.status(400).json({
         status: false,
         MSG: userData.email + " mail iss allready verified !",
@@ -487,13 +492,37 @@ const send_otp_fp = async function (req, res) {
     }
 
     const g_otp = await genrateOtp();
+    //console.log(g_otp)
+    const oldotpData = await otp_model.findOne({ user_id: userData._id });
 
-    const enter_otp = new otp_model({
-      user_id: userData._id,
-      otp: g_otp,
-    });
+    if (oldotpData) {
+      const sendNextotp = await OneMinutExpiry(oldotpData.timestamps);
+      if (!sendNextotp) {
+        return res.status(400).json({
+          status: false,
+          MSG: "pls try after some time",
+        });
+      }
+    }
 
-    await enter_otp.save();
+    const currentDate = new Date();
+    // console.log(currentDate)
+
+    //let Otp=userData.otp;
+
+    await otp_model.findOneAndUpdate(
+      { user_id: userData._id },
+      { otp: g_otp, timestamp: new Date(currentDate.getTime()) },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    //console.log(Otp)
+
+    // const enter_otp = new otp_model({
+    //   user_id: userData._id,
+    //   otp: g_otp,
+    // });
+
+    // await enter_otp.save();
 
     const msg = `<p> hii <b>${userData.name}<b/>,<br> <h4>${g_otp}<h4/></p>`;
 
@@ -527,7 +556,48 @@ const send_otp_fp = async function (req, res) {
   }
 };
 
-const verify_otp_fp = async function (req, res) {};
+const verify_otp_fp = async function (req, res) {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        msg: "Errors",
+        errors: errors.array(),
+      });
+    }
+    const { user_id, otp } = req.body;
+
+    const otpData = await otp_model.findOne({ user_id, otp });
+
+    if (!otpData) {
+      return res.status(400).json({ status: false, MSG: "wrong otp" });
+    }
+
+    const isotpExpired = await ThreeMinutExpiry(otpData.timestamps);
+    if (isotpExpired) {
+      return res.status(400).json({
+        status: false,
+        MSG: "your otp has been expired !",
+      });
+    }
+
+    await userModel.findByIdAndUpdate(
+      { _id: user_id },
+      {
+        $set: {
+          is_verified: 1,
+        },
+      }
+    );
+    return res.status(200).json({
+      status: true,
+      MSG: "your account verifid successfull",
+    });
+  } catch (error) {
+    return res.status(500).send({ Status: false, MSg: error.message });
+  }
+};
 
 module.exports = {
   verify_otp_fp,

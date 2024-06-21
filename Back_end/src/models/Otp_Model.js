@@ -12,7 +12,7 @@ const Otp_schema=new mongoose.Schema({
         type:String,
         required:true
     },
-    otpExpiration:{
+    timestamps:{
         type:Date,
         default:Date.now,
         get: (otpExpiration) => otpExpiration.getTime(),
@@ -20,6 +20,6 @@ const Otp_schema=new mongoose.Schema({
     }
 
     
-},{timestamps:true});
+});
 
 module.exports=mongoose.model("Otp_Data",Otp_schema)
