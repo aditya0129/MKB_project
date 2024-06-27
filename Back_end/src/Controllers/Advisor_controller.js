@@ -1,7 +1,7 @@
 const Advisor_Model = require("../models/Advisor_Model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const {isValidObjectId} = require('mongoose')
+const { isValidObjectId } = require("mongoose");
 const {
   validateEmail,
   validateName,
@@ -9,6 +9,22 @@ const {
   validateMobileNo,
 } = require("../Validation/Validate");
 ///const { Module } = require("module");
+
+///**********************************************---------Calculate age from birthdate----------**********************************///
+//
+const calculateAge = (birthdate) => {
+  const today = new Date();
+  const birthDate = new Date(birthdate);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+  return age;
+};
 
 ///**********************************************----------Advisor_register---------**********************************///
 const Advisor_register = async function (req, res) {
@@ -21,43 +37,45 @@ const Advisor_register = async function (req, res) {
       });
     }
     let {
-      name,
-      Phone_number,
-      email,
-      password,
-      expertise,
-      profile_description,
-      profile_picture,
-      availability_schedule,
-      payment_info,
-      rating,
+      Name,
+      Number,
+      Email,
+      Password,
+      Expertise,
+      Language,
+      Experience,
+      Gender,
+      City,
+      State,
+      DOB,
+      //Image,
     } = data;
 
-    if (!name || name == "") {
+    if (!Name || Name == "") {
       return res.status(400).send({
         status: false,
         message: "Name is mandatory and Name Should not be Empty",
       });
     }
-    if (!validateName(name.trim())) {
+    if (!validateName(Name.trim())) {
       return res
         .status(400)
         .send({ status: false, MSG: "please provide valid name" });
     }
-    if (!Phone_number || Phone_number == "") {
+    if (!Number || Number == "") {
       return res.status(400).send({
         status: false,
         message:
           "Phone_number is mandatory and Phone_number Should not be Empty",
       });
     }
-    if (!validateMobileNo(Phone_number)) {
+    if (!validateMobileNo(Number)) {
       return res
         .status(400)
         .send({ status: false, MSG: "please provide valid Phone_number" });
     }
     let check_Number = await Advisor_Model.findOne({
-      Phone_number: Phone_number,
+      Number: Number,
     });
     if (check_Number) {
       return res.status(200).send({
@@ -66,90 +84,120 @@ const Advisor_register = async function (req, res) {
       });
     }
 
-    if (!password || password == "") {
+    if (!Password || Password == "") {
       return res.status(400).send({
         status: false,
         message: "password is mandatory and password Should not be Empty",
       });
     }
-    if (!validatePassword(password.trim())) {
+    if (!validatePassword(Password.trim())) {
       return res.status(400).send({
         status: false,
         MSG: "Please provide valid password,it should contain uppercase,number and special character and 8-15 length",
       });
     }
-    let hashing = bcrypt.hashSync(password, 8);
-    data.password = hashing;
+    let hashing = bcrypt.hashSync(Password, 8);
+    data.Password = hashing;
 
-    if (!email || email == "") {
+    if (!Email || Email == "") {
       return res.status(400).send({
         status: false,
         message: "email is mandatory and email Should not be Empty",
       });
     }
-    if (!validateEmail(email.trim())) {
+    if (!validateEmail(Email.trim())) {
       return res
         .status(400)
         .send({ status: false, MSG: "Please provide valid email" });
     }
-    let check_Email = await Advisor_Model.findOne({ email: email });
+    let check_Email = await Advisor_Model.findOne({ Email: Email });
     if (check_Email) {
       return res.status(400).send({
         status: false,
         MSG: "this email already in use please provide Another Email",
       });
     }
-    if (!expertise || expertise == "") {
+    if (!Expertise || Expertise == "") {
       return res.status(400).send({
         status: false,
         message: "expertise is mandatory and expertise Should not be Empty",
       });
     }
+    if (!Language || Language == "") {
+      return res.status(400).send({
+        status: false,
+        message: "Language is mandatory and Name Should not be Empty",
+      });
+    }
 
-    // if (!profile_description || profile_description == "") {
-    //   return res.status(400).send({
-    //     status: false,
-    //     message:
-    //       "profile_description is mandatory and profile_description Should not be Empty",
-    //   });
-    // }
-    // if (!profile_picture || profile_picture == "") {
-    //   return res.status(400).send({
-    //     status: false,
-    //     message:
-    //       "profile_picture is mandatory and profile_picture Should not be Empty",
-    //   });
-   // }
+    if (!Experience || Experience == "") {
+      return res.status(400).send({
+        status: false,
+        message: "Experience is mandatory and Experience Should not be Empty",
+      });
+    }
 
-    if (!availability_schedule || availability_schedule == "") {
+    if (!Gender || Gender == "") {
       return res.status(400).send({
         status: false,
-        message:
-          "availability_schedule is mandatory and availability_schedule Should not be Empty",
+        message: "Gender is mandatory and Gender Should not be Empty",
       });
     }
-    if (!payment_info || payment_info == "") {
+    if (!City || City == "") {
       return res.status(400).send({
         status: false,
-        message:
-          "payment_info is mandatory and payment_info Should not be Empty",
+        message: "City is mandatory and City Should not be Empty",
       });
     }
-    if (!rating || rating == "") {
+
+    if (!State || State == "") {
       return res.status(400).send({
         status: false,
-        message: "rating is mandatory and rating Should not be Empty",
+        message: "State is mandatory and State Should not be Empty",
       });
     }
-    let Save_data = await Advisor_Model.create(data);
-    return res
-      .status(200)
-      .send({ status: true, MSG: "register successfull", Data: Save_data });
+    if (!Name || Name == "") {
+      return res.status(400).send({
+        status: false,
+        message: "Name is mandatory and Name Should not be Empty",
+      });
+    }
+
+    if (!DOB || DOB == "") {
+      return res.status(400).send({
+        status: false,
+        message: "DOB is mandatory and DOB Should not be Empty",
+      });
+    }
+    const Age = calculateAge(DOB);
+    if (Age < 18) {
+      return res.status(400).send({ status: false, MSG: "you should be 18+" });
+    }
+    const newUser = new Advisor_Model({
+      Name,
+      Number,
+      Email,
+      Password: data.Password,
+      Expertise,
+      Language,
+      Experience,
+      Gender,
+      City,
+      State,
+      DOB,
+      Age,
+    });
+    await newUser.save();
+    res.status(201).json({ status: true, user: newUser });
+
+    // let Save_data = await Advisor_Model.create(data);
+    // return res
+    //   .status(200)
+    //   .send({ status: true, MSG: "register successfull", Data: Save_data });
   } catch (error) {
     return res.status(500).send({ status: false, Msg: error.message });
   }
 };
-
 
 ///**********************************************----------Advisor_Login---------**********************************///
 
@@ -176,7 +224,7 @@ const Advisor_Login = async function (req, res) {
         .send({ status: false, MSG: "Please provide valid email" });
     }
     let verifyUser = await Advisor_Model.findOne({ email: email });
-    console.log(verifyUser._id)
+    console.log(verifyUser._id);
     if (!verifyUser) {
       return res.status(400).send({
         status: false,
@@ -205,11 +253,11 @@ const Advisor_Login = async function (req, res) {
 
     let token = jwt.sign(
       {
-        userId:verifyUser._id,
+        userId: verifyUser._id,
       },
       "man-ki-baat"
     );
-   // res.setHeader("x-api-key", token);
+    // res.setHeader("x-api-key", token);
 
     res.send({ status: true, Token: token, msg: "login successfully" });
   } catch (error) {
@@ -217,22 +265,21 @@ const Advisor_Login = async function (req, res) {
   }
 };
 
-
 ///**********************************************----------get_Advisor---------**********************************///
 
 const get_Advisor = async function (req, res) {
   try {
     //let userId = req.params.userId;
 
-    let userId = req.token.userId
-console.log(userId)
+    let userId = req.token.userId;
+    console.log(userId);
     if (!isValidObjectId(userId))
       return res
         .status(400)
         .send({ status: false, message: "User is invalid" });
 
     let getData = await Advisor_Model.find({ _id: userId });
-console.log(getData)
+    console.log(getData);
     if (!getData)
       return res.status(404).send({ status: false, message: "user not found" });
 
@@ -244,19 +291,20 @@ console.log(getData)
   }
 };
 
-
-
 ///**********************************************----------Get_All_Advisor---------**********************************///
 
-const Get_All_Advisor=async function(req,res){
+const Get_All_Advisor = async function (req, res) {
   try {
-
-    const Advisor=await Advisor_Model.find();
-    return res.status(200).send({status:true,Data:Advisor})
-    
+    const Advisor = await Advisor_Model.find();
+    return res.status(200).send({ status: true, Data: Advisor });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
-}
+};
 
-module.exports={Advisor_register,Advisor_Login, get_Advisor, Get_All_Advisor}
+module.exports = {
+  Advisor_register,
+  Advisor_Login,
+  get_Advisor,
+  Get_All_Advisor,
+};

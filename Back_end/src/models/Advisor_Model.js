@@ -1,32 +1,37 @@
 const mongoose = require("mongoose");
 
+const advisorSchema = new mongoose.Schema(
+  {
+    Name: { type: String, required: true },
 
+    Number: { type: Number, required: true },
 
-const advisorSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+    Email: { type: String, required: true },
 
-  Phone_number:{type:Number, required:true},
+    Password: { type: String, required: true },
 
-  email: { type: String, required: true },
+    Expertise: { type: String, required: true },
 
-  password:{ type:String,required:true},
+    Image: { type: String },
 
-  expertise: { type: String, required: true },
+    DOB: { type: Date },
 
-  profile_description: { type: String },
+    Age: { type: Number },
 
-  profile_picture: { type: String },
+    Gender: { type: String, enum: ["Male", "Female", "Other"] },
 
-  availability_schedule: { type: String},//Schema.Types.Mixed ,
+    Experience: { type: String },
+    City: { type: String },
 
-  payment_info: { type: String },
+    State: { type: String },
 
-  rating: { type: Number },
+    Language: { type: String },
 
-  created_at: { type: Date, default: Date.now },
+    created_at: { type: Date, default: Date.now },
 
-  updated_at: { type: Date, default: Date.now },
+    updated_at: { type: Date, default: Date.now },
+  },
+  { timestamps: true }
+);
 
-},{timestamps:true});
-
-module.exports=mongoose.model("Advisor",advisorSchema)
+module.exports = mongoose.model("Advisor", advisorSchema);

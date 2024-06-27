@@ -133,7 +133,7 @@ const Register_User = async function (req, res) {
     const newUser = new UserModel({
       name,
       email,
-      password,
+      password: data.password,
       number,
       gender,
       birthdate,
@@ -512,7 +512,7 @@ const send_otp_fp = async function (req, res) {
 
     await otp_model.findOneAndUpdate(
       { user_id: userData._id },
-      { otp: g_otp, timestamp: new Date(currentDate.getTime()) },
+      { otp: g_otp, timestamps: new Date(currentDate.getTime()) },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
     //console.log(Otp)
@@ -599,6 +599,15 @@ const verify_otp_fp = async function (req, res) {
   }
 };
 
+const Get_All_User = async function (req, res) {
+  try {
+    const user = await UserModel.find();
+    return res.status(200).send({ status: true, Data: user });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
 module.exports = {
   verify_otp_fp,
   send_otp_fp,
@@ -606,4 +615,5 @@ module.exports = {
   Login_user,
   get_Users,
   Update_User,
+  Get_All_User,
 };
