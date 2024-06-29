@@ -3,10 +3,15 @@ const mongoose=require('mongoose');
 // for forget password using Nodemailer
 
 const Otp_schema=new mongoose.Schema({
-    user_id:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:'UserData'
+    // user_id:{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     required:true,
+    //     ref:'UserData'
+    // },
+    email:{
+        type : String,
+        required:true
+
     },
     otp:{
         type:String,
