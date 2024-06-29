@@ -26,6 +26,25 @@ const {
   verify_otp_fp,
 } = require("../Controllers/UserControllers");
 
+//----------------------------------------------Multer function for uploding Files/Images----------------------------------------------//
+const path=require('path')
+const multer=require('multer')
+
+const storage=multer.diskStorage({
+    destination:function(req,file,cb){
+        cb(null , path.join(__dirname,'../public/images'))
+
+    },
+    filename:function(req,file,cb){
+        const name=Date.now()+'-'+file.originalname;
+        cb(null,name)
+    }
+})
+
+const uplode=multer({storage:storage})
+//-------------------------------------------------------------------------------------//
+
+
 // User_APIS
 router.post("/Register", Register_User);
 router.post("/Login", Login_user);

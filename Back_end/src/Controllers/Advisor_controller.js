@@ -210,20 +210,20 @@ const Advisor_Login = async function (req, res) {
         message: "Please enter the data in request body",
       });
     }
-    const { email, password } = data;
+    const { Email, Password } = data;
 
-    if (!email || email == "") {
+    if (!Email || Email == "") {
       return res.status(400).send({
         status: false,
         message: "email is mandatory and email Should not be Empty",
       });
     }
-    if (!validateEmail(email.trim())) {
+    if (!validateEmail(Email.trim())) {
       return res
         .status(400)
         .send({ status: false, MSG: "Please provide valid email" });
     }
-    let verifyUser = await Advisor_Model.findOne({ email: email });
+    let verifyUser = await Advisor_Model.findOne({ Email: Email });
     console.log(verifyUser._id);
     if (!verifyUser) {
       return res.status(400).send({
@@ -231,20 +231,20 @@ const Advisor_Login = async function (req, res) {
         MSG: "this email is not present our data please provide email",
       });
     }
-    if (!password) {
+    if (!Password) {
       return res
         .status(400)
         .send({ status: false, MSG: "please provide password" });
-    }
-    if (!validatePassword(password)) {
+    } 
+    if (!validatePassword(Password)) {
       return res.status(400).send({
         status: false,
         MSG: "Please provide valid password,it should contain uppercase,number and special character and 8-15 length",
       });
     }
-    let hash = verifyUser.password;
+    let hash = verifyUser.Password; 
 
-    let isCorrect = bcrypt.compareSync(password, hash);
+    let isCorrect = bcrypt.compareSync(Password, hash);
     if (!isCorrect) {
       return res
         .status(400)

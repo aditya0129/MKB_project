@@ -133,7 +133,7 @@ const Register_User = async function (req, res) {
     const newUser = new UserModel({
       name,
       email,
-      password: data.password,
+      password:data.password,
       number,
       gender,
       birthdate,
@@ -615,5 +615,5 @@ module.exports = {
   Login_user,
   get_Users,
   Update_User,
-  Get_All_User,
+  Get_All_User
 };
