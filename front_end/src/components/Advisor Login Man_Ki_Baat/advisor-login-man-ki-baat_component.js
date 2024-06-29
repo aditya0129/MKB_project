@@ -24,18 +24,18 @@ export function AdvisorLoginManKiBaatComponent() {
             <div className="box mb-5" id="body" style={{ height: "530px" }}>
               <Formik
                 initialValues={{
-                  email: "",
-                  password: "",
+                  Email: "",
+                  Password: "",
                 }}
                 validationSchema={yup.object({
-                  password: yup
+                  Password: yup
                     .string()
                     .required("Password Required")
                     .matches(
                       /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/,
                       "Password 8 to 15 chars with uppercase letter, special character & number"
                     ),
-                  email: yup
+                  Email: yup
                     .string()
                     .required("Email Required")
                     .email("Invalid Email"),
@@ -45,14 +45,14 @@ export function AdvisorLoginManKiBaatComponent() {
                     const authResponse = await axios.post(
                       "http://localhost:3001/Advisor_login",
                       {
-                        email: values.email,
-                        password: values.password,
+                        Email: values.Email,
+                        Password: values.Password,
                       }
                     );
                     const token = authResponse.data.Token;
                     localStorage.setItem("token", token);
                     setCookie("token", token, { path: "/" });
-                    alert("Login Successfully..");
+                    alert("Login Successfully...");
                     navigate("/advisor-profile");
                   } catch (error) {
                     console.error("Error:", error);
@@ -67,20 +67,20 @@ export function AdvisorLoginManKiBaatComponent() {
                     <FontAwesomeIcon className="icon" icon={faUserTie} />
                     <h2>Sign in</h2>
                     <div className="inputBox">
-                      <Field type="text" name="email" />
+                      <Field type="text" name="Email" />
                       <span>Email</span>
                       <i></i>
                     </div>
                     <div className="text-danger">
-                      <ErrorMessage name="email" />
+                      <ErrorMessage name="Email" />
                     </div>
                     <div id="inputBox">
-                      <Field type="password" name="password" />
+                      <Field type="password" name="Password" />
                       <span>Password</span>
                       <i></i>
                     </div>
                     <div className="text-danger">
-                      <ErrorMessage name="password" />
+                      <ErrorMessage name="Password" />
                     </div>
                     <div className="links">
                       <a href="forget-password">Forgot Password?</a>
