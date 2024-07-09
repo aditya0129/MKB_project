@@ -27,26 +27,35 @@ const {
 } = require("../Controllers/UserControllers");
 
 //----------------------------------------------Multer function for uploding Files/Images----------------------------------------------//
-const path=require('path')
-const multer=require('multer')
+const path = require("path");
+const multer = require("multer");
 
-const storage=multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null , path.join(__dirname,'../public/images'))
-
-    },
-    filename:function(req,file,cb){
-        const name=Date.now()+'-'+file.originalname;
-        cb(null,name)
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+      cb(null, "public/images");
+      console.log(req.file);
     }
-})
+  },
+  filename: function (req, file, cb) {
+    const name = Date.now() + "-" + file.originalname;
+    cb(null, name);
+  },
+});
 
-const uplode=multer({storage:storage})
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const uplode = multer({ storage: storage, fileFilter: fileFilter });
 //-------------------------------------------------------------------------------------//
 
-
 // User_APIS
-router.post("/Register", Register_User);
+router.post("/Register", uplode.single("image"), Register_User);
 router.post("/Login", Login_user);
 router.get("/user/:userId/profile", isAuthenticated, get_Users);
 router.put("/user/:userId/profile", isAuthenticated, isAuthorized, Update_User);

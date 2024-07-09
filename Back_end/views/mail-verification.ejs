@@ -1,0 +1,30 @@
+<!-- <% 
+
+if(typeof message !== 'undefined'){ 
+    %>
+<h2><% =message %></h2>
+
+<% 
+}
+ %> -->
+
+<!-- <% if (typeof message !== 'undefined') { %>
+<h2><%= message %></h2>
+Corrected from <% =message %> to <%= message %> -->
+<% } %>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <% if (typeof message !== 'undefined') { %>
+        <h2><%= message %></h2>
+        <!-- Corrected from <% =message %> to <%= message %> -->
+        <% } %>
+</body>
+</html>

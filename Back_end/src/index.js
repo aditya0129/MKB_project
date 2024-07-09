@@ -5,8 +5,14 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const AuthRoute=require('./routes/AuthRoute.js')
+const ejs = require('ejs')
 
 const app = express();
+
+app.set('view engine','ejs')
+app.set('views ','./views')
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: 'secret-key', resave: false, saveUninitialized: true }));
@@ -27,6 +33,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use("/", route);
+app.use("/api",AuthRoute)
 
 app.listen(process.env.PORT || 3001, function () {
   console.log(
