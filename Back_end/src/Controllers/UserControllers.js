@@ -139,9 +139,13 @@ const Register_User = async function (req, res) {
       birthdate,
       age,
       place,
+      image:'image/'+req.file.filename
     });
-    await newUser.save();
-    res.status(201).json({ status: true, user: newUser });
+    const userData=await newUser.save();
+  
+    const msg='<p> hii ,'+name+',please <a href="http://localhost:3001/api/mail-verification?id='+userData._id+'">verify</a>your mail.</p>';
+    mailer.sendMail(email,'mail-verification', msg)
+    res.status(201).json({ status: true, user: userData });
   } catch (error) {
     return res.status(500).send({ status: false, Msg: error.message });
   }
@@ -465,96 +469,57 @@ const genrateOtp = async () => {
   return Math.floor(1000 + Math.random() * 9000);
 };
 
+
+
+
 const send_otp_fp = async function (req, res) {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        msg: "Errors",
-        errors: errors.array(),
-      });
-    }
+    // Validation and other logic...
     const { email } = req.body;
     const userData = await userModel.findOne({ email });
 
     if (!userData) {
       return res.status(400).json({
         status: false,
-        MSG: "email doesn't exits!",
-      });
-    }
-    if (userData.is_verified == 5) {
-      return res.status(400).json({
-        status: false,
-        MSG: userData.email + " mail iss allready verified !",
+        MSG: "E-mail is not correct. Please try again!",
       });
     }
 
+    // Generate and store OTP
     const g_otp = await genrateOtp();
-    //console.log(g_otp)
-    const oldotpData = await otp_model.findOne({ user_id: userData._id });
+    const user_id = userData._id;  // Get the user ID
 
+    const oldotpData = await otp_model.findOne({ user_id });
     if (oldotpData) {
       const sendNextotp = await OneMinutExpiry(oldotpData.timestamps);
       if (!sendNextotp) {
         return res.status(400).json({
           status: false,
-          MSG: "pls try after some time",
+          MSG: "Please try after some time!",
         });
       }
     }
 
-    const currentDate = new Date();
-    // console.log(currentDate)
-
-    //let Otp=userData.otp;
-
     await otp_model.findOneAndUpdate(
-      { user_id: userData._id },
-      { otp: g_otp, timestamps: new Date(currentDate.getTime()) },
+      { user_id },
+      { otp: g_otp, timestamps: new Date() },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
-    //console.log(Otp)
 
-    // const enter_otp = new otp_model({
-    //   user_id: userData._id,
-    //   otp: g_otp,
-    // });
-
-    // await enter_otp.save();
-
-    const msg = `<p> hii <b>${userData.name}<b/>,<br> <h4>${g_otp}<h4/></p>`;
-
-    const mailerSend = await mailer.sendMail(
-      userData.email,
-      "otp verification",
-      msg
-    );
-
-    console.log("test", mailerSend);
-
-    // if(mailerSend){
-    //   return res.status(200).json({
-    //     status: mailerSend,
-    //     msg: "verifcation OTP has been send to your email addres, please Check !",
-    //   });
-    // }
-    // else{
-    //   return res.status(200).json({
-    //     status: true,
-    //     msg: "not send",
-    //   });
-    // }
+    const msg = `<p>Hi <b>${userData.name}</b>,<br> <h4>${g_otp}</h4></p>`;
+    const mailerSend = await mailer.sendMail(userData.email, "OTP verification", msg);
 
     return res.status(200).json({
-      status: mailerSend,
-      msg: "verification OTP has been send to your email address, please Check !",
+      status: true,
+      user_id: userData._id,  // Include user_id in the response
+      msg: "Verification OTP has been sent to your email address, please check!",
     });
   } catch (error) {
-    return res.status(500).send({ Status: false, MSg: error.message });
+    return res.status(500).send({ status: false, msg: error.message });
   }
 };
+
+
 
 const verify_otp_fp = async function (req, res) {
   try {
@@ -608,6 +573,30 @@ const Get_All_User = async function (req, res) {
   }
 };
 
+
+const mailVerification=async(req,res)=>{
+
+  try{
+
+    if(req.query.id== undefined){
+      return req.render('404');
+    }
+
+    const userData=await userModel.findOne({_id:req.query.id});
+    if(userData){
+
+    }else{
+      return res.render('mail-verification',{message:'user not Found!'})
+    }
+
+
+  }catch (error) {
+    console.log(error.message)
+    return res.render('404')
+  }
+
+}
+
 module.exports = {
   verify_otp_fp,
   send_otp_fp,
@@ -615,5 +604,6 @@ module.exports = {
   Login_user,
   get_Users,
   Update_User,
-  Get_All_User
+  Get_All_User,
+  mailVerification
 };
