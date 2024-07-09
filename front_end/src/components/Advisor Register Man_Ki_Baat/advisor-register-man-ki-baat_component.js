@@ -1,165 +1,3 @@
-// import React from "react";
-// import "./advisor-register-man-ki-baat_component.css";
-// import { Formik, Form, Field, ErrorMessage } from "formik";
-// import axios from "axios";
-// import * as yup from "yup";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faUserTie } from "@fortawesome/free-solid-svg-icons";
-// import { useNavigate } from "react-router-dom";
-
-// export function AdvisorRegisterManKiBaatComponent() {
-//   const navigate = useNavigate();
-
-//   return (
-//     <div className="container-fluid">
-//       <div className="row">
-//         <div className="col">
-//           <div className="box3 mb-5" id="body">
-//             <Formik
-//               initialValues={{
-//                 name: "",
-//                 email: "",
-//                 password: "",
-//                 Phone_number: "",
-//                 expertise: "",
-//                 profile_description: "",
-//                 availability_schedule: "",
-//                 payment_info: "",
-//                 rating: 0,
-//               }}
-//               validationSchema={yup.object({
-//                 name: yup.string().required("User Name Required"),
-//                 password: yup
-//                   .string()
-//                   .required("Password Required")
-//                   .matches(
-//                     /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/,
-//                     "Password must be 8 to 15 characters with an uppercase letter, special character, and number"
-//                   ),
-//                 email: yup
-//                   .string()
-//                   .required("Email Required")
-//                   .email("Invalid Email"),
-//                 Phone_number: yup
-//                   .string()
-//                   .required("Mobile Required")
-//                   .matches(
-//                     /^((\+91)?|91)?[6789][0-9]{9}$/g,
-//                     "Invalid Mobile Number"
-//                   ),
-//                 expertise: yup.string().required("Expertise Is Required"),
-//                 profile_description: yup
-//                   .string()
-//                   .required("Description Is Required"),
-//                 availability_schedule: yup
-//                   .string()
-//                   .required("Schedule Is Required"),
-//                 payment_info: yup.string().required("Payment Is Required"),
-//                 rating: yup.number().required("Rating Is Required"),
-//               })}
-//               onSubmit={(values, { setSubmitting }) => {
-//                 axios
-//                   .post("http://localhost:3001/Advisor_register", values)
-//                   .then(() => {
-//                     alert("Registered Successfully.");
-//                     navigate("/advisor-login");
-//                   })
-//                   .catch((error) => {
-//                     console.error("Error:", error);
-//                     alert("Registration failed. Please try again.");
-//                   })
-//                   .finally(() => {
-//                     setSubmitting(false);
-//                   });
-//               }}
-//             >
-//               {() => (
-//                 <Form autoComplete="off">
-//                   <FontAwesomeIcon className="icon" icon={faUserTie} />
-//                   <h2>Sign up</h2>
-//                   <div className="inputBox">
-//                     <Field type="text" name="name" />
-//                     <span>Username</span>
-//                     <i></i>
-//                   </div>
-//                   <div className="text-danger">
-//                     <ErrorMessage name="name" />
-//                   </div>
-//                   <div id="inputBox">
-//                     <Field type="text" name="Phone_number" />
-//                     <span>Number</span>
-//                     <i></i>
-//                   </div>
-//                   <div className="text-danger">
-//                     <ErrorMessage name="Phone_number" />
-//                   </div>
-//                   <div className="inputBox">
-//                     <Field type="text" name="email" />
-//                     <span>Email</span>
-//                     <i></i>
-//                   </div>
-//                   <div className="text-danger">
-//                     <ErrorMessage name="email" />
-//                   </div>
-//                   <div id="inputBox">
-//                     <Field type="password" name="password" />
-//                     <span>Password</span>
-//                     <i></i>
-//                   </div>
-//                   <div className="text-danger">
-//                     <ErrorMessage name="password" />
-//                   </div>
-//                   <div className="inputBox">
-//                     <Field type="text" name="expertise" />
-//                     <span>Expertise</span>
-//                     <i></i>
-//                   </div>
-//                   <div className="text-danger">
-//                     <ErrorMessage name="expertise" />
-//                   </div>
-//                   <div id="inputBox">
-//                     <Field type="text" name="profile_description" />
-//                     <span>Description</span>
-//                     <i></i>
-//                   </div>
-//                   <div className="text-danger">
-//                     <ErrorMessage name="profile_description" />
-//                   </div>
-//                   <div className="inputBox">
-//                     <Field type="text" name="availability_schedule" />
-//                     <span>Schedule</span>
-//                     <i></i>
-//                   </div>
-//                   <div className="text-danger">
-//                     <ErrorMessage name="availability_schedule" />
-//                   </div>
-//                   <div id="inputBox">
-//                     <Field type="text" name="payment_info" />
-//                     <span>Payment</span>
-//                     <i></i>
-//                   </div>
-//                   <div className="text-danger">
-//                     <ErrorMessage name="payment_info" />
-//                   </div>
-//                   <div className="inputBox">
-//                     <Field type="number" name="rating" />
-//                     <span>Rating</span>
-//                     <i></i>
-//                   </div>
-//                   <div className="text-danger">
-//                     <ErrorMessage name="rating" />
-//                   </div>
-//                   <button type="submit">Register</button>
-//                 </Form>
-//               )}
-//             </Formik>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 import React, { useState, useEffect } from "react";
 import "./advisor-register-man-ki-baat_component.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -568,6 +406,22 @@ export function AdvisorRegisterManKiBaatComponent() {
     },
   };
 
+  const inputImage = {
+    input: {
+      width: "103%",
+      padding: "9px",
+      borderRadius: "5px",
+      border: "1px solid #dd033a",
+      backgroundColor: "#dd033a",
+      color: "white",
+      outline: "none",
+      transition: "0.3s",
+      height: "44px",
+      fontSize: "1em",
+      opacity: 0.8,
+    },
+  };
+
   const [numbers, setNumbers] = useState([]);
   const [useErrors, setUseErrors] = useState("");
 
@@ -667,6 +521,21 @@ export function AdvisorRegisterManKiBaatComponent() {
     return age;
   }
 
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  function handleImageChange(event) {
+    const file = event.target.files[0];
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -685,6 +554,7 @@ export function AdvisorRegisterManKiBaatComponent() {
                 City: "",
                 State: "",
                 Language: "",
+                Image: null,
               }}
               validationSchema={yup.object({
                 Name: yup.string().required("Advisor Name Required"),
@@ -723,10 +593,41 @@ export function AdvisorRegisterManKiBaatComponent() {
                 City: yup.string().required("City Is Required"),
                 State: yup.string().required("State Is Required"),
                 Language: yup.string().required("Language Is Required"),
+                Image: yup
+                  .mixed()
+                  .required("Image Is Required")
+                  .test(
+                    "fileSize",
+                    "File Size is too large",
+                    (value) => value && value.size <= 1024 * 1024
+                  )
+                  .test(
+                    "fileFormat",
+                    "Unsupported Format",
+                    (value) =>
+                      value &&
+                      ["image/jpeg", "image/png", "image/gif"].includes(
+                        value.type
+                      )
+                  ),
               })}
               onSubmit={(values, { setSubmitting }) => {
+                const formData = new FormData();
+                for (const key in values) {
+                  formData.append(key, values[key]);
+                }
+                formData.append("image", values.Image);
                 axios
-                  .post("http://localhost:3001/Advisor_register", values)
+                  .post(
+                    "http://localhost:3001/Advisor_register",
+                    values,
+                    formData,
+                    {
+                      headers: {
+                        "Content-Type": "multipart/form-data",
+                      },
+                    }
+                  )
                   .then(() => {
                     alert("Registered Successfully...");
                     navigate("/advisor-login");
@@ -824,8 +725,8 @@ export function AdvisorRegisterManKiBaatComponent() {
                         handleDateChange(date);
                       }}
                       dateFormat="dd/MM/yyyy"
-                      placeholderText="Select Date"
-                      className="form-control"
+                      placeholderText="Select Date..."
+                      className="form-control date-picker-placeholder"
                       peekNextMonth
                       showMonthDropdown
                       showYearDropdown
@@ -927,6 +828,34 @@ export function AdvisorRegisterManKiBaatComponent() {
                   </div>
                   <div className="text-danger">
                     <ErrorMessage name="Language" />
+                  </div>
+                  <div className="mt-3">
+                    <span
+                      style={{
+                        color: "#dd033a",
+                        fontSize: "13px",
+                      }}
+                    >
+                      Image
+                    </span>
+                    <input
+                      type="file"
+                      name="Image"
+                      onChange={(event) => {
+                        handleImageChange(event);
+                        setFieldValue("Image", event.currentTarget.files[0]);
+                      }}
+                      className="form-control"
+                      style={inputImage.input}
+                    />
+                    <div className="text-danger">
+                      <ErrorMessage name="Image" />
+                    </div>
+                    {/* {imagePreview && (
+                        <div className="image-preview mt-3">
+                          <img src={imagePreview} alt="Image Preview" style={{width:"100%", height:"100%"}}/>
+                        </div>
+                      )} */}
                   </div>
                   <button type="submit">Register</button>
                 </Form>

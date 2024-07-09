@@ -162,7 +162,7 @@ export function AdvisorManKiBaatComponent() {
                   My Contacts
                 </li>
                 <img
-                  className="ms-4"
+                  className="ms-4 p-1 mt-2"
                   src="boy-img.jpg"
                   alt=""
                   style={{
@@ -227,7 +227,7 @@ export function AdvisorManKiBaatComponent() {
                     className="mt-3"
                     style={{ fontWeight: "bold", fontFamily: "Arial" }}
                   >
-                    {advisor.name}
+                    {advisor.Name}
                   </h5>
                   <p>
                     {advisor.rating}{" "}
@@ -304,12 +304,12 @@ export function AdvisorManKiBaatComponent() {
                   className="card-footer ms-4"
                   style={{ borderRadius: "30px" }}
                 >
-                  <p style={{ fontWeight: "bold" }}>Year of Experience:</p>
-                  <p>{advisor.experience} Years</p>
-                  <p style={{ fontWeight: "bold" }}>Expertise:</p>
-                  <p>{advisor.expertise}</p>
-                  <p style={{ fontWeight: "bold" }}>Income:</p>
-                  <p>Rs. {advisor.income}/- month</p>
+                  <h6 style={{ fontWeight: "bold" }}>Year of Experience:</h6>
+                  <p>{advisor.Experience}</p>
+                  <h6 style={{ fontWeight: "bold" }}>Expertise:</h6>
+                  <p>{advisor.Expertise}</p>
+                  <h6 style={{ fontWeight: "bold" }}>Language:</h6>
+                  <p>{advisor.Language}</p>
                 </div>
               </div>
             </div>

@@ -1,635 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import "./signup-man-ki-baat_component.css";
-// import { Formik, Form, Field, ErrorMessage } from "formik";
-// import axios from "axios";
-// import * as yup from "yup";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faUserTie } from "@fortawesome/free-solid-svg-icons";
-// import { useNavigate } from "react-router-dom";
-
-// export function SignupManKiBaatComponent() {
-//   const navigate = useNavigate();
-//   // const [users, setUsers] = useState([]);
-//   // const [useError, setUseError] = useState('');
-
-//   // useEffect(() => {
-//   //   axios.get('http://localhost:3001/user/66166315a8928cdfd5941024/profile')
-//   //     .then(response => {
-//   //       setUsers(response.data);
-//   //     })
-//   //     .catch(error => {
-//   //       console.error('Error:', error);
-//   //     });
-//   // }, []);
-
-//   // function VerifyUserId(e) {
-//   //   if (!Array.isArray(users)) {
-//   //     return;
-//   //   }
-//   //   for (var user of users) {
-//   //     if (user.name === e.target.value) {
-//   //       setUseError('User Name Taken - Try Another');
-//   //       return;
-//   //     }
-//   //   }
-//   //   setUseError('User Name Available');
-//   // }
-
-//   return (
-//     <>
-//       <div className="container-fluid">
-//         <div className="row">
-//           <div className="col">
-//             <div className="boxing mb-5" id="body">
-//               <Formik
-//                 initialValues={{
-//                   name: "",
-//                   email: "",
-//                   password: "",
-//                   number: "",
-//                   age: 0,
-//                   gender: "",
-//                 }}
-//                 validationSchema={yup.object({
-//                   name: yup.string().required("User Name Required"),
-//                   password: yup
-//                     .string()
-//                     .required("Password Required")
-//                     .matches(
-//                       /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/,
-//                       "Password 8 to 15 Chars with Uppercase letter,Special character & Number"
-//                     ),
-//                   email: yup
-//                     .string()
-//                     .required("Email Required")
-//                     .email("Invalid Email"),
-//                   age: yup.number().required("Age Required"),
-//                   number: yup
-//                     .string()
-//                     .required("Mobile Required")
-//                     .matches(
-//                       /^((\+91)?|91)?[6789][0-9]{9}$/g,
-//                       "Invalid Mobile Number"
-//                     ),
-//                   gender: yup.string().required("Gender Is Required"),
-//                 })}
-//                 onSubmit={(values, { setSubmitting }) => {
-//                   axios
-//                     .post("http://localhost:3001/Register", values)
-//                     .then(() => {
-//                       alert("Registered Successfully..");
-//                       navigate("/login");
-//                     })
-//                     .catch((error) => {
-//                       console.error("Error:", error);
-//                       alert("Registration failed. Please try again.");
-//                     })
-//                     .finally(() => {
-//                       setSubmitting(false);
-//                     });
-//                 }}
-//               >
-//                 {() => (
-//                   <Form autoComplete="off">
-//                     <FontAwesomeIcon className="icon" icon={faUserTie} />
-//                     <h2>Sign up</h2>
-//                     <div className="arrange">
-//                       <div className="inputBoxing">
-//                         <Field type="text" name="name" />
-//                         <span>Name</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="name" />
-//                       </div>
-//                       <div id="inputBoxing">
-//                         <Field type="text" name="email" />
-//                         <span>Email</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="email" />
-//                       </div>
-//                       <div className="inputBoxing">
-//                         <Field type="password" name="password" />
-//                         <span>Password</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="password" />
-//                       </div>
-//                       <div id="inputBoxing">
-//                         <Field type="text" name="number" />
-//                         <span>Number</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="number" />
-//                       </div>
-//                       <div className="inputBoxing">
-//                         <Field type="date" name="age" />
-//                         <span>Age</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="age" />
-//                       </div>
-//                       <div id="inputBoxing">
-//                         <Field type="text" name="gender" />
-//                         <span>Gender</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="gender" />
-//                       </div>
-//                     </div>
-//                     <button type="submit">Register</button>
-//                     {/* {useError && <div className="text-danger">{useError}</div>} */}
-//                   </Form>
-//                 )}
-//               </Formik>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
-// import React from "react";
-// import "./signup-man-ki-baat_component.css";
-// import { Formik, Form, Field, ErrorMessage } from "formik";
-// import axios from "axios";
-// import * as yup from "yup";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faUserTie } from "@fortawesome/free-solid-svg-icons";
-// import { useNavigate } from "react-router-dom";
-// import Select from "react-select";
-
-// export function SignupManKiBaatComponent() {
-//   const navigate = useNavigate();
-
-//   const genderOptions = [
-//     { value: "male", label: "Male" },
-//     { value: "female", label: "Female" },
-//     { value: "other", label: "Other" },
-//   ];
-
-//   const customStyles = {
-//     control: (provided, state) => ({
-//       ...provided,
-//       backgroundColor: "#dd033a",
-//       borderColor: state.isFocused ? "#dd033a" : "#dd033a",
-//       "&:hover": {
-//         borderColor: "#dd033a",
-//       },
-//       boxShadow: state.isFocused ? null : null,
-//       color: "white",
-//       width: "100%",
-//       padding: "5px",
-//       borderRadius: "5px",
-//       outline: "none",
-//       transition: "0.3s",
-//       marginBottom: "10px",
-//     }),
-//     singleValue: (provided) => ({
-//       ...provided,
-//       color: "white",
-//     }),
-//     placeholder: (provided) => ({
-//       ...provided,
-//       color: "white",
-//     }),
-//     menu: (provided) => ({
-//       ...provided,
-//       backgroundColor: "#dd033a",
-//     }),
-//     option: (provided, state) => ({
-//       ...provided,
-//       backgroundColor: state.isSelected ? "#aa002d" : "#dd033a",
-//       color: "white",
-//       "&:hover": {
-//         backgroundColor: "#aa002d",
-//       },
-//     }),
-//   };
-
-//   return (
-//     <>
-//       <div className="container-fluid">
-//         <div className="row">
-//           <div className="col">
-//             <div className="boxing mb-5" id="body">
-//               <Formik
-//                 initialValues={{
-//                   name: "",
-//                   email: "",
-//                   password: "",
-//                   number: "",
-//                   age: 0,
-//                   gender: "",
-//                 }}
-//                 validationSchema={yup.object({
-//                   name: yup.string().required("User Name Required"),
-//                   password: yup
-//                     .string()
-//                     .required("Password Required")
-//                     .matches(
-//                       /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/,
-//                       "Password 8 to 15 Chars with Uppercase letter,Special character & Number"
-//                     ),
-//                   email: yup
-//                     .string()
-//                     .required("Email Required")
-//                     .email("Invalid Email"),
-//                   age: yup.number().required("Age Required"),
-//                   number: yup
-//                     .string()
-//                     .required("Mobile Required")
-//                     .matches(
-//                       /^((\+91)?|91)?[6789][0-9]{9}$/g,
-//                       "Invalid Mobile Number"
-//                     ),
-//                   gender: yup.string().required("Gender Is Required"),
-//                 })}
-//                 onSubmit={(values, { setSubmitting }) => {
-//                   axios
-//                     .post("http://localhost:3001/Register", values)
-//                     .then(() => {
-//                       alert("Registered Successfully..");
-//                       navigate("/login");
-//                     })
-//                     .catch((error) => {
-//                       console.error("Error:", error);
-//                       alert("Registration failed. Please try again.");
-//                     })
-//                     .finally(() => {
-//                       setSubmitting(false);
-//                     });
-//                 }}
-//               >
-//                 {({ setFieldValue }) => (
-//                   <Form autoComplete="off">
-//                     <FontAwesomeIcon className="icon" icon={faUserTie} />
-//                     <h2>Sign up</h2>
-//                     <div className="arrange">
-//                       <div className="inputBoxing">
-//                         <Field type="text" name="name" />
-//                         <span>Name</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="name" />
-//                       </div>
-//                       <div id="inputBoxing">
-//                         <Field type="text" name="email" />
-//                         <span>Email</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="email" />
-//                       </div>
-//                       <div className="inputBoxing">
-//                         <Field type="password" name="password" />
-//                         <span>Password</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="password" />
-//                       </div>
-//                       <div id="inputBoxing" className="number-container">
-//                         <span className="prefix">+91</span>
-//                         <Field
-//                           type="text"
-//                           name="number"
-//                           className="number-input"
-//                         />
-//                         <span>Number</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="number" />
-//                       </div>
-//                       <div className="inputBoxing">
-//                         <Field type="date" name="age" />
-//                         <span>Age</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="age" />
-//                       </div>
-//                       <div className="mt-3">
-//                         <span
-//                           style={{
-//                             color: "#dd033a",
-//                             fontSize: "13px",
-//                           }}
-//                         >
-//                           Gender
-//                         </span>
-//                         <Select
-//                           options={genderOptions}
-//                           classNamePrefix="react-select"
-//                           placeholder="Select gender"
-//                           styles={customStyles}
-//                           onChange={(option) =>
-//                             setFieldValue("gender", option.value)
-//                           }
-//                         />
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="gender" />
-//                       </div>
-//                     </div>
-//                     <button type="submit">Register</button>
-//                     {/* {useError && <div className="text-danger">{useError}</div>} */}
-//                   </Form>
-//                 )}
-//               </Formik>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
-// import React from "react";
-// import "./signup-man-ki-baat_component.css";
-// import { Formik, Form, Field, ErrorMessage } from "formik";
-// import axios from "axios";
-// import * as yup from "yup";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faUserTie } from "@fortawesome/free-solid-svg-icons";
-// import { useNavigate } from "react-router-dom";
-// import Select from "react-select";
-// import PhoneInput from "react-phone-input-2";
-// import "react-phone-input-2/lib/style.css";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
-
-// // Custom input component for PhoneInput
-// const CustomInputComponent = (props) => {
-//   const { country, value, onChange, ...rest } = props;
-//   const countryCode = "+" + PhoneInput.getCountryCallingCode(country);
-
-//   return (
-//     <div className="custom-input">
-//       <span className={`flag ${country.toLowerCase()}`}></span>
-//       <span className="country-code">{countryCode}</span>
-//       <input
-//         {...rest}
-//         value={value || ""}
-//         onChange={(e) => onChange(e.target.value)}
-//       />
-//     </div>
-//   );
-// };
-
-// export function SignupManKiBaatComponent() {
-//   const navigate = useNavigate();
-
-//   const genderOptions = [
-//     { value: "male", label: "Male" },
-//     { value: "female", label: "Female" },
-//     { value: "other", label: "Other" },
-//   ];
-
-//   const customStyles = {
-//     control: (provided, state) => ({
-//       ...provided,
-//       backgroundColor: "#dd033a",
-//       borderColor: state.isFocused ? "#dd033a" : "#dd033a",
-//       "&:hover": {
-//         borderColor: "#dd033a",
-//       },
-//       boxShadow: state.isFocused ? null : null,
-//       color: "white",
-//       width: "100%",
-//       padding: "5px",
-//       borderRadius: "5px",
-//       outline: "none",
-//       transition: "0.3s",
-//       marginBottom: "10px",
-//     }),
-//     singleValue: (provided) => ({
-//       ...provided,
-//       color: "white",
-//     }),
-//     placeholder: (provided) => ({
-//       ...provided,
-//       color: "white",
-//     }),
-//     menu: (provided) => ({
-//       ...provided,
-//       // backgroundColor: "#dd033a",
-//       border: "none", // Remove border around the dropdown menu
-//       boxShadow: "none", // Remove box shadow around the dropdown menu
-//       zIndex: 9999, // Ensure dropdown is on top of other elements
-//     }),
-//     option: (provided, state) => ({
-//       ...provided,
-//       // backgroundColor: state.isSelected ? "#aa002d" : "#dd033a",
-//       // color: "white",
-//       "&:hover": {
-//         // backgroundColor: "#aa002d",
-//       },
-//     }),
-//   };
-
-//   const inputStyles = {
-//     input: {
-//       width: "100%",
-//       padding: "10px",
-//       borderRadius: "5px",
-//       border: "1px solid #dd033a",
-//       backgroundColor: "#dd033a",
-//       color: "white",
-//       outline: "none",
-//       transition: "0.3s",
-//       height: "44px",
-//     },
-//   };
-
-//   // Custom CSS class for DatePicker
-//   const datePickerCustomClass = {
-//     dateInput: {
-//       width: "130%",
-//       padding: "10px",
-//       borderRadius: "5px",
-//       border: "1px solid #45f3ff",
-//       backgroundColor: "#45f3ff",
-//       color: "white",
-//       outline: "none",
-//       transition: "0.3s",
-//       height: "44px",
-//     },
-//   };
-
-//   return (
-//     <>
-//       <div className="container-fluid">
-//         <div className="row">
-//           <div className="col">
-//             <div className="boxing mb-5" id="body">
-//               <Formik
-//                 initialValues={{
-//                   name: "",
-//                   email: "",
-//                   password: "",
-//                   number: "",
-//                   age: null, // Use null for date field
-//                   gender: "",
-//                 }}
-//                 validationSchema={yup.object({
-//                   name: yup.string().required("User Name Required"),
-//                   password: yup
-//                     .string()
-//                     .required("Password Required")
-//                     .matches(
-//                       /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/,
-//                       "Password 8 to 15 Chars with Uppercase letter,Special character & Number"
-//                     ),
-//                   email: yup
-//                     .string()
-//                     .required("Email Required")
-//                     .email("Invalid Email"),
-//                   age: yup.date().nullable().required("Age Required"), // Update validation for date field
-//                   number: yup
-//                     .string()
-//                     .required("Mobile Required")
-//                     .matches(
-//                       /^((\+91)?|91)?[6789][0-9]{9}$/,
-//                       "Invalid Mobile Number"
-//                     ),
-//                   gender: yup.string().required("Gender Is Required"),
-//                 })}
-//                 onSubmit={(values, { setSubmitting }) => {
-//                   axios
-//                     .post("http://localhost:3001/Register", values)
-//                     .then(() => {
-//                       alert("Registered Successfully..");
-//                       navigate("/login");
-//                     })
-//                     .catch((error) => {
-//                       console.error("Error:", error);
-//                       alert("Registration failed. Please try again.");
-//                     })
-//                     .finally(() => {
-//                       setSubmitting(false);
-//                     });
-//                 }}
-//               >
-//                 {({ values, setFieldValue }) => (
-//                   <Form autoComplete="off">
-//                     <FontAwesomeIcon className="icon" icon={faUserTie} />
-//                     <h2>Sign up</h2>
-//                     <div className="arrange">
-//                       <div className="inputBoxing">
-//                         <Field type="text" name="name" />
-//                         <span>Name</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="name" />
-//                       </div>
-//                       <div id="inputBoxing">
-//                         <Field type="text" name="email" />
-//                         <span>Email</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="email" />
-//                       </div>
-//                       <div className="inputBoxing">
-//                         <Field type="password" name="password" />
-//                         <span>Password</span>
-//                         <i></i>
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="password" />
-//                       </div>
-//                       <div className="mt-3">
-//                         <div className="">
-//                           <span style={{ color: "#dd033a", fontSize: "13px" }}>
-//                             Number
-//                           </span>
-//                           <i></i>
-//                           <PhoneInput
-//                             country={"in"}
-//                             inputStyle={inputStyles.input}
-//                             containerStyle={{ width: "100%" }}
-//                             inputExtraProps={{
-//                               component: CustomInputComponent,
-//                             }}
-//                             onChange={(value) => setFieldValue("number", value)}
-//                           />
-//                         </div>
-//                         <div className="text-danger">
-//                           <ErrorMessage name="number" />
-//                         </div>
-//                       </div>
-//                       <div className="mt-3">
-//                         <span style={{ color: "#45f3ff", fontSize: "13px" }}>
-//                           Age
-//                         </span>
-//                         <i></i>
-//                         <div className="">
-//                           <DatePicker
-//                             name="age"
-//                             selected={values.age}
-//                             onChange={(date) => setFieldValue("age", date)}
-//                             dateFormat="dd/MM/yyyy"
-//                             placeholderText="Select Date"
-//                             className="age-input"
-//                             peekNextMonth
-//                             showMonthDropdown
-//                             showYearDropdown
-//                             dropdownMode="select"
-//                             customInput={
-//                               <input style={datePickerCustomClass.dateInput} />
-//                             } // Apply the style here
-//                           />
-//                         </div>
-//                         <div className="text-danger">
-//                           <ErrorMessage name="age" />
-//                         </div>
-//                       </div>
-//                       <div className="mt-3">
-//                         <span
-//                           style={{
-//                             color: "#dd033a",
-//                             fontSize: "13px",
-//                           }}
-//                         >
-//                           Gender
-//                         </span>
-//                         <Select
-//                           options={genderOptions}
-//                           classNamePrefix="react-select"
-//                           placeholder="Select gender"
-//                           styles={customStyles}
-//                           onChange={(option) =>
-//                             setFieldValue("gender", option.value)
-//                           }
-//                         />
-//                       </div>
-//                       <div className="text-danger">
-//                         <ErrorMessage name="gender" />
-//                       </div>
-//                     </div>
-//                     <button type="submit">Register</button>
-//                   </Form>
-//                 )}
-//               </Formik>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
 import React, { useState, useEffect } from "react";
 import "./signup-man-ki-baat_component.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -913,6 +281,22 @@ export function SignupManKiBaatComponent() {
     },
   };
 
+  const inputImage = {
+    input: {
+      width: "103%",
+      padding: "9px",
+      borderRadius: "5px",
+      border: "1px solid #dd033a",
+      backgroundColor: "#dd033a",
+      color: "white",
+      outline: "none",
+      transition: "0.3s",
+      height: "44px",
+      fontSize: "1em",
+      opacity: 0.8,
+    },
+  };
+
   const [email, setEmail] = useState([]);
   const [useError, setUseError] = useState("");
 
@@ -1012,6 +396,21 @@ export function SignupManKiBaatComponent() {
     return age;
   }
 
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  function handleImageChange(event) {
+    const file = event.target.files[0];
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   return (
     <>
       <div className="container-fluid">
@@ -1027,6 +426,7 @@ export function SignupManKiBaatComponent() {
                   birthdate: "",
                   place: "",
                   gender: "",
+                  image: null,
                 }}
                 validationSchema={yup.object({
                   name: yup.string().required("User Name Required"),
@@ -1051,10 +451,36 @@ export function SignupManKiBaatComponent() {
                     ),
                   gender: yup.string().required("Gender Is Required"),
                   place: yup.string().required("Place Is Required"),
+                  image: yup
+                    .mixed()
+                    .required("Image Is Required")
+                    .test(
+                      "fileSize",
+                      "File Size is too large",
+                      (value) => value && value.size <= 1024 * 1024
+                    )
+                    .test(
+                      "fileFormat",
+                      "Unsupported Format",
+                      (value) =>
+                        value &&
+                        ["image/jpeg", "image/png", "image/gif"].includes(
+                          value.type
+                        )
+                    ),
                 })}
                 onSubmit={(values, { setSubmitting }) => {
+                  const formData = new FormData();
+                  for (const key in values) {
+                    formData.append(key, values[key]);
+                  }
+                  formData.append("image", image);
                   axios
-                    .post("http://localhost:3001/Register", values)
+                    .post("http://localhost:3001/Register", values, formData, {
+                      headers: {
+                        "Content-Type": "multipart/form-data",
+                      },
+                    })
                     .then(() => {
                       alert("Registered Successfully...");
                       navigate("/login");
@@ -1140,7 +566,7 @@ export function SignupManKiBaatComponent() {
                               handleDateChange(date);
                             }}
                             dateFormat="dd/MM/yyyy"
-                            placeholderText="Select Date"
+                            placeholderText="Select Date..."
                             className="birthdate-input"
                             peekNextMonth
                             showMonthDropdown
@@ -1199,6 +625,34 @@ export function SignupManKiBaatComponent() {
                       <div className="text-danger">
                         <ErrorMessage name="gender" />
                       </div>
+                    </div>
+                    <div className="mt-3">
+                      <span
+                        style={{
+                          color: "#dd033a",
+                          fontSize: "13px",
+                        }}
+                      >
+                        Image
+                      </span>
+                      <input
+                        type="file"
+                        name="image"
+                        onChange={(event) => {
+                          handleImageChange(event);
+                          setFieldValue("image", event.currentTarget.files[0]);
+                        }}
+                        className="form-control"
+                        style={inputImage.input}
+                      />
+                      <div className="text-danger">
+                        <ErrorMessage name="image" />
+                      </div>
+                      {/* {imagePreview && (
+                        <div className="image-preview mt-3">
+                          <img src={imagePreview} alt="Image Preview" style={{width:"100%", height:"100%"}}/>
+                        </div>
+                      )} */}
                     </div>
                     <button type="submit">Register</button>
                   </Form>

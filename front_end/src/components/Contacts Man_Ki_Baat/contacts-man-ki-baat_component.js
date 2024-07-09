@@ -141,7 +141,7 @@ export function ContactsManKiBaat() {
                   My Contacts
                 </li>
                 <img
-                  className="ms-4"
+                  className="ms-4 p-1 mt-2"
                   src="boy-img.jpg"
                   alt=""
                   style={{
@@ -185,6 +185,7 @@ export function ContactsManKiBaat() {
         <div className="row">
           <div className="col-md-6 mt-5 mb-5">
             <img
+              className="p-1"
               src="boy-img.jpg"
               alt=""
               style={{

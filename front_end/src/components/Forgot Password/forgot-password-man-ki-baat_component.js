@@ -38,18 +38,22 @@ export function ForgetPasswordMankiBaatComponent() {
         email,
       });
       setMessage(response.data.msg);
-      if (response.data.msg.includes("Please try after some time!")) {
-        setOtpSent(true);
-      } else {
-        setOtpSent(true);
-        alert(
-          "Verification OTP has been sent to your E-mail address, please check!"
-        );
-        navigate("/verify-otp");
+      if (response.data.status && response.data.user_id) {
+        console.log("User ID from response:", response.data.user_id);
+        localStorage.setItem("user_id", response.data.user_id);
+        if (response.data.msg.includes("Please try after some time!")) {
+          setOtpSent(true);
+        } else {
+          setOtpSent(true);
+          alert(
+            "Verification OTP has been sent to your E-mail address, please check!"
+          );
+          navigate("/verify-otp");
+        }
       }
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.msg) {
-        setMessage(error.response.data.msg);
+      if (error.response && error.response.data && error.response.data.MSG) {
+        setMessage(error.response.data.MSG);
       } else {
         setMessage("E-mail is not correct. Please try again!");
       }

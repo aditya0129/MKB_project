@@ -201,7 +201,7 @@ export function ManKiBaatComponent({ data }) {
                   My Contacts
                 </li>
                 <img
-                  className="ms-4"
+                  className="ms-4 p-1 mt-2"
                   src="boy-img.jpg"
                   alt=""
                   style={{
@@ -223,10 +223,22 @@ export function ManKiBaatComponent({ data }) {
         </div>
       </div>
 
+      <div className="container-fluid bg-primary mb-5">
+        <div
+          className="d-flex flex-column align-items-center justify-content-center"
+          style={{ minHeight: "150px" }}
+        >
+          <h3 className="display-3 font-weight-bold text-white">
+            User-Profile
+          </h3>
+        </div>
+      </div>
+
       <div className="container">
         <div className="row">
           <div className="col-md-4 mt-5">
             <img
+              className="p-1"
               src="boy-img.jpg"
               alt=""
               style={{

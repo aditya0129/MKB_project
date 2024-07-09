@@ -21,7 +21,7 @@ export function AdvisorLoginManKiBaatComponent() {
       <div className="container-fluid">
         <div className="row">
           <div className="col">
-            <div className="box mb-5" id="body" style={{ height: "530px" }}>
+            <div className="box mb-5" id="body" style={{ height: "575px" }}>
               <Formik
                 initialValues={{
                   Email: "",
@@ -33,7 +33,7 @@ export function AdvisorLoginManKiBaatComponent() {
                     .required("Password Required")
                     .matches(
                       /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/,
-                      "Password 8 to 15 chars with uppercase letter, special character & number"
+                      "Password 8 to 15 Chars With Uppercase Letter, Special Character & Number"
                     ),
                   Email: yup
                     .string()
