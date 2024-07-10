@@ -143,7 +143,8 @@ const Register_User = async function (req, res) {
     });
     const userData=await newUser.save();
   
-    const msg='<p> hii ,'+name+',please <a href="http://localhost:3001/api/mail-verification?id='+userData._id+'">verify</a>your mail.</p>';
+    //const msg='<p> hii ,'+name+',please <a href="http://localhost:3001/api/mail-verification?id='+userData._id+'">verify</a>your mail.</p>';
+    const msg = `<p>Hi ${name}, please <a href="http://localhost:3001/api/mail-verification?id=${userData._id}">verify</a> your email.</p>`;
     mailer.sendMail(email,'mail-verification', msg)
     res.status(201).json({ status: true, user: userData });
   } catch (error) {
@@ -574,19 +575,51 @@ const Get_All_User = async function (req, res) {
 };
 
 
+// const mailVerification=async(req,res)=>{
+
+//   try{
+
+//     if(req.query.id== undefined){
+//       return req.render('404');
+//     }
+
+//     const userData=await userModel.findOne({_id:req.query.id});
+//     if(userData){
+
+//     }else{
+//       return res.render('mail-verification',{message:'user not Found!'})
+//     }
+
+
+//   }catch (error) {
+//     console.log(error.message)
+//     return res.render('404')
+//   }
+
+// }
+
+
 const mailVerification=async(req,res)=>{
 
   try{
 
-    if(req.query.id== undefined){
+    if(req.query.id == undefined){
       return req.render('404');
     }
 
     const userData=await userModel.findOne({_id:req.query.id});
     if(userData){
-
+      if(userData.is_verified == 1) {
+        return res.render('mail-verification',{message:'Your mail already verified!'})
+      }
+      await userModel.findByIdAndUpdate({_id:req.query.id},{
+        $set:{
+          is_verified: 1
+        }
+      });
+      return res.render('mail-verification',{message:'Mail has been verified Successfully!'})
     }else{
-      return res.render('mail-verification',{message:'user not Found!'})
+      return res.render('mail-verification',{message:'User not Found!'}) 
     }
 
 
@@ -596,7 +629,6 @@ const mailVerification=async(req,res)=>{
   }
 
 }
-
 module.exports = {
   verify_otp_fp,
   send_otp_fp,
