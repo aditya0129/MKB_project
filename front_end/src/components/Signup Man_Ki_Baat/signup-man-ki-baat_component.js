@@ -479,14 +479,15 @@ export function SignupManKiBaatComponent() {
                     }
                   }
                   axios
-                    .post("http://localhost:3001/Register", values, formData, {
+                    .post("http://localhost:3001/Register", formData, {
                       headers: {
                         "Content-Type": "multipart/form-data",
                       },
                     })
                     .then((response) => {
                       alert("Registered Successfully...");
-                      const { imageUrl } = response.data.user;
+                      const { image } = response.data.user;
+                      const imageUrl = `image/${image}`;
                       setFieldValue("image", imageUrl);
                       navigate("/login");
                     })
