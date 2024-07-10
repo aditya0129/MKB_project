@@ -399,7 +399,7 @@ export function SignupManKiBaatComponent() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
-  function handleImageChange(event) {
+  const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setImage(file);
@@ -409,7 +409,7 @@ export function SignupManKiBaatComponent() {
       };
       reader.readAsDataURL(file);
     }
-  }
+  };
 
   return (
     <>
@@ -469,20 +469,25 @@ export function SignupManKiBaatComponent() {
                         )
                     ),
                 })}
-                onSubmit={(values, { setSubmitting }) => {
+                onSubmit={(values, { setSubmitting, setFieldValue }) => {
                   const formData = new FormData();
                   for (const key in values) {
-                    formData.append(key, values[key]);
+                    if (key === "image") {
+                      formData.append("image", image);
+                    } else {
+                      formData.append(key, values[key]);
+                    }
                   }
-                  formData.append("image", image);
                   axios
                     .post("http://localhost:3001/Register", values, formData, {
                       headers: {
                         "Content-Type": "multipart/form-data",
                       },
                     })
-                    .then(() => {
+                    .then((response) => {
                       alert("Registered Successfully...");
+                      const { imageUrl } = response.data.user;
+                      setFieldValue("image", imageUrl);
                       navigate("/login");
                     })
                     .catch((error) => {
