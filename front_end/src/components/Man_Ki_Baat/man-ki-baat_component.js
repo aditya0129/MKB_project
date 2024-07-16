@@ -55,7 +55,7 @@ export function ManKiBaatComponent({ data }) {
     }
   });
   function SignoutClick() {
-    alert("Logout Successfully..");
+    alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
   }
@@ -228,8 +228,9 @@ export function ManKiBaatComponent({ data }) {
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "150px" }}
         >
-          <h3 className="display-3 font-weight-bold text-white">
-            User-Profile
+          <h3 className="display-2 font-weight-bold text-white">
+            <span style={{ fontSize: "90px" }}>&#10621;</span> User-Profile{" "}
+            <span style={{ fontSize: "90px" }}>&#10620;</span>
           </h3>
         </div>
       </div>

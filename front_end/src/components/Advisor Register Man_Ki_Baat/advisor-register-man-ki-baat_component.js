@@ -304,6 +304,10 @@ export function AdvisorRegisterManKiBaatComponent() {
       cursor: "pointer",
       opacity: 0.8,
     }),
+    input: (provided) => ({
+      ...provided,
+      color: "#ffffff",
+    }),
     singleValue: (provided) => ({
       ...provided,
       color: "white",
@@ -364,6 +368,10 @@ export function AdvisorRegisterManKiBaatComponent() {
       fontSize: "1em",
       cursor: "pointer",
       opacity: 0.8,
+    }),
+    input: (provided) => ({
+      ...provided,
+      color: "#ffffff",
     }),
     singleValue: (provided) => ({
       ...provided,
@@ -611,25 +619,23 @@ export function AdvisorRegisterManKiBaatComponent() {
                       )
                   ),
               })}
-              onSubmit={(values, { setSubmitting }) => {
+              onSubmit={(values, { setSubmitting, setFieldValue }) => {
                 const formData = new FormData();
                 for (const key in values) {
                   formData.append(key, values[key]);
                 }
-                formData.append("image", values.Image);
+                formData.append("Image", image);
                 axios
-                  .post(
-                    "http://localhost:3001/Advisor_register",
-                    values,
-                    formData,
-                    {
-                      headers: {
-                        "Content-Type": "multipart/form-data",
-                      },
-                    }
-                  )
-                  .then(() => {
+                  .post("http://localhost:3001/Advisor_register", formData, {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  })
+                  .then((response) => {
                     alert("Registered Successfully...");
+                    const { image } = response.data.user;
+                    const imageUrl = `image/${image}`;
+                    setFieldValue("Image", imageUrl);
                     navigate("/advisor-login");
                   })
                   .catch((error) => {

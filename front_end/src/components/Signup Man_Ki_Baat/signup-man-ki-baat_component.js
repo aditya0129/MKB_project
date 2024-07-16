@@ -180,6 +180,10 @@ export function SignupManKiBaatComponent() {
       cursor: "pointer",
       opacity: 0.8,
     }),
+    input: (provided) => ({
+      ...provided,
+      color: "#ffffff",
+    }),
     singleValue: (provided) => ({
       ...provided,
       color: "white",
@@ -222,6 +226,10 @@ export function SignupManKiBaatComponent() {
       marginBottom: "10px",
       cursor: "pointer",
       opacity: 0.8,
+    }),
+    input: (provided) => ({
+      ...provided,
+      color: "#ffffff",
     }),
     singleValue: (provided) => ({
       ...provided,
@@ -655,8 +663,19 @@ export function SignupManKiBaatComponent() {
                         <ErrorMessage name="image" />
                       </div>
                       {/* {imagePreview && (
-                        <div className="image-preview mt-3">
-                          <img src={imagePreview} alt="Image Preview" style={{width:"100%", height:"100%"}}/>
+                        <div className="image-preview mt-2">
+                          <img
+                            src={imagePreview}
+                            alt="Image Preview"
+                            style={{
+                              width: "30%",
+                              height: "30%",
+                              borderRadius: "10px",
+                              marginLeft: "auto",
+                              display: "flex",
+                              border: "2px solid #dd033a",
+                            }}
+                          />
                         </div>
                       )} */}
                     </div>

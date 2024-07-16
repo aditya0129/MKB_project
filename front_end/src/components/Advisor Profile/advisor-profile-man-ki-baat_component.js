@@ -57,7 +57,7 @@ export function AdvisorProfileManKiBaatComponent() {
   };
 
   const SignoutClick = () => {
-    alert("Logout Successfully..");
+    alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
   };

@@ -34,7 +34,7 @@ export function ContactsManKiBaat() {
   });
 
   function SignoutClick() {
-    alert("Logout Successfully..");
+    alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
   }
@@ -168,7 +168,11 @@ export function ContactsManKiBaat() {
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "150px" }}
         >
-          <h3 className="display-3 font-weight-bold text-white">My Contacts</h3>
+          <h3 className="display-2 font-weight-bold text-white">
+            {" "}
+            <span style={{ fontSize: "85px" }}>&#10621;</span> My Contacts{" "}
+            <span style={{ fontSize: "85px" }}>&#10620;</span>
+          </h3>
           <div className="d-inline-flex text-white">
             <p className="m-0">
               <a className="text-white" href="/">
