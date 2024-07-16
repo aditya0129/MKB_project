@@ -14,6 +14,10 @@ import {
   faFilePrescription,
   faCalendarDays,
   faCreditCard,
+  faCity,
+  faBuildingWheat,
+  faLanguage,
+  faTransgender,
 } from "@fortawesome/free-solid-svg-icons";
 
 export function AdvisorProfileManKiBaatComponent() {
@@ -53,7 +57,7 @@ export function AdvisorProfileManKiBaatComponent() {
   };
 
   const SignoutClick = () => {
-    alert("Logout Successfully..");
+    alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
   };
@@ -165,7 +169,7 @@ export function AdvisorProfileManKiBaatComponent() {
                   My Contacts
                 </li>
                 <img
-                  className="ms-4"
+                  className="ms-4 p-1 mt-2"
                   src="boy-img.jpg"
                   alt=""
                   style={{
@@ -187,8 +191,19 @@ export function AdvisorProfileManKiBaatComponent() {
         </div>
       </div>
 
+      <div className="container-fluid bg-primary mb-5">
+        <div
+          className="d-flex flex-column align-items-center justify-content-center"
+          style={{ minHeight: "150px" }}
+        >
+          <h3 className="display-3 font-weight-bold text-white">
+            Advisor-Profile
+          </h3>
+        </div>
+      </div>
+
       <div
-        className="container mt-5"
+        className="container mt-5 mb-5"
         style={{
           background: "#ffffff",
           borderTopRightRadius: "30px",
@@ -199,6 +214,7 @@ export function AdvisorProfileManKiBaatComponent() {
         <div className="row">
           <div className="col-md-5 mt-5 mb-5">
             <img
+              className="p-1"
               src="boy-img.jpg"
               alt=""
               style={{
@@ -216,10 +232,10 @@ export function AdvisorProfileManKiBaatComponent() {
           {advisors.map((advisor) => (
             <div
               className="col-md-3 mt-5 mb-5"
-              style={{ borderLeft: "5px dotted grey", paddingLeft: "15px" }}
+              style={{ borderLeft: "15px dotted grey", paddingLeft: "15px" }}
               key={advisor._id}
             >
-              <div className="d-flex ">
+              <div className="d-flex">
                 <div
                   className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
@@ -235,35 +251,7 @@ export function AdvisorProfileManKiBaatComponent() {
                 </div>
                 <div className="pl-3 ms-3">
                   <h5>Name:</h5>
-                  <p>{advisor.name}</p>
-                </div>
-              </div>
-              <div className="d-flex">
-                <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                  style={{
-                    width: "45px",
-                    height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
-                  }}
-                >
-                  <FontAwesomeIcon icon={faStar} style={{ color: "#fbfbfb" }} />
-                </div>
-                <div className="pl-3 ms-3">
-                  <h5>Rating:</h5>
-                  <p>
-                    {advisor.rating}{" "}
-                    {[...Array(5)].map((star, i) => (
-                      <FontAwesomeIcon
-                        key={i}
-                        className="ms-2"
-                        icon={faStar}
-                        style={{
-                          color: i < advisor.rating ? "blue" : "darkgray",
-                        }}
-                      />
-                    ))}
-                  </p>
+                  <p>{advisor.Name}</p>
                 </div>
               </div>
               <div className="d-flex">
@@ -276,13 +264,29 @@ export function AdvisorProfileManKiBaatComponent() {
                   }}
                 >
                   <FontAwesomeIcon
-                    icon={faEnvelope}
+                    icon={faTransgender}
                     style={{ color: "#fbfbfb" }}
                   />
                 </div>
                 <div className="pl-3 ms-3">
-                  <h5>Email:</h5>
-                  <p>{advisor.email}</p>
+                  <h5>Gender:</h5>
+                  <p>{advisor.Gender} </p>
+                </div>
+              </div>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCity} style={{ color: "#fbfbfb" }} />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>City:</h5>
+                  <p>{advisor.City}</p>
                 </div>
               </div>
               <div className="d-flex">
@@ -295,13 +299,13 @@ export function AdvisorProfileManKiBaatComponent() {
                   }}
                 >
                   <FontAwesomeIcon
-                    icon={faPhone}
+                    icon={faBuildingWheat}
                     style={{ color: "#fbfbfb" }}
                   />
                 </div>
                 <div className="pl-3 ms-3">
-                  <h5>Phone:</h5>
-                  <p>{advisor.Phone_number}</p>
+                  <h5>State:</h5>
+                  <p>{advisor.State}</p>
                 </div>
               </div>
               <div className="d-flex">
@@ -320,7 +324,7 @@ export function AdvisorProfileManKiBaatComponent() {
                 </div>
                 <div className="pl-3 ms-3">
                   <h5>Expertise:</h5>
-                  <p>{advisor.expertise}</p>
+                  <p>{advisor.Expertise}</p>
                 </div>
               </div>
             </div>
@@ -343,8 +347,46 @@ export function AdvisorProfileManKiBaatComponent() {
                   />
                 </div>
                 <div className="pl-3 ms-3">
-                  <h5>Description:</h5>
-                  <p>{advisor.profile_description}</p>
+                  <h5>Experience:</h5>
+                  <p>{advisor.Experience}</p>
+                </div>
+              </div>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faEnvelope}
+                    style={{ color: "#fbfbfb" }}
+                  />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>Email:</h5>
+                  <p>{advisor.Email}</p>
+                </div>
+              </div>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faPhone}
+                    style={{ color: "#fbfbfb" }}
+                  />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>Phone:</h5>
+                  <p>{advisor.Number}</p>
                 </div>
               </div>
               <div className="d-flex">
@@ -362,8 +404,8 @@ export function AdvisorProfileManKiBaatComponent() {
                   />
                 </div>
                 <div className="pl-3 ms-3">
-                  <h5>Schedule:</h5>
-                  <p>{advisor.availability_schedule}</p>
+                  <h5>Age:</h5>
+                  <p>{advisor.Age}</p>
                 </div>
               </div>
               <div className="d-flex">
@@ -376,13 +418,13 @@ export function AdvisorProfileManKiBaatComponent() {
                   }}
                 >
                   <FontAwesomeIcon
-                    icon={faCreditCard}
+                    icon={faLanguage}
                     style={{ color: "#fbfbfb" }}
                   />
                 </div>
                 <div className="pl-3 ms-3">
-                  <h5>Payment:</h5>
-                  <p>{advisor.payment_info}</p>
+                  <h5>Language:</h5>
+                  <p>{advisor.Language}</p>
                 </div>
               </div>
             </div>

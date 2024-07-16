@@ -7,7 +7,7 @@
   font-family: "Poppins", sans-serif;
 }
 .container-fluid {
-    background-color: #23242a;
+  background-color: #23242a;
 }
 
 #body {
@@ -19,7 +19,7 @@
 .box3 {
   position: relative;
   width: 380px;
-  height: 1290px;
+  height: 1720px;
   background: #1c1c1c;
   border-radius: 8px;
   overflow: hidden;
@@ -32,7 +32,7 @@
   top: -50%;
   left: -50%;
   width: 380px;
-  height: 1290px;
+  height: 1720px;
   transform-origin: bottom right;
   background: linear-gradient(0deg, transparent, #45f3ff, #45f3ff);
   animation: animate 6s linear infinite;
@@ -45,7 +45,7 @@
   top: -50%;
   left: -50%;
   width: 380px;
-  height: 1290px;
+  height: 1720px;
   transform-origin: bottom right;
   background: linear-gradient(0deg, transparent, #dd033a, #dd033a);
   animation: animate 6s linear infinite;
@@ -79,19 +79,19 @@ h2 {
   letter-spacing: 0.1em;
 }
 
-.inputBox {
+.inputBoxs {
   position: relative;
   width: 300px;
   margin-top: 35px;
 }
 
-#inputBox {
+#inputBoxs {
   position: relative;
   width: 300px;
   margin-top: 35px;
 }
 
-.inputBox input {
+.inputBoxs input {
   position: relative;
   width: 100%;
   padding: 20px 10px 10px;
@@ -99,14 +99,14 @@ h2 {
   outline: none;
   box-shadow: none;
   border: none;
-  color: #23242a;
+  color: #ffffff;
   font-size: 1em;
   letter-spacing: 0.05em;
   transition: 0.5s;
   z-index: 10;
 }
 
-#inputBox input {
+#inputBoxs input {
   position: relative;
   width: 100%;
   padding: 20px 10px 10px;
@@ -114,14 +114,14 @@ h2 {
   outline: none;
   box-shadow: none;
   border: none;
-  color: #23242a;
+  color: #ffffff;
   font-size: 1em;
   letter-spacing: 0.05em;
   transition: 0.5s;
   z-index: 10;
 }
 
-.inputBox span {
+.inputBoxs span {
   position: absolute;
   left: 0;
   padding: 20px 0px 10px;
@@ -132,7 +132,7 @@ h2 {
   transition: 0.5s;
 }
 
-#inputBox span {
+#inputBoxs span {
   position: absolute;
   left: 0;
   padding: 20px 0px 10px;
@@ -143,21 +143,21 @@ h2 {
   transition: 0.5s;
 }
 
-#inputBox input:valid ~ span,
-#inputBox input:focus ~ span {
+#inputBoxs input:valid ~ span,
+#inputBoxs input:focus ~ span {
   color: #dd033a;
   transform: translateX(0px) translateY(-34px);
   font-size: 0.75em;
 }
 
-.inputBox input:valid ~ span,
-.inputBox input:focus ~ span {
+.inputBoxs input:valid ~ span,
+.inputBoxs input:focus ~ span {
   color: #45f3ff;
   transform: translateX(0px) translateY(-34px);
   font-size: 0.75em;
 }
 
-.inputBox i {
+.inputBoxs i {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -168,11 +168,11 @@ h2 {
   overflow: hidden;
   transition: 0.5s;
   pointer-events: none;
-  z-index: 9;
+  /* z-index: 9; */
   opacity: 0.8;
 }
 
-#inputBox i {
+#inputBoxs i {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -183,17 +183,17 @@ h2 {
   overflow: hidden;
   transition: 0.5s;
   pointer-events: none;
-  z-index: 9;
+  /* z-index: 9; */
   opacity: 0.8;
 }
 
-.inputBox input:valid ~ i,
-.inputBox input:focus ~ i {
+.inputBoxs input:valid ~ i,
+.inputBoxs input:focus ~ i {
   height: 44px;
 }
 
-#inputBox input:valid ~ i,
-#inputBox input:focus ~ i {
+#inputBoxs input:valid ~ i,
+#inputBoxs input:focus ~ i {
   height: 44px;
 }
 
@@ -218,8 +218,8 @@ button[type="submit"] {
   border: 2px solid #1c1c1c;
   outline: none;
   padding: 11px 25px;
-  background: #45f3ff;
-  color: #dd033a;
+  background: linear-gradient(135deg, cyan, blue);
+  color: #ffffff;
   cursor: pointer;
   border-radius: 8px;
   font-weight: 900;
@@ -244,4 +244,8 @@ input[type="submit"]:active {
 .icon {
   color: #45f3ff;
   font-size: 50px;
+}
+
+.date-picker-placeholder::placeholder {
+  color: white;
 }

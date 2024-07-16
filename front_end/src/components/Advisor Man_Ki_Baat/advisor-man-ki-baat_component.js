@@ -50,7 +50,7 @@ export function AdvisorManKiBaatComponent() {
   };
 
   const SignoutClick = () => {
-    alert("Logout Successfully..");
+    alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
   };
@@ -162,7 +162,7 @@ export function AdvisorManKiBaatComponent() {
                   My Contacts
                 </li>
                 <img
-                  className="ms-4"
+                  className="ms-4 p-1 mt-2"
                   src="boy-img.jpg"
                   alt=""
                   style={{
@@ -189,7 +189,11 @@ export function AdvisorManKiBaatComponent() {
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "150px" }}
         >
-          <h3 className="display-3 font-weight-bold text-white">Advisor</h3>
+          <h3 className="display-2 font-weight-bold text-white">
+            {" "}
+            <span style={{ fontSize: "85px" }}>&#10621;</span> Advisor{" "}
+            <span style={{ fontSize: "85px" }}>&#10620;</span>
+          </h3>
           <div className="d-inline-flex text-white">
             <p className="m-0">
               <a className="text-white" href="/">
@@ -219,6 +223,7 @@ export function AdvisorManKiBaatComponent() {
                         height: "70px",
                         width: "70px",
                         borderRadius: "100px",
+                        boxShadow: "0 0 8px rgb(145, 144, 146)",
                       }}
                     />
                   </div>
@@ -226,7 +231,7 @@ export function AdvisorManKiBaatComponent() {
                     className="mt-3"
                     style={{ fontWeight: "bold", fontFamily: "Arial" }}
                   >
-                    {advisor.name}
+                    {advisor.Name}
                   </h5>
                   <p>
                     {advisor.rating}{" "}
@@ -303,12 +308,12 @@ export function AdvisorManKiBaatComponent() {
                   className="card-footer ms-4"
                   style={{ borderRadius: "30px" }}
                 >
-                  <p style={{ fontWeight: "bold" }}>Year of Experience:</p>
-                  <p>{advisor.experience} Years</p>
-                  <p style={{ fontWeight: "bold" }}>Expertise:</p>
-                  <p>{advisor.expertise}</p>
-                  <p style={{ fontWeight: "bold" }}>Income:</p>
-                  <p>Rs. {advisor.income}/- month</p>
+                  <h6 style={{ fontWeight: "bold" }}>Year of Experience:</h6>
+                  <p>{advisor.Experience}</p>
+                  <h6 style={{ fontWeight: "bold" }}>Expertise:</h6>
+                  <p>{advisor.Expertise}</p>
+                  <h6 style={{ fontWeight: "bold" }}>Language:</h6>
+                  <p>{advisor.Language}</p>
                 </div>
               </div>
             </div>

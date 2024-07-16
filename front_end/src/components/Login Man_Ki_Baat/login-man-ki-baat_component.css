@@ -101,7 +101,7 @@ h2 {
   outline: none;
   box-shadow: none;
   border: none;
-  color: #23242a;
+  color: #ffffff;
   font-size: 1em;
   letter-spacing: 0.05em;
   transition: 0.5s;
@@ -116,7 +116,7 @@ h2 {
   outline: none;
   box-shadow: none;
   border: none;
-  color: #23242a;
+  color: #ffffff;
   font-size: 1em;
   letter-spacing: 0.05em;
   transition: 0.5s;
@@ -220,8 +220,8 @@ button[type="submit"] {
   border: 2px solid #1c1c1c;
   outline: none;
   padding: 11px 25px;
-  background: #45f3ff;
-  color: #dd033a;
+  background: linear-gradient(135deg, cyan, blue);
+  color: #ffffff;
   cursor: pointer;
   border-radius: 8px;
   font-weight: 900;

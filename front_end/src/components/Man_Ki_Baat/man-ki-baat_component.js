@@ -55,7 +55,7 @@ export function ManKiBaatComponent({ data }) {
     }
   });
   function SignoutClick() {
-    alert("Logout Successfully..");
+    alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
   }
@@ -201,7 +201,7 @@ export function ManKiBaatComponent({ data }) {
                   My Contacts
                 </li>
                 <img
-                  className="ms-4"
+                  className="ms-4 p-1 mt-2"
                   src="boy-img.jpg"
                   alt=""
                   style={{
@@ -223,10 +223,23 @@ export function ManKiBaatComponent({ data }) {
         </div>
       </div>
 
+      <div className="container-fluid bg-primary mb-5">
+        <div
+          className="d-flex flex-column align-items-center justify-content-center"
+          style={{ minHeight: "150px" }}
+        >
+          <h3 className="display-2 font-weight-bold text-white">
+            <span style={{ fontSize: "90px" }}>&#10621;</span> User-Profile{" "}
+            <span style={{ fontSize: "90px" }}>&#10620;</span>
+          </h3>
+        </div>
+      </div>
+
       <div className="container">
         <div className="row">
           <div className="col-md-4 mt-5">
             <img
+              className="p-1"
               src="boy-img.jpg"
               alt=""
               style={{
@@ -353,6 +366,7 @@ export function ManKiBaatComponent({ data }) {
                   borderRadius: "100px",
                   display: "flex",
                   margin: "auto",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
                 }}
               />
               <p className="text-center mt-3">Jeremy Rose</p>
@@ -433,6 +447,7 @@ export function ManKiBaatComponent({ data }) {
                   borderRadius: "100px",
                   display: "flex",
                   margin: "auto",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
                 }}
               />
               <p className="text-center mt-3">Jeremy Rose</p>
@@ -513,6 +528,7 @@ export function ManKiBaatComponent({ data }) {
                   borderRadius: "100px",
                   display: "flex",
                   margin: "auto",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
                 }}
               />
               <p className="text-center mt-3">Jeremy Rose</p>
