@@ -8,6 +8,8 @@ const {
   get_Users,
   Update_User,
   Get_All_User,
+  forgotPassword, 
+  resetPassword
 } = require("../Controllers/UserControllers");
 const { sendOtp, VerifyOtp } = require("../Controllers/OtpVerfy");
 const {
@@ -57,10 +59,12 @@ const uplode = multer({ storage: storage, fileFilter: fileFilter });
 // User_APIS
 router.post("/Register", uplode.single("image"), Register_User);
 router.post("/Login", Login_user);
-router.get("/user/:userId/profile", isAuthenticated, get_Users);
-router.put("/user/:userId/profile", isAuthenticated, isAuthorized, Update_User);
+router.get("/get_user/profile", isAuthenticated, get_Users);
+router.put("/user/:userId/profile",Update_User);
 router.get("/User_All_Data", Get_All_User);
 
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 // router.get('/generateOTP/:userId',generate_Otp)
 // router.get('/verifyOTP/:userId/:otp',Verify_Otp)
 
@@ -72,13 +76,20 @@ router.post("/VerifyOtp", VerifyOtp);
 router.post("/Advisor_register", Advisor_register);
 router.post("/Advisor_login", Advisor_Login);
 //router.get( "/user/:userId/profile", get_Advisor );
-router.get("/user/profile", isAuthenticated, get_Advisor);
+router.get("/get_Advisor/profile", isAuthenticated, get_Advisor);
 router.get("/Advisor_All_Data", Get_All_Advisor);
 
 // otp_verification for forgot password
 router.post("/send_otp", otpmailvalidator, send_otp_fp);
 router.post("/verify_otp", verifymailvalidator, verify_otp_fp);
 
+
+const {mailVerification}=require('../Controllers/UserControllers')
+//const { forgotPassword, resetPassword } = require('../Controllers/UserControllers');
+
+
+ 
+router.get('/api/mail-verification',mailVerification)
 router.all("/*", function (req, res) {
   res.status(400).send({ status: false, message: " Path invalid." });
 });
