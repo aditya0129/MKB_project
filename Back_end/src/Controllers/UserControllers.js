@@ -20,6 +20,7 @@ const {
   OneMinutExpiry,
   ThreeMinutExpiry,
 } = require("../Validation/OtpValidate");
+const Advisor_Model = require("../models/Advisor_Model");
 
 // Calculate age from birthdate
 const calculateAge = (birthdate) => {
@@ -39,7 +40,8 @@ const calculateAge = (birthdate) => {
 const Register_User = async function (req, res) {
   try {
     let data = req.body;
-    let { name, email, password, birthdate, gender, number, place } = data;
+    let { name, email, password, birthdate, gender, number, place, category } =
+      data;
 
     if (!name)
       return res
@@ -68,7 +70,7 @@ const Register_User = async function (req, res) {
     if (checkEmail) {
       return res.status(400).send({
         status: false,
-        msg: "email is already registered   please use nother email",
+        msg: "email is already registered   please use another email",
       });
     }
     // console.log(checkEmail);
@@ -110,6 +112,16 @@ const Register_User = async function (req, res) {
         .status(400)
         .send({ status: false, Msg: "please provide valid Mobile Number" });
     }
+    if (!category)
+      return res
+        .status(400)
+        .send({ Status: false, Msg: "please provide your category" });
+
+    // if (!validateName(category)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, Msg: " Name should be in alphabate" });
+    // }
     let checkNumber = await UserModel.findOne({ number: number });
     if (checkNumber) {
       return res
@@ -133,19 +145,22 @@ const Register_User = async function (req, res) {
     const newUser = new UserModel({
       name,
       email,
-      password:data.password,
+      password: data.password,
       number,
       gender,
       birthdate,
       age,
       place,
-      image:'image/'+req.file.filename
+      category,
+      image: "image/" + req.file.filename,
     });
-    const userData=await newUser.save();
-  
+    const userData = await newUser.save();
+
     //const msg='<p> hii ,'+name+',please <a href="http://localhost:3001/api/mail-verification?id='+userData._id+'">verify</a>your mail.</p>';
     const msg = `<p>Hi ${name}, please <a href="http://localhost:3001/api/mail-verification?id=${userData._id}">verify</a> your email.</p>`;
-    mailer.sendMail(email,'mail-verification', msg)
+    mailer.sendMail(email, "mail-verification", msg);
+    //router.get('/api/mail-verification',mailVerification)
+    //http://localhost:3001/api/mail-verification?id=668ce9c4bac40576be3d287a
     res.status(201).json({ status: true, user: userData });
   } catch (error) {
     return res.status(500).send({ status: false, Msg: error.message });
@@ -207,8 +222,10 @@ const Login_user = async function (req, res) {
 
 const get_Users = async function (req, res) {
   try {
-    let userId = req.params.userId;
+    //let userId = req.params.userId;
 
+    let userId = req.token.userId;
+    console.log(userId);
     if (!isValidObjectId(userId))
       return res
         .status(400)
@@ -470,9 +487,6 @@ const genrateOtp = async () => {
   return Math.floor(1000 + Math.random() * 9000);
 };
 
-
-
-
 const send_otp_fp = async function (req, res) {
   try {
     // Validation and other logic...
@@ -488,7 +502,7 @@ const send_otp_fp = async function (req, res) {
 
     // Generate and store OTP
     const g_otp = await genrateOtp();
-    const user_id = userData._id;  // Get the user ID
+    const user_id = userData._id; // Get the user ID
 
     const oldotpData = await otp_model.findOne({ user_id });
     if (oldotpData) {
@@ -508,19 +522,21 @@ const send_otp_fp = async function (req, res) {
     );
 
     const msg = `<p>Hi <b>${userData.name}</b>,<br> <h4>${g_otp}</h4></p>`;
-    const mailerSend = await mailer.sendMail(userData.email, "OTP verification", msg);
+    const mailerSend = await mailer.sendMail(
+      userData.email,
+      "OTP verification",
+      msg
+    );
 
     return res.status(200).json({
       status: true,
-      user_id: userData._id,  // Include user_id in the response
+      user_id: userData._id, // Include user_id in the response
       msg: "Verification OTP has been sent to your email address, please check!",
     });
   } catch (error) {
     return res.status(500).send({ status: false, msg: error.message });
   }
 };
-
-
 
 const verify_otp_fp = async function (req, res) {
   try {
@@ -574,7 +590,6 @@ const Get_All_User = async function (req, res) {
   }
 };
 
-
 // const mailVerification=async(req,res)=>{
 
 //   try{
@@ -590,7 +605,6 @@ const Get_All_User = async function (req, res) {
 //       return res.render('mail-verification',{message:'user not Found!'})
 //     }
 
-
 //   }catch (error) {
 //     console.log(error.message)
 //     return res.render('404')
@@ -598,37 +612,198 @@ const Get_All_User = async function (req, res) {
 
 // }
 
-
-const mailVerification=async(req,res)=>{
-
-  try{
-
-    if(req.query.id == undefined){
-      return req.render('404');
+const mailVerification = async (req, res) => {
+  try {
+    if (req.query.id == undefined) {
+      return req.render("404");
     }
 
-    const userData=await userModel.findOne({_id:req.query.id});
-    if(userData){
-      if(userData.is_verified == 1) {
-        return res.render('mail-verification',{message:'Your mail already verified!'})
+    const userData = await userModel.findOne({ _id: req.query.id });
+    console.log("userData" + userData);
+    console.log("queary id" + req.query.id);
+    if (userData) {
+      if (userData.is_verified == 1) {
+        return res.render("mail-verification", {
+          message: "Your mail already verified!",
+        });
       }
-      await userModel.findByIdAndUpdate({_id:req.query.id},{
-        $set:{
-          is_verified: 1
+      await userModel.findByIdAndUpdate(
+        { _id: req.query.id },
+        {
+          $set: {
+            is_verified: 1,
+          },
         }
+      );
+      return res.render("mail-verification", {
+        message: "Mail has been verified Successfully!",
       });
-      return res.render('mail-verification',{message:'Mail has been verified Successfully!'})
-    }else{
-      return res.render('mail-verification',{message:'User not Found!'}) 
+    } else {
+      return res.render("mail-verification", { message: "User not Found!" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return res.render("404");
+  }
+};
+
+//----------------------------------------------------forgotPassword--------------------------------------------------------- //
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const email_check = await userModel.find({ email });
+    if (!email_check) {
+      return res.status(400).send({
+        status: "false",
+        msg: `user not found with this email ${req.body.email}`,
+      });
+    }
+    const token = jwt.sign({ email }, "forget-password", { expiresIn: "1h" });
+
+    const msg = `You requested for a password reset. Please use the following token to reset your password: ${token}`;
+
+    mailer.sendMail(email, "Password Reset", msg);
+    res.status(200).json({ status: true, message: "Email sent", Token: token });
+  } catch (error) {
+    return res.status(500).send({ status: "false", Msg: error.message });
+  }
+};
+
+//----------------------------------------------------resetPassword--------------------------------------------------------- //
+
+const resetPassword = async (req, res) => {
+  try {
+    const { newPassword, token } = req.body;
+
+    // const decoded = await promisify(jwt.verify)(token, "Password Reset");
+    // const { email } = decoded;
+
+    jwt.verify(token, "forget-password", async function (err, decoded) {
+      if (err) {
+        console.log(err.message);
+        return res.status(401).send({ status: false, message: err.message });
+      } else {
+        req.token = decoded;
+        data = req.token;
+      }
+    });
+
+    const { email } = data;
+
+    const user = await userModel.find({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 8);
+
+    userModel({ email }).password = hashedPassword;
+    console.log({ password: userModel.password });
+    return res.status(200).send({
+      status: true,
+      msg: "password updated successfully",
+      data: hashedPassword,
+    });
+  } catch (error) {
+    return res.status(500).send({ status: "false", Msg: error.message });
+  }
+};
+
+// const User_Home = async function (req, res) {
+//   try {
+//     let userId = req.token.userId;
+//     console.log("userId"+userId);
+//     if (!isValidObjectId(userId))
+//       return res
+//         .status(400)
+//         .send({ status: false, message: "User is invalid" });
+    
+//     let User_data = await userModel.find({ _id:userId });
+//     console.log("User_data"+User_data)
+//     if (!User_data) {
+//       return res
+//         .status(404)
+//         .json({ status: false, msg: "user not found by  _id" });
+//     }
+//     //yha tak sahi hai
+
+
+//     //let category_data = User_data.category;
+//     //User_data.category=category_data
+//     const {category}=User_data.category
+
+
+
+//     console.log("category_data"+category);
+
+//     let Advisor_data = await Advisor_Model.find({ Expertise: category_data });
+//     console.log(Advisor_data);
+//     if (!Advisor_data) {
+//       return res
+//         .status(404)
+//         .json({
+//           status: false,
+//           Api: "user_home",
+//           msg: "category was not found Advisor_Model",
+//         });
+//     }
+//     return res
+//       .status(200)
+//       .json({
+//         status: true,
+//         msg: "data found for home_pages",
+//         data: Advisor_data,
+//       });
+//   } catch (error) {
+//     return res.status(500).json({ status: false, Msg: error.message });
+//   }
+// };
+const User_Home = async function (req, res) {
+  try {
+    let userId = req.token.userId;
+    
+
+    if (!isValidObjectId(userId)) {
+      return res.status(400).send({ status: false, message: "User is invalid" });
     }
 
+    let User_data = await userModel.findById(userId); // Corrected the findById usage
+    
 
-  }catch (error) {
-    console.log(error.message)
-    return res.render('404')
+    if (!User_data) {
+      return res.status(404).json({ status: false, msg: "user not found by _id" });
+    }
+
+    let category_data = User_data.category; // Accessing category directly
+    if (!category_data) {
+      return res.status(404).json({ status: false, msg: "user category not found" });
+    }
+
+   
+
+    let Advisor_data = await Advisor_Model.find({ Expertise: category_data });
+    
+// i want undesstand further
+    if (!Advisor_data || Advisor_data.length === 0) {
+      return res.status(404).json({
+        status: false,
+        Api: "user_home",
+        msg: "category was not found in Advisor_Model",
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      msg: "data found for home_pages",
+      data: Advisor_data,
+    });
+  } catch (error) {
+    return res.status(500).json({ status: false, Msg: error.message });
   }
+};
 
-}
+
 module.exports = {
   verify_otp_fp,
   send_otp_fp,
@@ -637,5 +812,8 @@ module.exports = {
   get_Users,
   Update_User,
   Get_All_User,
-  mailVerification
+  mailVerification,
+  resetPassword,
+  forgotPassword,
+  User_Home
 };

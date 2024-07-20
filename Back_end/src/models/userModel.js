@@ -3,17 +3,10 @@ const { Number } = require("twilio/lib/twiml/VoiceResponse");
 
 const UserSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      uniue: true,
-      trim: true,
-    },
+    name: {type: String, required: true,trim: true,},
+
+    email: {type: String,required: true,uniue: true,trim: true,},
+    
     password: {
       type: String,
       required: true,
@@ -44,14 +37,18 @@ const UserSchema = new mongoose.Schema(
       enum: ["Male", "Female", "Lgbtq", "male", "female"],
       required: true,
     },
-    is_verified:{
-      type:Number,
-      default:0
+    is_verified: {
+      type: Number,
+      default: 0,
     },
-    image:{
-      type:String,
-      required:true
-    }
+    image: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
