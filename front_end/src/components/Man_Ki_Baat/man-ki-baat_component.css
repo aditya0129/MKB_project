@@ -1,5 +1,7 @@
 #header {
-  background: #fbfbfb;
+  /* background: #fbfbfb; */
+  background: linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78));
+  color: white;
   height: 70px;
 }
 
@@ -20,6 +22,7 @@
 .user {
   background: #fbfbfb;
   border-radius: 30px;
-  border-bottom: 3px solid cyan;
-  border-top: 3px solid blue;
+  border-bottom: 8px solid cyan;
+  border-top: 8px solid blue;
+  box-shadow: 0 0 8px rgb(145, 144, 146);
 }

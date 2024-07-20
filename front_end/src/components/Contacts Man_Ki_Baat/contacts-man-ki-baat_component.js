@@ -53,7 +53,7 @@ export function ContactsManKiBaat() {
                 style={{ width: "200px", height: "50px" }}
               />
               <button
-                className="btn btn-outline-primary ms-2"
+                className="btn btn-primary ms-2"
                 style={{ height: "50px" }}
               >
                 Search
@@ -69,7 +69,7 @@ export function ContactsManKiBaat() {
                   onClick={toggleDropdown}
                   style={{
                     display: "inline-block",
-                    color: "black",
+                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
@@ -121,19 +121,19 @@ export function ContactsManKiBaat() {
                   className="ms-4"
                   style={{
                     display: "inline-block",
-                    color: "black",
+                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
                 >
                   Message
                 </li>
-                <FontAwesomeIcon icon={faEnvelope} style={{ color: "blue" }} />
+                <FontAwesomeIcon icon={faEnvelope} style={{ color: "white" }} />
                 <li
                   className="ms-4"
                   style={{
                     display: "inline-block",
-                    color: "black",
+                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
@@ -141,21 +141,21 @@ export function ContactsManKiBaat() {
                   My Contacts
                 </li>
                 <img
-                  className="ms-4 p-1 mt-2"
+                  className="ms-4 mt-2"
                   src="boy-img.jpg"
                   alt=""
                   style={{
                     width: "50px",
                     height: "50px",
                     borderRadius: "100px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
                   onClick={SignoutClick}
-                  style={{ color: "blue", cursor: "pointer" }}
+                  style={{ color: "white", cursor: "pointer" }}
                 />
               </ul>
             </div>

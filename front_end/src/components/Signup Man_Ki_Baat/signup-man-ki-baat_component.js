@@ -4,7 +4,11 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import axios from "axios";
 import * as yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserTie } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserTie,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import PhoneInput from "react-phone-input-2";
@@ -419,6 +423,12 @@ export function SignupManKiBaatComponent() {
     }
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -532,10 +542,30 @@ export function SignupManKiBaatComponent() {
                       {useError && (
                         <div className="text-danger">{useError}</div>
                       )}
-                      <div className="inputBoxing">
-                        <Field type="password" name="password" />
+                      <div
+                        className="inputBoxing"
+                        style={{ position: "relative" }}
+                      >
+                        {/* <Field type="password" name="password" /> */}
+                        <Field
+                          type={showPassword ? "text" : "password"}
+                          name="password"
+                        />
                         <span>Password</span>
                         <i></i>
+                        <FontAwesomeIcon
+                          icon={showPassword ? faEye : faEyeSlash}
+                          onClick={togglePasswordVisibility}
+                          style={{
+                            position: "absolute",
+                            right: "7px",
+                            top: "-7",
+                            fontSize: "20px",
+                            transform: "translateY(-50%)",
+                            cursor: "pointer",
+                            color: "white",
+                          }}
+                        />
                       </div>
                       <div className="text-danger">
                         <ErrorMessage name="password" />

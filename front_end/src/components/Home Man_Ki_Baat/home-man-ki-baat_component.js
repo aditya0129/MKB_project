@@ -1,53 +1,41 @@
 import React, { useState, useEffect } from "react";
-import "./advisor-man-ki-baat_component.css";
-import axios from "axios";
+import "./home-man-ki-baat_component.css";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
   faStar,
   faPhone,
+  faPowerOff,
   faComment,
   faVideo,
   faMinus,
   faPlus,
-  faPowerOff,
+  faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 
-export function AdvisorManKiBaatComponent() {
+import {
+  faWhatsapp,
+  faInstagram,
+  faFacebookF,
+  faLinkedinIn,
+} from "@fortawesome/free-brands-svg-icons";
+
+export function HomeManKiBaatComponenet() {
   const [isOpen, setIsOpen] = useState(false);
-  const [advisors, setAdvisors] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
-
-  // Authentication check
-  useEffect(() => {
-    if (cookies["token"] === undefined) {
-      navigate("/register-case");
-    }
-  }, [cookies, navigate]);
-
-  // Fetch advisors data
-  useEffect(() => {
-    async function fetchAdvisors() {
-      try {
-        const response = await axios.get(
-          `http://localhost:3001/Advisor_All_Data`
-        );
-        setAdvisors(response.data.Data);
-      } catch (error) {
-        console.error("Error fetching advisors data:", error);
-      }
-    }
-
-    fetchAdvisors();
-  }, []);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    if (cookies["token"] === undefined) {
+      navigate("/register-case");
+    }
+  });
 
   const SignoutClick = () => {
     alert("Logout Successfully...");
@@ -59,6 +47,9 @@ export function AdvisorManKiBaatComponent() {
     navigate("/contacts");
   };
 
+  const handleUserProfileClick = () => {
+    navigate("/user-profile");
+  };
   return (
     <>
       <div id="header">
@@ -163,6 +154,7 @@ export function AdvisorManKiBaatComponent() {
                 </li>
                 <img
                   className="ms-4 mt-2"
+                  onClick={handleUserProfileClick}
                   src="boy-img.jpg"
                   alt=""
                   style={{
@@ -170,6 +162,7 @@ export function AdvisorManKiBaatComponent() {
                     height: "50px",
                     borderRadius: "100px",
                     // boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    cursor: "pointer",
                   }}
                 />
                 <FontAwesomeIcon
@@ -187,22 +180,12 @@ export function AdvisorManKiBaatComponent() {
       <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
-          style={{ minHeight: "150px" }}
+          style={{ minHeight: "100px" }}
         >
           <h3 className="display-2 font-weight-bold text-white">
-            {" "}
-            <span style={{ fontSize: "85px" }}>&#10621;</span> Advisor{" "}
-            <span style={{ fontSize: "85px" }}>&#10620;</span>
+            <span style={{ fontSize: "90px" }}>&#10621;</span> Home{" "}
+            <span style={{ fontSize: "90px" }}>&#10620;</span>
           </h3>
-          <div className="d-inline-flex text-white">
-            <p className="m-0">
-              <a className="text-white" href="/">
-                Home
-              </a>
-            </p>
-            <p className="m-0 px-2">/</p>
-            <p className="m-0">Advisor</p>
-          </div>
         </div>
       </div>
 
@@ -211,125 +194,137 @@ export function AdvisorManKiBaatComponent() {
         style={{ background: "white" }}
       >
         <div className="row">
-          {advisors.map((advisor) => (
-            <div className="col-md-4 mt-3" key={advisor._id}>
-              <div
-                className="card mb-3"
-                style={{
-                  borderTop: "8px solid blue",
-                  borderBottom: "8px solid cyan",
-                }}
-              >
-                <div className="card-body">
-                  <div className="text-center">
-                    <img
-                      src="boy-img.jpg"
-                      alt=""
-                      style={{
-                        height: "70px",
-                        width: "70px",
-                        borderRadius: "100px",
-                        boxShadow: "0 0 8px rgb(145, 144, 146)",
-                      }}
-                    />
-                  </div>
-                  <h5
-                    className="mt-3"
-                    style={{ fontWeight: "bold", fontFamily: "Arial" }}
-                  >
-                    {advisor.Name}
-                  </h5>
-                  <p>
-                    {advisor.rating}{" "}
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "darkgray" }}
-                    />
-                  </p>
-                  <button
-                    className="btn btn-primary me-2"
-                    type="button"
+          <div className="col-md-4 mt-3">
+            <div
+              className="card mb-3"
+              style={{
+                borderTop: "8px solid blue",
+                borderBottom: "8px solid cyan",
+              }}
+            >
+              <div className="card-body">
+                <div className="text-center">
+                  <img
+                    src="boy-img.jpg"
+                    alt=""
                     style={{
-                      background: "linear-gradient(135deg,blue,cyan)",
-                      border: "none",
-                      borderRadius: "7px",
-                      width: "100px",
-                      height: "45px",
-                      color: "white",
-                      boxShadow: "0 0 3px rgb(81, 80, 82)",
+                      height: "70px",
+                      width: "70px",
+                      borderRadius: "100px",
+                      boxShadow: "0 0 8px rgb(145, 144, 146)",
                     }}
-                  >
-                    <FontAwesomeIcon className="me-2" icon={faPhone} />
-                    Call
-                  </button>
-                  <button
-                    className="btn btn-primary mt-2"
-                    type="button"
-                    style={{
-                      background: "linear-gradient(135deg,blue,cyan)",
-                      border: "none",
-                      borderRadius: "7px",
-                      width: "150px",
-                      height: "45px",
-                      color: "white",
-                      boxShadow: "0 0 3px rgb(81, 80, 82)",
-                    }}
-                  >
-                    <FontAwesomeIcon className="me-2" icon={faPhone} />
-                    Waiting Call
-                  </button>
-                  <p className="mt-3">
-                    <FontAwesomeIcon icon={faComment} /> No. of chats
-                  </p>
-                  <p className="mt-3">
-                    <FontAwesomeIcon icon={faVideo} /> No. of video-calls
-                  </p>
-                  <p className="mt-3">
-                    <FontAwesomeIcon icon={faMinus} /> review{" "}
-                    <FontAwesomeIcon className="" icon={faPlus} /> review
-                  </p>
+                  />
                 </div>
-                <div
-                  className="card-footer ms-4"
+                <h5
+                  className="mt-3"
+                  style={{ fontWeight: "bold", fontFamily: "Arial" }}
+                >
+                  Saurabh Karn
+                </h5>
+                <p>
+                  5{" "}
+                  <FontAwesomeIcon
+                    className="ms-2"
+                    icon={faStar}
+                    style={{ color: "blue" }}
+                  />
+                  <FontAwesomeIcon
+                    className="ms-2"
+                    icon={faStar}
+                    style={{ color: "blue" }}
+                  />
+                  <FontAwesomeIcon
+                    className="ms-2"
+                    icon={faStar}
+                    style={{ color: "blue" }}
+                  />
+                  <FontAwesomeIcon
+                    className="ms-2"
+                    icon={faStar}
+                    style={{ color: "blue" }}
+                  />
+                  <FontAwesomeIcon
+                    className="ms-2"
+                    icon={faStar}
+                    style={{ color: "darkgray" }}
+                  />
+                </p>
+                <button
+                  className="btn btn-primary me-2"
+                  type="button"
                   style={{
-                    borderTopLeftRadius: "30px",
-                    borderBottomRightRadius: "30px",
-                    padding: "20px",
+                    background: "linear-gradient(135deg,blue,cyan)",
+                    border: "none",
+                    borderRadius: "7px",
+                    width: "100px",
+                    height: "45px",
+                    color: "white",
+                    boxShadow: "0 0 3px rgb(81, 80, 82)",
                   }}
                 >
-                  <h6 style={{ fontWeight: "bold" }}>Year of Experience :-</h6>
-                  <p>{advisor.Experience}</p>
-                  <h6 style={{ fontWeight: "bold" }}>Expertise :-</h6>
-                  <p>{advisor.Expertise}</p>
-                  <h6 style={{ fontWeight: "bold" }}>Language :-</h6>
-                  <p>{advisor.Language}</p>
-                </div>
+                  <FontAwesomeIcon className="me-2" icon={faPhone} />
+                  Call
+                </button>
+                <button
+                  className="btn btn-primary mt-2"
+                  type="button"
+                  style={{
+                    background: "linear-gradient(135deg,blue,cyan)",
+                    border: "none",
+                    borderRadius: "7px",
+                    width: "150px",
+                    height: "45px",
+                    color: "white",
+                    boxShadow: "0 0 3px rgb(81, 80, 82)",
+                  }}
+                >
+                  <FontAwesomeIcon className="me-2" icon={faPhone} />
+                  Waiting Call
+                </button>
+                <p className="mt-3">
+                  <FontAwesomeIcon icon={faComment} /> No. of chats
+                </p>
+                <p className="mt-3">
+                  <FontAwesomeIcon icon={faVideo} /> No. of video-calls
+                </p>
+                <p className="mt-3">
+                  <FontAwesomeIcon icon={faMinus} /> review{" "}
+                  <FontAwesomeIcon className="" icon={faPlus} /> review
+                </p>
+              </div>
+              <div
+                className="card-footer ms-4"
+                style={{
+                  borderTopLeftRadius: "30px",
+                  borderBottomRightRadius: "30px",
+                  padding: "20px",
+                }}
+              >
+                <h6 style={{ fontWeight: "bold" }}>Year of Experience :-</h6>
+                <p>2 Yrs</p>
+                <h6 style={{ fontWeight: "bold" }}>Expertise :-</h6>
+                <p>Stress</p>
+                <h6 style={{ fontWeight: "bold" }}>Language :-</h6>
+                <p>Hindi</p>
               </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
+
+      <div class="container-fluid text-white" style={{background: "linear-gradient(135deg, blue,red)"}}>
+    <div class="container text-center">
+        <div class="row d-flex align-items-center justify-content-center p-3">
+            <div class="col-lg-8 col-md-6">
+                <div class="" style={{height: "75px"}}>
+                    <p class="mb-0">&copy; <a class="text-white border-bottom"  style={{textDecoration: "none"}}>Blink Random Technologies</a>. All Rights Reserved. 
+                    Designed by <a class="text-white border-bottom"  style={{textDecoration: "none"}}>Saurabh Karn & Aditya Prajapati <span style={{color:"#5cb874"}}>(Blink Random Technologies)</span></a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     </>
   );
 }

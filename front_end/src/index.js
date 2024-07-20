@@ -19,13 +19,15 @@ import { AdvisorProfileManKiBaatComponent } from "./components/Advisor Profile/a
 import { ForgetPasswordMankiBaatComponent } from "./components/Forgot Password/forgot-password-man-ki-baat_component";
 import { VerifyOTPManKiBaatComponent } from "./components/Verify OTP/verify-otp-man-ki-baat_component";
 import { SetPasswordManKiBaatComponent } from "./components/Set Password/set-password-man-ki-baat_component";
+import { HomeManKiBaatComponenet } from "./components/Home Man_Ki_Baat/home-man-ki-baat_component";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<ManKiBaatComponent />} />
+        <Route path="/" element={<HomeManKiBaatComponenet />} />
+        <Route path="/user-profile" element={<ManKiBaatComponent />} />
         <Route path="advisor" element={<AdvisorManKiBaatComponent />} />
         <Route path="login" element={<LoginManKiBaatComponent />} />
         <Route path="signup" element={<SignupManKiBaatComponent />} />
