@@ -20,6 +20,7 @@ const {
   OneMinutExpiry,
   ThreeMinutExpiry,
 } = require("../Validation/OtpValidate");
+const Advisor_Model = require("../models/Advisor_Model");
 
 // Calculate age from birthdate
 const calculateAge = (birthdate) => {
@@ -39,7 +40,8 @@ const calculateAge = (birthdate) => {
 const Register_User = async function (req, res) {
   try {
     let data = req.body;
-    let { name, email, password, birthdate, gender, number, place } = data;
+    let { name, email, password, birthdate, gender, number, place, category } =
+      data;
 
     if (!name)
       return res
@@ -110,6 +112,16 @@ const Register_User = async function (req, res) {
         .status(400)
         .send({ status: false, Msg: "please provide valid Mobile Number" });
     }
+    if (!category)
+      return res
+        .status(400)
+        .send({ Status: false, Msg: "please provide your category" });
+
+    // if (!validateName(category)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, Msg: " Name should be in alphabate" });
+    // }
     let checkNumber = await UserModel.findOne({ number: number });
     if (checkNumber) {
       return res
@@ -139,6 +151,7 @@ const Register_User = async function (req, res) {
       birthdate,
       age,
       place,
+      category,
       image: "image/" + req.file.filename,
     });
     const userData = await newUser.save();
@@ -599,8 +612,6 @@ const Get_All_User = async function (req, res) {
 
 // }
 
-
-
 const mailVerification = async (req, res) => {
   try {
     if (req.query.id == undefined) {
@@ -608,8 +619,8 @@ const mailVerification = async (req, res) => {
     }
 
     const userData = await userModel.findOne({ _id: req.query.id });
-    console.log('userData'+userData);
-    console.log('queary id'+req.query.id);
+    console.log("userData" + userData);
+    console.log("queary id" + req.query.id);
     if (userData) {
       if (userData.is_verified == 1) {
         return res.render("mail-verification", {
@@ -635,7 +646,6 @@ const mailVerification = async (req, res) => {
     return res.render("404");
   }
 };
-
 
 //----------------------------------------------------forgotPassword--------------------------------------------------------- //
 
@@ -689,18 +699,110 @@ const resetPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 8);
 
     userModel({ email }).password = hashedPassword;
-    console.log({"password":userModel.password});
-    return res
-      .status(200)
-      .send({
-        status: true,
-        msg: "password updated successfully",
-        data: hashedPassword,
-      });
+    console.log({ password: userModel.password });
+    return res.status(200).send({
+      status: true,
+      msg: "password updated successfully",
+      data: hashedPassword,
+    });
   } catch (error) {
     return res.status(500).send({ status: "false", Msg: error.message });
   }
 };
+
+// const User_Home = async function (req, res) {
+//   try {
+//     let userId = req.token.userId;
+//     console.log("userId"+userId);
+//     if (!isValidObjectId(userId))
+//       return res
+//         .status(400)
+//         .send({ status: false, message: "User is invalid" });
+    
+//     let User_data = await userModel.find({ _id:userId });
+//     console.log("User_data"+User_data)
+//     if (!User_data) {
+//       return res
+//         .status(404)
+//         .json({ status: false, msg: "user not found by  _id" });
+//     }
+//     //yha tak sahi hai
+
+
+//     //let category_data = User_data.category;
+//     //User_data.category=category_data
+//     const {category}=User_data.category
+
+
+
+//     console.log("category_data"+category);
+
+//     let Advisor_data = await Advisor_Model.find({ Expertise: category_data });
+//     console.log(Advisor_data);
+//     if (!Advisor_data) {
+//       return res
+//         .status(404)
+//         .json({
+//           status: false,
+//           Api: "user_home",
+//           msg: "category was not found Advisor_Model",
+//         });
+//     }
+//     return res
+//       .status(200)
+//       .json({
+//         status: true,
+//         msg: "data found for home_pages",
+//         data: Advisor_data,
+//       });
+//   } catch (error) {
+//     return res.status(500).json({ status: false, Msg: error.message });
+//   }
+// };
+const User_Home = async function (req, res) {
+  try {
+    let userId = req.token.userId;
+    
+
+    if (!isValidObjectId(userId)) {
+      return res.status(400).send({ status: false, message: "User is invalid" });
+    }
+
+    let User_data = await userModel.findById(userId); // Corrected the findById usage
+    
+
+    if (!User_data) {
+      return res.status(404).json({ status: false, msg: "user not found by _id" });
+    }
+
+    let category_data = User_data.category; // Accessing category directly
+    if (!category_data) {
+      return res.status(404).json({ status: false, msg: "user category not found" });
+    }
+
+   
+
+    let Advisor_data = await Advisor_Model.find({ Expertise: category_data });
+    
+// i want undesstand further
+    if (!Advisor_data || Advisor_data.length === 0) {
+      return res.status(404).json({
+        status: false,
+        Api: "user_home",
+        msg: "category was not found in Advisor_Model",
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      msg: "data found for home_pages",
+      data: Advisor_data,
+    });
+  } catch (error) {
+    return res.status(500).json({ status: false, Msg: error.message });
+  }
+};
+
 
 module.exports = {
   verify_otp_fp,
@@ -713,4 +815,5 @@ module.exports = {
   mailVerification,
   resetPassword,
   forgotPassword,
+  User_Home
 };

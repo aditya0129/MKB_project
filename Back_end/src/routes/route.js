@@ -9,7 +9,8 @@ const {
   Update_User,
   Get_All_User,
   forgotPassword, 
-  resetPassword
+  resetPassword,
+  User_Home
 } = require("../Controllers/UserControllers");
 const { sendOtp, VerifyOtp } = require("../Controllers/OtpVerfy");
 const {
@@ -59,6 +60,7 @@ const uplode = multer({ storage: storage, fileFilter: fileFilter });
 // User_APIS
 router.post("/Register", uplode.single("image"), Register_User);
 router.post("/Login", Login_user);
+router.get("/User_Home/Advisor_detail",isAuthenticated, User_Home);
 router.get("/get_user/profile", isAuthenticated, get_Users);
 router.put("/user/:userId/profile",Update_User);
 router.get("/User_All_Data", Get_All_User);
