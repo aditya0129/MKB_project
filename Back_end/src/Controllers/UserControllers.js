@@ -169,34 +169,98 @@ const Register_User = async function (req, res) {
 
 /////////////////////////////////////////////////////////login----User////////////////////////////////////////////////////
 
+// const Login_user = async function (req, res) {
+//   try {
+//     let data = req.body;
+//     let { email, password } = data;
+//     if (!email)
+//       return res
+//         .status(400)
+//         .send({ status: false, Msg: "please provide email" });
+
+//     let verifyUser = await UserModel.findOne({ email: email });
+
+//     if (!verifyUser) {
+//       return res
+//         .status(400)
+//         .send({ Status: false, MSG: "please provide correct email" });
+//     }
+//     if (!password) {
+//       return res
+//         .status(400)
+//         .send({ status: false, MSG: "please provide password" });
+//     }
+//     if (!validatePassword(password)) {
+//       return res.status(400).send({
+//         status: false,
+//         MSG: "Please provide valid password,it should contain uppercase,number and special character and 8-15 length",
+//       });
+//     }
+//     let hash = verifyUser.password;
+
+//     let isCorrect = bcrypt.compareSync(password, hash);
+//     if (!isCorrect) {
+//       return res
+//         .status(400)
+//         .send({ status: false, message: "Password is incorrect" });
+//     }
+
+//     let token = jwt.sign(
+//       {
+//         userId: verifyUser._id.toString(),
+//       },
+//       "man-ki-baat"
+//     );
+//     res.setHeader("x-api-key", token);
+//     res.send({ status: true, Token: token, msg: "login successfully" });
+//   } catch (error) {
+//     return res.status(500).send({ Status: false, MSG: error.message });
+//   }
+// };
+
+
 const Login_user = async function (req, res) {
   try {
-    let data = req.body;
-    let { email, password } = data;
-    if (!email)
+    const data = req.body;
+    if (Object.keys(data).length == 0) {
+      return res.status(400).send({
+        status: "false",
+        message: "Please enter the data in request body",
+      });
+    }
+    const { email, password } = data;
+
+    if (!email || email == "") {
+      return res.status(400).send({
+        status: false,
+        message: "email is mandatory and email Should not be Empty",
+      });
+    }
+    if (!validateEmail(email.trim())) {
       return res
         .status(400)
-        .send({ status: false, Msg: "please provide email" });
-
+        .send({ status: false, MSG: "Please provide valid email" });
+    }
     let verifyUser = await UserModel.findOne({ email: email });
-
+    console.log(verifyUser._id);
     if (!verifyUser) {
-      return res
-        .status(400)
-        .send({ Status: false, MSG: "please provide correct email" });
+      return res.status(400).send({
+        status: false,
+        MSG: "this email is not present our data please provide email",
+      });
     }
     if (!password) {
       return res
         .status(400)
         .send({ status: false, MSG: "please provide password" });
-    }
+    } 
     if (!validatePassword(password)) {
       return res.status(400).send({
         status: false,
         MSG: "Please provide valid password,it should contain uppercase,number and special character and 8-15 length",
       });
     }
-    let hash = verifyUser.password;
+    let hash = verifyUser.password; 
 
     let isCorrect = bcrypt.compareSync(password, hash);
     if (!isCorrect) {
@@ -207,16 +271,18 @@ const Login_user = async function (req, res) {
 
     let token = jwt.sign(
       {
-        userId: verifyUser._id.toString(),
+        userId: verifyUser._id,
       },
       "man-ki-baat"
     );
-    res.setHeader("x-api-key", token);
+    // res.setHeader("x-api-key", token);
+
     res.send({ status: true, Token: token, msg: "login successfully" });
   } catch (error) {
-    return res.status(500).send({ Status: false, MSG: error.message });
+    return res.status(500).send({ status: false, Msg: error.message });
   }
 };
+
 
 //////////////////////////////////////////////////////////////Get--User/////////////////////////////////////////////////////
 
