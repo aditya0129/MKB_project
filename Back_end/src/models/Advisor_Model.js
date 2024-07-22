@@ -12,7 +12,7 @@ const advisorSchema = new mongoose.Schema(
 
     Expertise: { type: String, required: true },
 
-    Image: { type: String },
+    Image: { type: String , required:true},
 
     DOB: { type: Date },
 
