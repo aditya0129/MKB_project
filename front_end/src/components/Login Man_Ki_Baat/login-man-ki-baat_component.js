@@ -58,11 +58,8 @@ export function LoginManKiBaatComponent() {
                         password: values.password,
                       }
                     );
-
-                    const token = authResponse.data.token;
-
+                    const token = authResponse.data.Token;
                     localStorage.setItem("token", token);
-
                     setCookie("token", token, { path: "/" });
                     alert("Login Successfully...");
                     navigate("/");

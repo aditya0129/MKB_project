@@ -87,7 +87,7 @@ export function AdvisorLoginManKiBaatComponent() {
                       {/* <Field type="password" name="Password" /> */}
                       <Field
                         type={showPassword ? "text" : "password"}
-                        name="password"
+                        name="Password"
                       />
                       <span>Password</span>
                       <i></i>

@@ -1,5 +1,6 @@
 import React from "react";
 import "./man-ki-baat_component.css";
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
@@ -24,6 +25,7 @@ export function ManKiBaatComponent({ data }) {
   const [showStress, setShowStress] = useState(false);
   const [showAnxiety, setShowAnxiety] = useState(false);
   const [showEmotion, setShowEmotion] = useState(false);
+  const [user, setUser] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
@@ -48,6 +50,29 @@ export function ManKiBaatComponent({ data }) {
     setShowStress(false);
     setShowAnxiety(false);
   };
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/get_user/profile`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setUser(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     if (cookies["token"] === undefined) {
@@ -200,9 +225,10 @@ export function ManKiBaatComponent({ data }) {
                 >
                   My Contacts
                 </li>
-                <img
+                {user.map((users)=>(
+                  <img
                   className="ms-4 mt-2"
-                  src="boy-img.jpg"
+                  src={users.image}
                   alt=""
                   style={{
                     width: "50px",
@@ -211,6 +237,7 @@ export function ManKiBaatComponent({ data }) {
                     // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
+                ))}
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
@@ -663,6 +690,39 @@ export function ManKiBaatComponent({ data }) {
             <p>
               Gender <span style={{ marginLeft: "55px" }}>Male</span>
             </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="container-fluid text-white"
+        style={{ background: "linear-gradient(135deg, blue,red)" }}
+      >
+        <div class="container text-center">
+          <div class="row d-flex align-items-center justify-content-center">
+            <div class="col-lg-8 col-md-6">
+              <div class="" style={{ height: "75px" }}>
+                <p class="mt-4">
+                  &copy;{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Blink Random Technologies
+                  </a>
+                  . All Rights Reserved. Designed by{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Saurabh Karn & Aditya Prajapati{" "}
+                    <span style={{ color: "#5cb874" }}>
+                      (Blink Random Technologies)
+                    </span>
+                  </a>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

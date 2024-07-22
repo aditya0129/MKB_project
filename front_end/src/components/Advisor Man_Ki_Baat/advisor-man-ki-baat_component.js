@@ -330,6 +330,39 @@ export function AdvisorManKiBaatComponent() {
           ))}
         </div>
       </div>
+
+      <div
+        class="container-fluid text-white"
+        style={{ background: "linear-gradient(135deg, blue,red)" }}
+      >
+        <div class="container text-center">
+          <div class="row d-flex align-items-center justify-content-center">
+            <div class="col-lg-8 col-md-6">
+              <div class="" style={{ height: "75px" }}>
+                <p class="mt-4">
+                  &copy;{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Blink Random Technologies
+                  </a>
+                  . All Rights Reserved. Designed by{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Saurabh Karn & Aditya Prajapati{" "}
+                    <span style={{ color: "#5cb874" }}>
+                      (Blink Random Technologies)
+                    </span>
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

@@ -141,6 +141,27 @@ const cities = [
   { value: "Durgapur", label: "Durgapur" },
 ];
 
+const categoryOptions = [
+  { value: "All", label: "All" },
+  { value: "Anxiety", label: "Anxiety" },
+  { value: "Stress", label: "Stress" },
+  { value: "Love", label: "Love" },
+  { value: "Affair", label: "Affair" },
+  { value: "Breakup", label: "Breakup" },
+  { value: "Elicit", label: "Elicit" },
+  { value: "Job", label: "Job" },
+  { value: "Law", label: "Law" },
+  { value: "Marriage", label: "Marriage" },
+  { value: "Social issues", label: "Social issues" },
+  { value: "Kisan", label: "Kisan" },
+  { value: "Property", label: "Property" },
+  { value: "Ex", label: "Ex" },
+  { value: "Education", label: "Education" },
+  { value: "Career", label: "Career" },
+  { value: "Medical", label: "Medical" },
+  { value: "Hyper thinking", label: "Hyper thinking" },
+];
+
 export function SignupManKiBaatComponent() {
   const navigate = useNavigate();
   const [cityOptions, setCityOptions] = useState([]);
@@ -298,8 +319,8 @@ export function SignupManKiBaatComponent() {
       width: "103%",
       padding: "9px",
       borderRadius: "5px",
-      border: "1px solid #dd033a",
-      backgroundColor: "#dd033a",
+      border: "1px solid #45f3ff",
+      backgroundColor: "#45f3ff",
       color: "white",
       outline: "none",
       transition: "0.3s",
@@ -444,6 +465,7 @@ export function SignupManKiBaatComponent() {
                   birthdate: "",
                   place: "",
                   gender: "",
+                  category: "",
                   image: null,
                 }}
                 validationSchema={yup.object({
@@ -469,6 +491,7 @@ export function SignupManKiBaatComponent() {
                     ),
                   gender: yup.string().required("Gender Is Required"),
                   place: yup.string().required("Place Is Required"),
+                  category: yup.string().required("Category Is Required"),
                   image: yup
                     .mixed()
                     .required("Image Is Required")
@@ -671,9 +694,28 @@ export function SignupManKiBaatComponent() {
                       </div>
                     </div>
                     <div className="mt-3">
+                    <span style={{ color: "#dd033a", fontSize: "13px" }}>
+                      Category
+                    </span>
+                    <Select
+                      components={animatedComponents}
+                      options={categoryOptions}
+                      styles={customStyles}
+                      name="category"
+                      className="basic-single-select"
+                      classNamePrefix="select"
+                      onChange={(option) =>
+                        setFieldValue("category", option.value)
+                      }
+                    />
+                  </div>
+                  <div className="text-danger">
+                    <ErrorMessage name="category" />
+                  </div>
+                    <div className="mt-3">
                       <span
                         style={{
-                          color: "#dd033a",
+                          color: "#45f3ff",
                           fontSize: "13px",
                         }}
                       >
