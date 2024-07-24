@@ -1,5 +1,6 @@
 import React from "react";
 import "./contacts-man-ki-baat_component.css";
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -20,12 +21,36 @@ import {
 
 export function ContactsManKiBaat() {
   const [isOpen, setIsOpen] = useState(false);
+  const [contact, setContact] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    async function fetchUserContact() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/get_user/profile`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setContact(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchUserContact();
+  }, []);
 
   useEffect(() => {
     if (cookies["token"] === undefined) {
@@ -170,8 +195,8 @@ export function ContactsManKiBaat() {
         >
           <h3 className="display-2 font-weight-bold text-white">
             {" "}
-            <span style={{ fontSize: "85px" }}>&#10621;</span> My Contacts{" "}
-            <span style={{ fontSize: "85px" }}>&#10620;</span>
+            <span style={{ fontSize: "85px", textShadow: "3px 2px 3px red" }}>&#10621;</span> My Contacts{" "}
+            <span style={{ fontSize: "85px", textShadow: "3px 2px 3px red" }}>&#10620;</span>
           </h3>
           <div className="d-inline-flex text-white">
             <p className="m-0">
@@ -201,82 +226,120 @@ export function ContactsManKiBaat() {
               }}
             />
           </div>
-          <div className="col-md-6 mt-5">
-            <p>
-              For any queries or further information, please feel free to
-              contact us through the following channels:
-            </p>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faUserTie}
-                  style={{ color: "#fbfbfb" }}
-                />
+          {contact.map((contactdetail, index) => (
+            <div className="col-md-6 mt-5" key={index}>
+              <p>
+                For any queries or further information, please feel free to
+                contact us through the following channels:
+              </p>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faUserTie}
+                    style={{ color: "#fbfbfb" }}
+                  />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>Name</h5>
+                  <p>{contactdetail.name}</p>
+                </div>
               </div>
-              <div className="pl-3 ms-3">
-                <h5>Name</h5>
-                <p>Jeremy Rose</p>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faMapMarkerAlt}
+                    style={{ color: "#fbfbfb" }}
+                  />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>Address</h5>
+                  <p>{contactdetail.place}</p>
+                </div>
+              </div>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faEnvelope}
+                    style={{ color: "#fbfbfb" }}
+                  />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>Email</h5>
+                  <p>{contactdetail.email}</p>
+                </div>
+              </div>
+              <div className="d-flex">
+                <div
+                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faPhone}
+                    style={{ color: "#fbfbfb" }}
+                  />
+                </div>
+                <div className="pl-3 ms-3">
+                  <h5>Phone</h5>
+                  <p>{contactdetail.number}</p>
+                </div>
               </div>
             </div>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faMapMarkerAlt}
-                  style={{ color: "#fbfbfb" }}
-                />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Address</h5>
-                <p>170 William Street New York, NY 10038.78 212.312.51</p>
-              </div>
-            </div>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faEnvelope}
-                  style={{ color: "#fbfbfb" }}
-                />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Email</h5>
-                <p>hello@jeremyrose.com</p>
-              </div>
-            </div>
-            <div className="d-flex">
-              <div
-                className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                style={{
-                  width: "45px",
-                  height: "45px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              >
-                <FontAwesomeIcon icon={faPhone} style={{ color: "#fbfbfb" }} />
-              </div>
-              <div className="pl-3 ms-3">
-                <h5>Phone</h5>
-                <p>+1 125 456 7850</p>
+          ))}
+        </div>
+      </div>
+
+      <div
+        class="container-fluid text-white"
+        style={{ background: "linear-gradient(135deg, blue,red)" }}
+      >
+        <div class="container text-center">
+          <div class="row d-flex align-items-center justify-content-center">
+            <div class="col-lg-8 col-md-6">
+              <div class="" style={{ height: "75px" }}>
+                <p class="mt-4">
+                  &copy;{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Blink Random Technologies
+                  </a>
+                  . All Rights Reserved. Designed by{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Saurabh Karn & Aditya Prajapati{" "}
+                    <span style={{ color: "#5cb874" }}>
+                      (Blink Random Technologies)
+                    </span>
+                  </a>
+                </p>
               </div>
             </div>
           </div>

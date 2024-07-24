@@ -26,6 +26,7 @@ export function ManKiBaatComponent({ data }) {
   const [showAnxiety, setShowAnxiety] = useState(false);
   const [showEmotion, setShowEmotion] = useState(false);
   const [user, setUser] = useState([]);
+  const [expertise, setExpertise] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
@@ -72,6 +73,29 @@ export function ManKiBaatComponent({ data }) {
     }
 
     fetchUser();
+  }, []);
+
+  useEffect(() => {
+    async function fetchAdvisorExpertise() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/User_Home/Advisor_detail`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setExpertise(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchAdvisorExpertise();
   }, []);
 
   useEffect(() => {
@@ -225,10 +249,9 @@ export function ManKiBaatComponent({ data }) {
                 >
                   My Contacts
                 </li>
-                {user.map((users)=>(
-                  <img
+                <img
                   className="ms-4 mt-2"
-                  src={users.image}
+                  src="boy-img.jpg"
                   alt=""
                   style={{
                     width: "50px",
@@ -237,7 +260,6 @@ export function ManKiBaatComponent({ data }) {
                     // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
-                ))}
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
@@ -256,8 +278,8 @@ export function ManKiBaatComponent({ data }) {
           style={{ minHeight: "100px" }}
         >
           <h3 className="display-2 font-weight-bold text-white">
-            <span style={{ fontSize: "90px" }}>&#10621;</span> User-Profile{" "}
-            <span style={{ fontSize: "90px" }}>&#10620;</span>
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#9830;</span><span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10621;</span> User-Profile{" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10620;</span><span style={{ fontSize: "90px", textShadow: "3px 2px 3px red"}}>&#9830;</span>
           </h3>
         </div>
       </div>
@@ -265,9 +287,10 @@ export function ManKiBaatComponent({ data }) {
       <div className="container">
         <div className="row">
           <div className="col-md-4 mt-5">
-            <img
+            {user.map((u, index)=>(
+              <img
               className="p-1"
-              src="boy-img.jpg"
+              src={`http://localhost:3001/${u.image}`}
               alt=""
               style={{
                 height: "350px",
@@ -276,21 +299,26 @@ export function ManKiBaatComponent({ data }) {
                 boxShadow: "0 0 8px rgb(145, 144, 146)",
               }}
             />
+            ))}
           </div>
           <div className="col-md-4 mt-5">
-            <h3>
-              Jeremy Rose{" "}
-              <FontAwesomeIcon
-                className="ms-2"
-                icon={faLocationDot}
-                style={{ color: "darkgray", fontSize: "20px" }}
-              />{" "}
-              <span style={{ fontSize: "1rem", color: "darkgray" }}>
-                New York City
-              </span>
-            </h3>
-            <p style={{ color: "blue" }}>Product Designer</p>
-            <p style={{ color: "darkgray" }}>DEPRESSION</p>
+            {user.map((u, index) => (
+              <div key={index}>
+                <h3>
+                  {u.name}{" "}
+                  <FontAwesomeIcon
+                    className="ms-2"
+                    icon={faLocationDot}
+                    style={{ color: "green", fontSize: "25px" }}
+                  />{" "}
+                  <span style={{ fontSize: "1.2rem", color: "grey" }}>
+                    {u.place}
+                  </span>
+                </h3>
+                <p style={{ color: "blue" }}>Product Designer</p>
+                <p style={{ color: "grey", fontSize: "1.1rem" }}>{u.category}</p>
+              </div>
+            ))}
             <p>
               8,6{" "}
               <FontAwesomeIcon
@@ -658,38 +686,42 @@ export function ManKiBaatComponent({ data }) {
             <h5>Print & Editorial</h5>
           </div>
           <div className="col-md-6 mt-5">
-            <p>
-              Phone{" "}
-              <span className="ms-5" style={{ color: "blue" }}>
-                +1 125 456 7850
-              </span>
-            </p>
-            <p>
-              Address{" "}
-              <span style={{ marginLeft: "40px" }}>S25 Earth Street</span>
-            </p>
-            <p style={{ marginLeft: "110px", marginTop: "-15px" }}>
-              New York, NY 10038.78 212.312.51
-            </p>
-            <p>
-              Email{" "}
-              <span style={{ color: "blue", marginLeft: "65px" }}>
-                hello@jeremyrose.com
-              </span>
-            </p>
-            <p>
-              Size{" "}
-              <span style={{ color: "blue", marginLeft: "80px" }}>
-                www.jeremyrose.com
-              </span>
-            </p>
-            <hr style={{ marginTop: "56px" }}></hr>
-            <p>
-              Birthday <span className="ms-5">June 5,1992</span>
-            </p>
-            <p>
-              Gender <span style={{ marginLeft: "55px" }}>Male</span>
-            </p>
+            {user.map((u, index) => (
+              <div key={index}>
+                <p>
+                  Phone{" "}
+                  <span className="" style={{ color: "blue", marginLeft: "55px" }}>
+                    {u.number}
+                  </span>
+                </p>
+                <p>
+                  Address{" "}
+                  <span style={{ marginLeft: "40px" }}>{u.place}</span>
+                </p>
+                <p style={{ marginLeft: "110px", marginTop: "-15px" }}>
+                  {u.place}
+                </p>
+                <p>
+                  Email{" "}
+                  <span style={{ color: "blue", marginLeft: "63px" }}>
+                    {u.email}
+                  </span>
+                </p>
+                <p>
+                  Size{" "}
+                  <span style={{ color: "blue", marginLeft: "77px" }}>
+                    {u.email}
+                  </span>
+                </p>
+                <hr style={{ marginTop: "56px" }}></hr>
+                <p>
+                  Birthday <span className="ms-5">{u.birthdate}</span>
+                </p>
+                <p>
+                  Gender <span style={{ marginLeft: "55px" }}>{u.gender}</span>
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

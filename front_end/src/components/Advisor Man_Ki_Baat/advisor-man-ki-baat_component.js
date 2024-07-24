@@ -191,8 +191,8 @@ export function AdvisorManKiBaatComponent() {
         >
           <h3 className="display-2 font-weight-bold text-white">
             {" "}
-            <span style={{ fontSize: "85px" }}>&#10621;</span> Advisor{" "}
-            <span style={{ fontSize: "85px" }}>&#10620;</span>
+            <span style={{ fontSize: "85px", textShadow: "3px 2px 3px red" }}>&#10621;</span> Advisor{" "}
+            <span style={{ fontSize: "85px", textShadow: "3px 2px 3px red" }}>&#10620;</span>
           </h3>
           <div className="d-inline-flex text-white">
             <p className="m-0">
