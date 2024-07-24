@@ -165,17 +165,20 @@ export function ContactsManKiBaat() {
                 >
                   My Contacts
                 </li>
-                <img
-                  className="ms-4 mt-2"
-                  src="boy-img.jpg"
-                  alt=""
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "100px",
-                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
-                  }}
-                />
+                {contact.map((detail, index) => (
+                  <img
+                    key={indexedDB}
+                    className="ms-4 mt-2"
+                    src={`http://localhost:3001/${detail.image}`}
+                    alt=""
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "100px",
+                      // boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    }}
+                  />
+                ))}
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
@@ -195,8 +198,13 @@ export function ContactsManKiBaat() {
         >
           <h3 className="display-2 font-weight-bold text-white">
             {" "}
-            <span style={{ fontSize: "85px", textShadow: "3px 2px 3px red" }}>&#10621;</span> My Contacts{" "}
-            <span style={{ fontSize: "85px", textShadow: "3px 2px 3px red" }}>&#10620;</span>
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#10049;
+            </span>{" "}
+            My Contacts{" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#10049;
+            </span>
           </h3>
           <div className="d-inline-flex text-white">
             <p className="m-0">
@@ -212,22 +220,24 @@ export function ContactsManKiBaat() {
 
       <div className="container">
         <div className="row">
-          <div className="col-md-6 mt-5 mb-5">
-            <img
-              className="p-1"
-              src="boy-img.jpg"
-              alt=""
-              style={{
-                height: "350px",
-                width: "350px",
-                borderTopRightRadius: "50px",
-                borderBottomLeftRadius: "50px",
-                boxShadow: "0 0 8px rgb(145, 144, 146)",
-              }}
-            />
-          </div>
           {contact.map((contactdetail, index) => (
-            <div className="col-md-6 mt-5" key={index}>
+            <div className="col-md-6 mt-5 mb-5" key={index}>
+              <img
+                className="p-1 mb-5"
+                src={`http://localhost:3001/${contactdetail.image}`}
+                alt=""
+                style={{
+                  height: "350px",
+                  width: "350px",
+                  borderTopRightRadius: "50px",
+                  borderBottomLeftRadius: "50px",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
+                }}
+              />
+            </div>
+          ))}
+          {contact.map((contactdetail, index) => (
+            <div className="col-md-6 mt-5 mb-5" key={index}>
               <p>
                 For any queries or further information, please feel free to
                 contact us through the following channels:

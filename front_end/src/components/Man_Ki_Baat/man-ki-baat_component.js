@@ -249,9 +249,11 @@ export function ManKiBaatComponent({ data }) {
                 >
                   My Contacts
                 </li>
-                <img
+                {user.map((u, index)=>(
+                  <img
+                  key={index}
                   className="ms-4 mt-2"
-                  src="boy-img.jpg"
+                  src={`http://localhost:3001/${u.image}`}
                   alt=""
                   style={{
                     width: "50px",
@@ -260,6 +262,7 @@ export function ManKiBaatComponent({ data }) {
                     // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
+                ))}
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
@@ -278,8 +281,8 @@ export function ManKiBaatComponent({ data }) {
           style={{ minHeight: "100px" }}
         >
           <h3 className="display-2 font-weight-bold text-white">
-            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#9830;</span><span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10621;</span> User-Profile{" "}
-            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10620;</span><span style={{ fontSize: "90px", textShadow: "3px 2px 3px red"}}>&#9830;</span>
+          <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span> User-Profile{" "}
+          <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span>
           </h3>
         </div>
       </div>
@@ -657,7 +660,7 @@ export function ManKiBaatComponent({ data }) {
 
       <div className="container">
         <div className="row">
-          <div className="col-md-6 mt-5">
+          <div className="col-md-6 mt-5 mb-5">
             <h3>
               Spotify New York{" "}
               <button type="button" className="btn btn-outline-primary ms-4">

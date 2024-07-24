@@ -18,6 +18,7 @@ import {
 
 export function AdvisorManKiBaatComponent() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState([]);
   const [advisors, setAdvisors] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
@@ -28,6 +29,29 @@ export function AdvisorManKiBaatComponent() {
       navigate("/register-case");
     }
   }, [cookies, navigate]);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/get_user/profile`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setUser(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchUser();
+  }, []);
 
   // Fetch advisors data
   useEffect(() => {
@@ -161,9 +185,10 @@ export function AdvisorManKiBaatComponent() {
                 >
                   My Contacts
                 </li>
-                <img
+                {user.map((detail, index)=>(
+                  <img
                   className="ms-4 mt-2"
-                  src="boy-img.jpg"
+                  src={`http://localhost:3001/${detail.image}`}
                   alt=""
                   style={{
                     width: "50px",
@@ -172,6 +197,7 @@ export function AdvisorManKiBaatComponent() {
                     // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
+                ))}
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
@@ -191,8 +217,8 @@ export function AdvisorManKiBaatComponent() {
         >
           <h3 className="display-2 font-weight-bold text-white">
             {" "}
-            <span style={{ fontSize: "85px", textShadow: "3px 2px 3px red" }}>&#10621;</span> Advisor{" "}
-            <span style={{ fontSize: "85px", textShadow: "3px 2px 3px red" }}>&#10620;</span>
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span> Advisor{" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span>
           </h3>
           <div className="d-inline-flex text-white">
             <p className="m-0">
@@ -212,9 +238,9 @@ export function AdvisorManKiBaatComponent() {
       >
         <div className="row">
           {advisors.map((advisor) => (
-            <div className="col-md-4 mt-3" key={advisor._id}>
+            <div className="col-md-4 mt-3 mb-5" key={advisor._id}>
               <div
-                className="card mb-3"
+                className="card"
                 style={{
                   borderTop: "8px solid blue",
                   borderBottom: "8px solid cyan",
@@ -223,11 +249,11 @@ export function AdvisorManKiBaatComponent() {
                 <div className="card-body">
                   <div className="text-center">
                     <img
-                      src="boy-img.jpg"
+                      src={`http://localhost:3001/${advisor.Image}`}
                       alt=""
                       style={{
-                        height: "70px",
-                        width: "70px",
+                        height: "110px",
+                        width: "110px",
                         borderRadius: "100px",
                         boxShadow: "0 0 8px rgb(145, 144, 146)",
                       }}

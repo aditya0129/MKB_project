@@ -171,17 +171,23 @@ export function AdvisorProfileManKiBaatComponent() {
                 >
                   My Contacts
                 </li>
-                <img
-                  className="ms-4 mt-2"
-                  src="boy-img.jpg"
-                  alt=""
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "100px",
-                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
-                  }}
-                />
+                {advisors.map((advisor, index) => (
+                  <img
+                    key={index}
+                    className="p-1"
+                    src={`http://localhost:3001/${advisor.Image}`}
+                    alt=""
+                    style={{
+                      height: "350px",
+                      width: "350px",
+                      borderRadius: "50px",
+                      boxShadow: "0 0 8px rgb(145, 144, 146)",
+                      display: "flex",
+                      justifyContent: "center",
+                      margin: "auto",
+                    }}
+                  />
+                ))}
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
@@ -216,20 +222,23 @@ export function AdvisorProfileManKiBaatComponent() {
       >
         <div className="row">
           <div className="col-md-5 mt-5 mb-5">
-            <img
-              className="p-1"
-              src="boy-img.jpg"
-              alt=""
-              style={{
-                height: "350px",
-                width: "350px",
-                borderRadius: "50px",
-                boxShadow: "0 0 8px rgb(145, 144, 146)",
-                display: "flex",
-                justifyContent: "center",
-                margin: "auto",
-              }}
-            />
+            {advisors.map((advisor, index) => (
+              <img
+                key={index}
+                className="p-1"
+                src={`http://localhost:3001/${advisor.Image}`}
+                alt=""
+                style={{
+                  height: "350px",
+                  width: "350px",
+                  borderRadius: "50px",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  display: "flex",
+                  justifyContent: "center",
+                  margin: "auto",
+                }}
+              />
+            ))}
           </div>
 
           {advisors.map((advisor) => (

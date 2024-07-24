@@ -19,6 +19,7 @@ export function HomeManKiBaatComponenet() {
   const [isOpen, setIsOpen] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
   const [expertise, setExpertise] = useState([]);
+  const [user, setUser] = useState([]);
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
@@ -52,6 +53,29 @@ export function HomeManKiBaatComponenet() {
     }
 
     fetchAdvisorExpertise();
+  }, []);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/get_user/profile`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setUser(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchUser();
   }, []);
 
   const SignoutClick = () => {
@@ -170,9 +194,11 @@ export function HomeManKiBaatComponenet() {
                 >
                   My Contacts
                 </li>
-                <img
+                {user.map((u, index)=>(
+                  <img
+                  key={index}
                   className="ms-4 mt-2"
-                  src="boy-img.jpg"
+                  src={`http://localhost:3001/${u.image}`}
                   onClick={handleUserProfileClick}
                   alt=""
                   style={{
@@ -183,6 +209,7 @@ export function HomeManKiBaatComponenet() {
                     // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
+                ))}
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
@@ -201,8 +228,8 @@ export function HomeManKiBaatComponenet() {
           style={{ minHeight: "100px" }}
         >
           <h3 className="display-2 font-weight-bold text-white">
-            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span><span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#9830;</span> Home{" "}
-            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#9830;</span><span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span>
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span> Home{" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span>
           </h3>
         </div>
       </div>
@@ -213,9 +240,9 @@ export function HomeManKiBaatComponenet() {
       >
         <div className="row">
           {expertise.map((details, index) => (
-            <div className="col-md-4 mt-3" key={index}>
+            <div className="col-md-4 mt-3 mb-5" key={index}>
               <div
-                className="card mb-3"
+                className="card"
                 style={{
                   borderTop: "8px solid blue",
                   borderBottom: "8px solid cyan",
@@ -224,11 +251,11 @@ export function HomeManKiBaatComponenet() {
                 <div className="card-body">
                   <div className="text-center">
                     <img
-                      src="boy-img.jpg"
+                      src={`http://localhost:3001/${details.Image}`}
                       alt=""
                       style={{
-                        height: "70px",
-                        width: "70px",
+                        height: "110px",
+                        width: "110px",
                         borderRadius: "100px",
                         boxShadow: "0 0 8px rgb(145, 144, 146)",
                       }}

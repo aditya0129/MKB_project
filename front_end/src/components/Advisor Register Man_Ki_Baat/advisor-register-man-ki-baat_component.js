@@ -644,7 +644,7 @@ export function AdvisorRegisterManKiBaatComponent() {
                   .then((response) => {
                     alert("Registered Successfully...");
                     const { image } = response.data.user;
-                    const imageUrl = `image/${image}`;
+                    const imageUrl = `images/${image}`;
                     setFieldValue("Image", imageUrl);
                     navigate("/advisor-login");
                   })
@@ -706,7 +706,7 @@ export function AdvisorRegisterManKiBaatComponent() {
                     {/* <Field type="password" name="Password" /> */}
                     <Field
                       type={showPassword ? "text" : "password"}
-                      name="password"
+                      name="Password"
                     />
                     <span>Password</span>
                     <i></i>
