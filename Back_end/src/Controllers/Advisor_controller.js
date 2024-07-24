@@ -186,7 +186,7 @@ const Advisor_register = async function (req, res) {
       State,
       DOB,
       Age,
-      Image:  "image/" + req.file.filename,
+      Image:  "images/" + req.file.filename,
     });
     await newUser.save();
     res.status(201).json({ status: true, user: newUser });
