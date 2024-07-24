@@ -152,7 +152,7 @@ const Register_User = async function (req, res) {
       age,
       place,
       category,
-      image: "image/" + req.file.filename,
+      image: "images/" + req.file.filename,
     });
     const userData = await newUser.save();
 
@@ -161,8 +161,8 @@ const Register_User = async function (req, res) {
     mailer.sendMail(email, "mail-verification", msg);
     //router.get('/api/mail-verification',mailVerification)
     //http://localhost:3001/api/mail-verification?id=668ce9c4bac40576be3d287a
-    res.status(201).json({ status: true, user: userData });
-  } catch (error) {
+    res.status(201).json({ status: true,  user: userData });
+    } catch (error) {
     return res.status(500).send({ status: false, Msg: error.message });
   }
 };
