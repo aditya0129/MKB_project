@@ -75,7 +75,7 @@ router.post("/sendOtp", sendOtp);
 router.post("/VerifyOtp", VerifyOtp);
 
 ///Advisor Apis
-router.post("/Advisor_register",uplode.single("image") , Advisor_register);
+router.post("/Advisor_register",uplode.single("Image") , Advisor_register);
 router.post("/Advisor_login", Advisor_Login);
 //router.get( "/user/:userId/profile", get_Advisor );
 router.get("/get_Advisor/profile", isAuthenticated, get_Advisor);
