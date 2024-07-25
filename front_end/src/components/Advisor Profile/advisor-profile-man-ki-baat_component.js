@@ -178,13 +178,10 @@ export function AdvisorProfileManKiBaatComponent() {
                     src={`http://localhost:3001/${advisor.Image}`}
                     alt=""
                     style={{
-                      height: "350px",
-                      width: "350px",
-                      borderRadius: "50px",
-                      boxShadow: "0 0 8px rgb(145, 144, 146)",
-                      display: "flex",
-                      justifyContent: "center",
-                      margin: "auto",
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "100px",
+                      // boxShadow: "0 0 8px rgb(145, 144, 146)",
                     }}
                   />
                 ))}
@@ -206,7 +203,14 @@ export function AdvisorProfileManKiBaatComponent() {
           style={{ minHeight: "100px" }}
         >
           <h3 className="display-3 font-weight-bold text-white">
-            Advisor-Profile
+            {" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#9884;
+            </span>{" "}
+            Advisor-Profile{" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#9884;
+            </span>
           </h3>
         </div>
       </div>
@@ -218,6 +222,8 @@ export function AdvisorProfileManKiBaatComponent() {
           borderTopRightRadius: "30px",
           borderBottomLeftRadius: "30px",
           boxShadow: "0 0 8px rgb(145, 144, 146)",
+          borderTop: "8px solid blue",
+          borderBottom: "8px solid cyan",
         }}
       >
         <div className="row">
@@ -244,7 +250,7 @@ export function AdvisorProfileManKiBaatComponent() {
           {advisors.map((advisor) => (
             <div
               className="col-md-3 mt-5 mb-5"
-              style={{ borderLeft: "15px dotted grey", paddingLeft: "15px" }}
+              style={{ borderLeft: "25px dotted grey", paddingLeft: "45px" }}
               key={advisor._id}
             >
               <div className="d-flex">

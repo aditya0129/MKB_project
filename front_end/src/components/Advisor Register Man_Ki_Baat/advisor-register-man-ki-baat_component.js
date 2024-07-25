@@ -536,7 +536,7 @@ export function AdvisorRegisterManKiBaatComponent() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
-  function handleImageChange(event) {
+  const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setImage(file);
@@ -546,7 +546,7 @@ export function AdvisorRegisterManKiBaatComponent() {
       };
       reader.readAsDataURL(file);
     }
-  }
+  };
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -632,9 +632,12 @@ export function AdvisorRegisterManKiBaatComponent() {
               onSubmit={(values, { setSubmitting, setFieldValue }) => {
                 const formData = new FormData();
                 for (const key in values) {
-                  formData.append(key, values[key]);
+                  if (key === "image") {
+                    formData.append("Image", image);
+                  } else {
+                    formData.append(key, values[key]);
+                  }
                 }
-                formData.append("Image", image);
                 axios
                   .post("http://localhost:3001/Advisor_register", formData, {
                     headers: {
@@ -644,7 +647,7 @@ export function AdvisorRegisterManKiBaatComponent() {
                   .then((response) => {
                     alert("Registered Successfully...");
                     const { image } = response.data.user;
-                    const imageUrl = `images/${image}`;
+                    const imageUrl = `image/${image}`;
                     setFieldValue("Image", imageUrl);
                     navigate("/advisor-login");
                   })
