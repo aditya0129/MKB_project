@@ -37,11 +37,14 @@ export function AdvisorProfileManKiBaatComponent() {
       try {
         const token = localStorage.getItem("token");
         console.log("Token:", token);
-        const response = await axios.get(`http://localhost:3001/user/profile`, {
-          headers: {
-            "x-auth-token": token,
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:3001/get_Advisor/profile`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
         console.log("Response:", response);
         setAdvisors(response.data.data);
       } catch (error) {
@@ -80,7 +83,7 @@ export function AdvisorProfileManKiBaatComponent() {
                 style={{ width: "200px", height: "50px" }}
               />
               <button
-                className="btn btn-outline-primary ms-2"
+                className="btn btn-primary ms-2"
                 style={{ height: "50px" }}
               >
                 Search
@@ -96,7 +99,7 @@ export function AdvisorProfileManKiBaatComponent() {
                   onClick={toggleDropdown}
                   style={{
                     display: "inline-block",
-                    color: "black",
+                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
@@ -148,42 +151,45 @@ export function AdvisorProfileManKiBaatComponent() {
                   className="ms-4"
                   style={{
                     display: "inline-block",
-                    color: "black",
+                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
                 >
                   Message
                 </li>
-                <FontAwesomeIcon icon={faEnvelope} style={{ color: "blue" }} />
+                <FontAwesomeIcon icon={faEnvelope} style={{ color: "white" }} />
                 <li
                   className="ms-4"
                   onClick={handleContactsClick}
                   style={{
                     display: "inline-block",
-                    color: "black",
+                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
                 >
                   My Contacts
                 </li>
-                <img
-                  className="ms-4 p-1 mt-2"
-                  src="boy-img.jpg"
-                  alt=""
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "100px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
-                  }}
-                />
+                {advisors.map((advisor, index) => (
+                  <img
+                    key={index}
+                    className="p-1"
+                    src={`http://localhost:3001/${advisor.Image}`}
+                    alt=""
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "100px",
+                      // boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    }}
+                  />
+                ))}
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
                   onClick={SignoutClick}
-                  style={{ color: "blue", cursor: "pointer" }}
+                  style={{ color: "white", cursor: "pointer" }}
                 />
               </ul>
             </div>
@@ -194,10 +200,17 @@ export function AdvisorProfileManKiBaatComponent() {
       <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
-          style={{ minHeight: "150px" }}
+          style={{ minHeight: "100px" }}
         >
           <h3 className="display-3 font-weight-bold text-white">
-            Advisor-Profile
+            {" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#9884;
+            </span>{" "}
+            Advisor-Profile{" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#9884;
+            </span>
           </h3>
         </div>
       </div>
@@ -209,30 +222,35 @@ export function AdvisorProfileManKiBaatComponent() {
           borderTopRightRadius: "30px",
           borderBottomLeftRadius: "30px",
           boxShadow: "0 0 8px rgb(145, 144, 146)",
+          borderTop: "8px solid blue",
+          borderBottom: "8px solid cyan",
         }}
       >
         <div className="row">
           <div className="col-md-5 mt-5 mb-5">
-            <img
-              className="p-1"
-              src="boy-img.jpg"
-              alt=""
-              style={{
-                height: "350px",
-                width: "350px",
-                borderRadius: "50px",
-                boxShadow: "0 0 8px rgb(145, 144, 146)",
-                display: "flex",
-                justifyContent: "center",
-                margin: "auto",
-              }}
-            />
+            {advisors.map((advisor, index) => (
+              <img
+                key={index}
+                className="p-1"
+                src={`http://localhost:3001/${advisor.Image}`}
+                alt=""
+                style={{
+                  height: "350px",
+                  width: "350px",
+                  borderRadius: "50px",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  display: "flex",
+                  justifyContent: "center",
+                  margin: "auto",
+                }}
+              />
+            ))}
           </div>
 
           {advisors.map((advisor) => (
             <div
               className="col-md-3 mt-5 mb-5"
-              style={{ borderLeft: "15px dotted grey", paddingLeft: "15px" }}
+              style={{ borderLeft: "25px dotted grey", paddingLeft: "45px" }}
               key={advisor._id}
             >
               <div className="d-flex">
@@ -429,6 +447,39 @@ export function AdvisorProfileManKiBaatComponent() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div
+        class="container-fluid text-white"
+        style={{ background: "linear-gradient(135deg, blue,red)" }}
+      >
+        <div class="container text-center">
+          <div class="row d-flex align-items-center justify-content-center">
+            <div class="col-lg-8 col-md-6">
+              <div class="" style={{ height: "75px" }}>
+                <p class="mt-4">
+                  &copy;{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Blink Random Technologies
+                  </a>
+                  . All Rights Reserved. Designed by{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Saurabh Karn & Aditya Prajapati{" "}
+                    <span style={{ color: "#5cb874" }}>
+                      (Blink Random Technologies)
+                    </span>
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

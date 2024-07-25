@@ -4,7 +4,11 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import axios from "axios";
 import * as yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserTie } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserTie,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -532,7 +536,7 @@ export function AdvisorRegisterManKiBaatComponent() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
-  function handleImageChange(event) {
+  const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setImage(file);
@@ -542,7 +546,13 @@ export function AdvisorRegisterManKiBaatComponent() {
       };
       reader.readAsDataURL(file);
     }
-  }
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
 
   return (
     <div className="container-fluid">
@@ -622,9 +632,12 @@ export function AdvisorRegisterManKiBaatComponent() {
               onSubmit={(values, { setSubmitting, setFieldValue }) => {
                 const formData = new FormData();
                 for (const key in values) {
-                  formData.append(key, values[key]);
+                  if (key === "image") {
+                    formData.append("Image", image);
+                  } else {
+                    formData.append(key, values[key]);
+                  }
                 }
-                formData.append("Image", image);
                 axios
                   .post("http://localhost:3001/Advisor_register", formData, {
                     headers: {
@@ -692,10 +705,27 @@ export function AdvisorRegisterManKiBaatComponent() {
                     <ErrorMessage name="Email" />
                   </div>
                   {useError && <div className="text-danger">{useError}</div>}
-                  <div id="inputBoxs">
-                    <Field type="password" name="Password" />
+                  <div id="inputBoxs" style={{ position: "relative" }}>
+                    {/* <Field type="password" name="Password" /> */}
+                    <Field
+                      type={showPassword ? "text" : "password"}
+                      name="Password"
+                    />
                     <span>Password</span>
                     <i></i>
+                    <FontAwesomeIcon
+                      icon={showPassword ? faEye : faEyeSlash}
+                      onClick={togglePasswordVisibility}
+                      style={{
+                        position: "absolute",
+                        right: "7px",
+                        top: "-7",
+                        fontSize: "20px",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        color: "white",
+                      }}
+                    />
                   </div>
                   <div className="text-danger">
                     <ErrorMessage name="Password" />

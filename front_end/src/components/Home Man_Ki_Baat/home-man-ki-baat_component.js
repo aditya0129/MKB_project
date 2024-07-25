@@ -1,34 +1,59 @@
 import React, { useState, useEffect } from "react";
-import "./advisor-man-ki-baat_component.css";
+import "./home-man-ki-baat_component.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
   faStar,
   faPhone,
+  faPowerOff,
   faComment,
   faVideo,
   faMinus,
   faPlus,
-  faPowerOff,
 } from "@fortawesome/free-solid-svg-icons";
 
-export function AdvisorManKiBaatComponent() {
+export function HomeManKiBaatComponenet() {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState([]);
-  const [advisors, setAdvisors] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies();
+  const [expertise, setExpertise] = useState([]);
+  const [user, setUser] = useState([]);
   const navigate = useNavigate();
 
-  // Authentication check
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
   useEffect(() => {
     if (cookies["token"] === undefined) {
       navigate("/register-case");
     }
-  }, [cookies, navigate]);
+  });
+
+  useEffect(() => {
+    async function fetchAdvisorExpertise() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/User_Home/Advisor_detail`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setExpertise(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchAdvisorExpertise();
+  }, []);
 
   useEffect(() => {
     async function fetchUser() {
@@ -53,26 +78,6 @@ export function AdvisorManKiBaatComponent() {
     fetchUser();
   }, []);
 
-  // Fetch advisors data
-  useEffect(() => {
-    async function fetchAdvisors() {
-      try {
-        const response = await axios.get(
-          `http://localhost:3001/Advisor_All_Data`
-        );
-        setAdvisors(response.data.Data);
-      } catch (error) {
-        console.error("Error fetching advisors data:", error);
-      }
-    }
-
-    fetchAdvisors();
-  }, []);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
   const SignoutClick = () => {
     alert("Logout Successfully...");
     removeCookie("token");
@@ -81,6 +86,10 @@ export function AdvisorManKiBaatComponent() {
 
   const handleContactsClick = () => {
     navigate("/contacts");
+  };
+
+  const handleUserProfileClick = () => {
+    navigate("/user-profile");
   };
 
   return (
@@ -185,15 +194,18 @@ export function AdvisorManKiBaatComponent() {
                 >
                   My Contacts
                 </li>
-                {user.map((detail, index)=>(
+                {user.map((u, index)=>(
                   <img
+                  key={index}
                   className="ms-4 mt-2"
-                  src={`http://localhost:3001/${detail.image}`}
+                  src={`http://localhost:3001/${u.image}`}
+                  onClick={handleUserProfileClick}
                   alt=""
                   style={{
                     width: "50px",
                     height: "50px",
                     borderRadius: "100px",
+                    cursor: "pointer",
                     // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
@@ -213,22 +225,12 @@ export function AdvisorManKiBaatComponent() {
       <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
-          style={{ minHeight: "150px" }}
+          style={{ minHeight: "100px" }}
         >
           <h3 className="display-2 font-weight-bold text-white">
-            {" "}
-            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span> Advisor{" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span> Home{" "}
             <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span>
           </h3>
-          <div className="d-inline-flex text-white">
-            <p className="m-0">
-              <a className="text-white" href="/">
-                Home
-              </a>
-            </p>
-            <p className="m-0 px-2">/</p>
-            <p className="m-0">Advisor</p>
-          </div>
         </div>
       </div>
 
@@ -237,8 +239,8 @@ export function AdvisorManKiBaatComponent() {
         style={{ background: "white" }}
       >
         <div className="row">
-          {advisors.map((advisor) => (
-            <div className="col-md-4 mt-3 mb-5" key={advisor._id}>
+          {expertise.map((details, index) => (
+            <div className="col-md-4 mt-3 mb-5" key={index}>
               <div
                 className="card"
                 style={{
@@ -249,7 +251,7 @@ export function AdvisorManKiBaatComponent() {
                 <div className="card-body">
                   <div className="text-center">
                     <img
-                      src={`http://localhost:3001/${advisor.Image}`}
+                      src={`http://localhost:3001/${details.Image}`}
                       alt=""
                       style={{
                         height: "110px",
@@ -263,10 +265,10 @@ export function AdvisorManKiBaatComponent() {
                     className="mt-3"
                     style={{ fontWeight: "bold", fontFamily: "Arial" }}
                   >
-                    {advisor.Name}
+                    {details.Name}
                   </h5>
                   <p>
-                    {advisor.rating}{" "}
+                    {details.Rating}{" "}
                     <FontAwesomeIcon
                       className="ms-2"
                       icon={faStar}
@@ -345,11 +347,11 @@ export function AdvisorManKiBaatComponent() {
                   }}
                 >
                   <h6 style={{ fontWeight: "bold" }}>Year of Experience :-</h6>
-                  <p>{advisor.Experience}</p>
+                  <p>{details.Experience}</p>
                   <h6 style={{ fontWeight: "bold" }}>Expertise :-</h6>
-                  <p>{advisor.Expertise}</p>
+                  <p>{details.Expertise}</p>
                   <h6 style={{ fontWeight: "bold" }}>Language :-</h6>
-                  <p>{advisor.Language}</p>
+                  <p>{details.Language}</p>
                 </div>
               </div>
             </div>

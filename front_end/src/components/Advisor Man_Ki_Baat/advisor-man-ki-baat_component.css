@@ -2,9 +2,9 @@
   background: #ffffff;
   padding: 20px;
   margin-bottom: 20px;
-  border-radius: 30px;
+  border-top-right-radius: 30px;
+  border-bottom-left-radius: 30px;
   box-shadow: 0 0 8px rgb(145, 144, 146);
-  width: 380px;
   display: grid;
   grid-template-columns: 6fr 6fr;
   margin: auto;

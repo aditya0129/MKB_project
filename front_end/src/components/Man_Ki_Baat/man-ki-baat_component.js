@@ -1,5 +1,6 @@
 import React from "react";
 import "./man-ki-baat_component.css";
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
@@ -24,6 +25,8 @@ export function ManKiBaatComponent({ data }) {
   const [showStress, setShowStress] = useState(false);
   const [showAnxiety, setShowAnxiety] = useState(false);
   const [showEmotion, setShowEmotion] = useState(false);
+  const [user, setUser] = useState([]);
+  const [expertise, setExpertise] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
@@ -48,6 +51,52 @@ export function ManKiBaatComponent({ data }) {
     setShowStress(false);
     setShowAnxiety(false);
   };
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/get_user/profile`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setUser(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    async function fetchAdvisorExpertise() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/User_Home/Advisor_detail`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setExpertise(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchAdvisorExpertise();
+  }, []);
 
   useEffect(() => {
     if (cookies["token"] === undefined) {
@@ -102,7 +151,7 @@ export function ManKiBaatComponent({ data }) {
                 style={{ width: "200px", height: "50px" }}
               />
               <button
-                className="btn btn-outline-primary ms-2"
+                className="btn btn-primary ms-2"
                 style={{ height: "50px" }}
               >
                 Search
@@ -118,7 +167,7 @@ export function ManKiBaatComponent({ data }) {
                   onClick={toggleDropdown}
                   style={{
                     display: "inline-block",
-                    color: "black",
+                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
@@ -180,42 +229,45 @@ export function ManKiBaatComponent({ data }) {
                   className="ms-4"
                   style={{
                     display: "inline-block",
-                    color: "black",
+                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
                 >
                   Message
                 </li>
-                <FontAwesomeIcon icon={faEnvelope} style={{ color: "blue" }} />
+                <FontAwesomeIcon icon={faEnvelope} style={{ color: "white" }} />
                 <li
                   className="ms-4"
                   onClick={handleContactsClick}
                   style={{
                     display: "inline-block",
-                    color: "black",
+                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
                 >
                   My Contacts
                 </li>
-                <img
-                  className="ms-4 p-1 mt-2"
-                  src="boy-img.jpg"
+                {user.map((u, index)=>(
+                  <img
+                  key={index}
+                  className="ms-4 mt-2"
+                  src={`http://localhost:3001/${u.image}`}
                   alt=""
                   style={{
                     width: "50px",
                     height: "50px",
                     borderRadius: "100px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 />
+                ))}
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
                   onClick={SignoutClick}
-                  style={{ color: "blue", cursor: "pointer" }}
+                  style={{ color: "white", cursor: "pointer" }}
                 />
               </ul>
             </div>
@@ -226,11 +278,11 @@ export function ManKiBaatComponent({ data }) {
       <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
-          style={{ minHeight: "150px" }}
+          style={{ minHeight: "100px" }}
         >
           <h3 className="display-2 font-weight-bold text-white">
-            <span style={{ fontSize: "90px" }}>&#10621;</span> User-Profile{" "}
-            <span style={{ fontSize: "90px" }}>&#10620;</span>
+          <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span> User-Profile{" "}
+          <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span>
           </h3>
         </div>
       </div>
@@ -238,9 +290,10 @@ export function ManKiBaatComponent({ data }) {
       <div className="container">
         <div className="row">
           <div className="col-md-4 mt-5">
-            <img
+            {user.map((u, index)=>(
+              <img
               className="p-1"
-              src="boy-img.jpg"
+              src={`http://localhost:3001/${u.image}`}
               alt=""
               style={{
                 height: "350px",
@@ -249,21 +302,26 @@ export function ManKiBaatComponent({ data }) {
                 boxShadow: "0 0 8px rgb(145, 144, 146)",
               }}
             />
+            ))}
           </div>
           <div className="col-md-4 mt-5">
-            <h3>
-              Jeremy Rose{" "}
-              <FontAwesomeIcon
-                className="ms-2"
-                icon={faLocationDot}
-                style={{ color: "darkgray", fontSize: "20px" }}
-              />{" "}
-              <span style={{ fontSize: "1rem", color: "darkgray" }}>
-                New York City
-              </span>
-            </h3>
-            <p style={{ color: "blue" }}>Product Designer</p>
-            <p style={{ color: "darkgray" }}>DEPRESSION</p>
+            {user.map((u, index) => (
+              <div key={index}>
+                <h3>
+                  {u.name}{" "}
+                  <FontAwesomeIcon
+                    className="ms-2"
+                    icon={faLocationDot}
+                    style={{ color: "green", fontSize: "25px" }}
+                  />{" "}
+                  <span style={{ fontSize: "1.2rem", color: "grey" }}>
+                    {u.place}
+                  </span>
+                </h3>
+                <p style={{ color: "blue" }}>Product Designer</p>
+                <p style={{ color: "grey", fontSize: "1.1rem" }}>{u.category}</p>
+              </div>
+            ))}
             <p>
               8,6{" "}
               <FontAwesomeIcon
@@ -602,7 +660,7 @@ export function ManKiBaatComponent({ data }) {
 
       <div className="container">
         <div className="row">
-          <div className="col-md-6 mt-5">
+          <div className="col-md-6 mt-5 mb-5">
             <h3>
               Spotify New York{" "}
               <button type="button" className="btn btn-outline-primary ms-4">
@@ -631,38 +689,75 @@ export function ManKiBaatComponent({ data }) {
             <h5>Print & Editorial</h5>
           </div>
           <div className="col-md-6 mt-5">
-            <p>
-              Phone{" "}
-              <span className="ms-5" style={{ color: "blue" }}>
-                +1 125 456 7850
-              </span>
-            </p>
-            <p>
-              Address{" "}
-              <span style={{ marginLeft: "40px" }}>S25 Earth Street</span>
-            </p>
-            <p style={{ marginLeft: "110px", marginTop: "-15px" }}>
-              New York, NY 10038.78 212.312.51
-            </p>
-            <p>
-              Email{" "}
-              <span style={{ color: "blue", marginLeft: "65px" }}>
-                hello@jeremyrose.com
-              </span>
-            </p>
-            <p>
-              Size{" "}
-              <span style={{ color: "blue", marginLeft: "80px" }}>
-                www.jeremyrose.com
-              </span>
-            </p>
-            <hr style={{ marginTop: "56px" }}></hr>
-            <p>
-              Birthday <span className="ms-5">June 5,1992</span>
-            </p>
-            <p>
-              Gender <span style={{ marginLeft: "55px" }}>Male</span>
-            </p>
+            {user.map((u, index) => (
+              <div key={index}>
+                <p>
+                  Phone{" "}
+                  <span className="" style={{ color: "blue", marginLeft: "55px" }}>
+                    {u.number}
+                  </span>
+                </p>
+                <p>
+                  Address{" "}
+                  <span style={{ marginLeft: "40px" }}>{u.place}</span>
+                </p>
+                <p style={{ marginLeft: "110px", marginTop: "-15px" }}>
+                  {u.place}
+                </p>
+                <p>
+                  Email{" "}
+                  <span style={{ color: "blue", marginLeft: "63px" }}>
+                    {u.email}
+                  </span>
+                </p>
+                <p>
+                  Size{" "}
+                  <span style={{ color: "blue", marginLeft: "77px" }}>
+                    {u.email}
+                  </span>
+                </p>
+                <hr style={{ marginTop: "56px" }}></hr>
+                <p>
+                  Birthday <span className="ms-5">{u.birthdate}</span>
+                </p>
+                <p>
+                  Gender <span style={{ marginLeft: "55px" }}>{u.gender}</span>
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="container-fluid text-white"
+        style={{ background: "linear-gradient(135deg, blue,red)" }}
+      >
+        <div class="container text-center">
+          <div class="row d-flex align-items-center justify-content-center">
+            <div class="col-lg-8 col-md-6">
+              <div class="" style={{ height: "75px" }}>
+                <p class="mt-4">
+                  &copy;{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Blink Random Technologies
+                  </a>
+                  . All Rights Reserved. Designed by{" "}
+                  <a
+                    class="text-white border-bottom"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Saurabh Karn & Aditya Prajapati{" "}
+                    <span style={{ color: "#5cb874" }}>
+                      (Blink Random Technologies)
+                    </span>
+                  </a>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

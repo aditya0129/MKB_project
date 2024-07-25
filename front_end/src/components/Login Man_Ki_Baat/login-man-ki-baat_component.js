@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "./login-man-ki-baat_component.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserTie } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserTie,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
@@ -11,9 +15,14 @@ import { useCookies } from "react-cookie";
 export function LoginManKiBaatComponent() {
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["token"]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const SignupClick = () => {
     navigate("/signup");
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   return (
@@ -49,11 +58,8 @@ export function LoginManKiBaatComponent() {
                         password: values.password,
                       }
                     );
-
-                    const token = authResponse.data.token;
-
+                    const token = authResponse.data.Token;
                     localStorage.setItem("token", token);
-
                     setCookie("token", token, { path: "/" });
                     alert("Login Successfully...");
                     navigate("/");
@@ -77,10 +83,27 @@ export function LoginManKiBaatComponent() {
                     <div className="text-danger">
                       <ErrorMessage name="email" />
                     </div>
-                    <div id="inputBox">
-                      <Field type="password" name="password" />
+                    <div id="inputBox" style={{ position: "relative" }}>
+                      {/* <Field type="password" name="password" /> */}
+                      <Field
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                      />
                       <span>Password</span>
                       <i></i>
+                      <FontAwesomeIcon
+                        icon={showPassword ? faEye : faEyeSlash}
+                        onClick={togglePasswordVisibility}
+                        style={{
+                          position: "absolute",
+                          right: "7px",
+                          top: "-7",
+                          fontSize: "20px",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          color: "white",
+                        }}
+                      />
                     </div>
                     <div className="text-danger">
                       <ErrorMessage name="password" />
