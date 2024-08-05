@@ -14,13 +14,15 @@ const {
 } = require("../Validation/Validate");
 const { isValidObjectId } = require("mongoose");
 const { validationResult } = require("express-validator");
-const userModel = require("../models/userModel");
+const passwordModel = require("../models/passwordReset");
+const randomstring = require("randomstring");
 
 const {
   OneMinutExpiry,
   ThreeMinutExpiry,
 } = require("../Validation/OtpValidate");
 const Advisor_Model = require("../models/Advisor_Model");
+const userModel = require("../models/userModel");
 
 // Calculate age from birthdate
 const calculateAge = (birthdate) => {
@@ -381,7 +383,7 @@ const Update_User = async function (req, res) {
           .status(400)
           .send({ status: false, message: "Phone number can not be empty." });
       }
-      let checkphone = await userModel.findOne({ phone: phone });
+      let checkphone = await UserModel.findOne({ phone: phone });
       if (checkphone) {
         return res.status(400).send({
           status: false,
@@ -448,7 +450,7 @@ const Update_User = async function (req, res) {
       updatedData.number = number;
     }
 
-    let updateUserData = await userModel.findOneAndUpdate(
+    let updateUserData = await UserModel.findOneAndUpdate(
       { _id: userId },
       updatedData,
       { new: true }
@@ -555,7 +557,7 @@ const send_otp_fp = async function (req, res) {
   try {
     // Validation and other logic...
     const { email } = req.body;
-    const userData = await userModel.findOne({ email });
+    const userData = await UserModel.findOne({ email });
 
     if (!userData) {
       return res.status(400).json({
@@ -628,7 +630,7 @@ const verify_otp_fp = async function (req, res) {
       });
     }
 
-    await userModel.findByIdAndUpdate(
+    await UserModel.findByIdAndUpdate(
       { _id: user_id },
       {
         $set: {
@@ -662,7 +664,7 @@ const Get_All_User = async function (req, res) {
 //       return req.render('404');
 //     }
 
-//     const userData=await userModel.findOne({_id:req.query.id});
+//     const userData=await UserModel.findOne({_id:req.query.id});
 //     if(userData){
 
 //     }else{
@@ -682,7 +684,7 @@ const mailVerification = async (req, res) => {
       return req.render("404");
     }
 
-    const userData = await userModel.findOne({ _id: req.query.id });
+    const userData = await UserModel.findOne({ _id: req.query.id });
     console.log("userData" + userData);
     console.log("queary id" + req.query.id);
     if (userData) {
@@ -691,7 +693,7 @@ const mailVerification = async (req, res) => {
           message: "Your mail already verified!",
         });
       }
-      await userModel.findByIdAndUpdate(
+      await UserModel.findByIdAndUpdate(
         { _id: req.query.id },
         {
           $set: {
@@ -717,7 +719,7 @@ const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const email_check = await userModel.find({ email });
+    const email_check = await UserModel.find({ email });
     if (!email_check) {
       return res.status(400).send({
         status: "false",
@@ -756,14 +758,14 @@ const resetPassword = async (req, res) => {
 
     const { email } = data;
 
-    const user = await userModel.find({ email });
+    const user = await UserModel.find({ email });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
     const hashedPassword = await bcrypt.hash(newPassword, 8);
 
-    userModel({ email }).password = hashedPassword;
-    console.log({ password: userModel.password });
+    UserModel({ email }).password = hashedPassword;
+    console.log({ password: UserModel.password });
     return res.status(200).send({
       status: true,
       msg: "password updated successfully",
@@ -774,52 +776,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// const User_Home = async function (req, res) {
-//   try {
-//     let userId = req.token.userId;
-//     console.log("userId"+userId);
-//     if (!isValidObjectId(userId))
-//       return res
-//         .status(400)
-//         .send({ status: false, message: "User is invalid" });
-
-//     let User_data = await userModel.find({ _id:userId });
-//     console.log("User_data"+User_data)
-//     if (!User_data) {
-//       return res
-//         .status(404)
-//         .json({ status: false, msg: "user not found by  _id" });
-//     }
-//     //yha tak sahi hai
-
-//     //let category_data = User_data.category;
-//     //User_data.category=category_data
-//     const {category}=User_data.category
-
-//     console.log("category_data"+category);
-
-//     let Advisor_data = await Advisor_Model.find({ Expertise: category_data });
-//     console.log(Advisor_data);
-//     if (!Advisor_data) {
-//       return res
-//         .status(404)
-//         .json({
-//           status: false,
-//           Api: "user_home",
-//           msg: "category was not found Advisor_Model",
-//         });
-//     }
-//     return res
-//       .status(200)
-//       .json({
-//         status: true,
-//         msg: "data found for home_pages",
-//         data: Advisor_data,
-//       });
-//   } catch (error) {
-//     return res.status(500).json({ status: false, Msg: error.message });
-//   }
-// };
 const User_Home = async function (req, res) {
   try {
     let userId = req.token.userId;
@@ -830,7 +786,7 @@ const User_Home = async function (req, res) {
         .send({ status: false, message: "User is invalid" });
     }
 
-    let User_data = await userModel.findById(userId); // Corrected the findById usage
+    let User_data = await UserModel.findById(userId); // Corrected the findById usage
 
     if (!User_data) {
       return res
@@ -869,16 +825,141 @@ const User_Home = async function (req, res) {
 const update_Password = async function (req, res) {
   try {
     let { email } = req.body;
-    let find_Email=await UserModel.find({email});
-    if(!find_Email){
-      return res.status(400).json({status:false,msg:"email doesn't exits!"})
+    let find_Email = await UserModel.find({ email });
+    if (!find_Email) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "email doesn't exits!" });
     }
-    
   } catch (error) {
     return res.status(500).json({ status: false, Msg: error.message });
   }
 };
 
+const Forget_Password = async function (req, res) {
+  try {
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+      return res
+        .status(400)
+        .send({ status: false, msg: "error", error: error.array() });
+    }
+    const { email } = req.body;
+    const userData = await UserModel.find({ email });
+    if (!userData) {
+      return res.status(400).send({
+        status: false,
+        Msg: "email doesn't exits",
+        Api: "in User => Forget_Password",
+      });
+    }
+  } catch (error) {
+    return res.status(500).send({ Status: false, Msg: error.message });
+  }
+};
+
+const forget_password = async function (req, res) {
+  try {
+    const { email } = req.body;
+
+    // Find user by email
+    let user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ status: false, msg: "user not found!" });
+    }
+
+    // Generate random string for token
+    const randomString = randomstring.generate();
+
+    // Create the email message
+    const msg = `<p>Hi ${user.name}, please click <a href="http://localhost:3001/api/reset-Password?token=${randomString}">here</a> to reset your password.</p>`;
+    // const msg = `<p>Hi ${name}, please <a href="http://localhost:3001/api/mail-verification?id=${userData._id}">verify</a> your email.</p>`;
+
+    // Create a new password reset token
+    const password_Reset = new passwordModel({
+      user_id: user._id,
+      token: randomString,
+    });
+
+    // Save the password reset token to the database
+    await password_Reset.save();
+
+    // Send the email
+    mailer.sendMail(user.email, "Reset Password", msg);
+
+    // Send response
+    return res.status(200).json({
+      status: true,
+      msg: "Password reset link sent to your email. Please check your email!",
+    });
+  } catch (error) {
+    return res.status(500).json({ status: false, msg: error.message });
+  }
+};
+
+const reset_password = async function (req, res) {
+  try {
+    if (req.query.token == undefined) {
+      console.log("something");
+      return res.render("404");
+    }
+    const resetData = await passwordModel.findOne({ token: req.query.token });
+    if (!resetData) {
+      console.log("here");
+      return res.render("404");
+    }
+    return res.render("reset-Password", { resetData });
+  } catch (error) {
+    return res.render("404");
+  }
+};
+
+/* http://localhost:3001/api/mail-verification?id=66acaa591cf13d4808bec1d6
+http://localhost:3001/api/reset-Password?token=wcOh3999W8KkmX58htHqk3eCZDlZusJe */
+
+const Update_password = async function (req, res) {
+  try {
+    const { user_id, password, c_password } = req.body;
+
+    const resetData = await passwordModel.findOne({ user_id });
+
+    if (password != c_password) {
+      return res.render({
+        resetData,
+        error: "c_password in not matching please try again !",
+      });
+    }
+
+    const User_hashedPassword = await bcrypt.hash(c_password, 8);
+
+    await userModel.findByIdAndDelete(
+      { _id: user_id },
+      {
+        $set: {
+          password: User_hashedPassword,
+        },
+      }
+    );
+
+    await passwordModel.deleteMany({
+      user_id,
+    });
+
+    return res.redirect('/reset-success');
+  } catch (error) {
+    return res.render("404");
+  }
+};
+
+
+ const resetSuccess=async function(req,res){
+  try{
+    return res.render('reset-success')
+
+  }catch(error){
+    return res.render('404')
+  }
+ }
 module.exports = {
   verify_otp_fp,
   send_otp_fp,
@@ -891,4 +972,8 @@ module.exports = {
   resetPassword,
   forgotPassword,
   User_Home,
+  forget_password,
+  reset_password,
+  Update_password,
+  resetSuccess
 };

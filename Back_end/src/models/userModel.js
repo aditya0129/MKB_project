@@ -27,7 +27,12 @@ const UserSchema = new mongoose.Schema(
     is_verified: { type: Number, default: 0 },
     image: { type: String, required: true },
     category: { type: String, required: true },
+    wallet:{
+      type:String,
+      default:0,
+    }
   },
+
   { timestamps: true }
 );
 
