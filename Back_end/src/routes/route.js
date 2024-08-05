@@ -10,7 +10,8 @@ const {
   Get_All_User,
   forgotPassword, 
   resetPassword,
-  User_Home
+  User_Home,
+  forget_password
 } = require("../Controllers/UserControllers");
 const { sendOtp, VerifyOtp } = require("../Controllers/OtpVerfy");
 const {
@@ -28,6 +29,8 @@ const {
   send_otp_fp,
   verify_otp_fp,
 } = require("../Controllers/UserControllers");
+
+const {User_Wallet}= require('../Controllers/Wallet_Controller')
 
 //----------------------------------------------Multer function for uploding Files/Images----------------------------------------------//
 const path = require("path");
@@ -64,9 +67,12 @@ router.get("/User_Home/Advisor_detail",isAuthenticated, User_Home);
 router.get("/get_user/profile", isAuthenticated, get_Users);
 router.put("/user/:userId/profile",Update_User);
 router.get("/User_All_Data", Get_All_User);
+//router.post("/User_Wallet/:User_id",User_Wallet)
 
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+
+router.post('/forget_password',forget_password)
 // router.get('/generateOTP/:userId',generate_Otp)
 // router.get('/verifyOTP/:userId/:otp',Verify_Otp)
 
