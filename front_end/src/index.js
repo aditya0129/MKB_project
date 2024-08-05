@@ -20,6 +20,7 @@ import { ForgetPasswordMankiBaatComponent } from "./components/Forgot Password/f
 import { VerifyOTPManKiBaatComponent } from "./components/Verify OTP/verify-otp-man-ki-baat_component";
 import { SetPasswordManKiBaatComponent } from "./components/Set Password/set-password-man-ki-baat_component";
 import { HomeManKiBaatComponenet } from "./components/Home Man_Ki_Baat/home-man-ki-baat_component";
+import { WalletManKiBaatComponent } from "./components/Wallet Man_Ki_Baat/wallet-man-ki-baat_component";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -58,6 +59,7 @@ root.render(
           path="set-password"
           element={<SetPasswordManKiBaatComponent />}
         />
+        <Route path="wallet" element={<WalletManKiBaatComponent />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

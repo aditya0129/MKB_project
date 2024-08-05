@@ -20,6 +20,8 @@ export function AdvisorManKiBaatComponent() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState([]);
   const [advisors, setAdvisors] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(""); // State for selected category
+  const [showInitialData, setShowInitialData] = useState(true); // State to control visibility of initial data
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
@@ -69,6 +71,19 @@ export function AdvisorManKiBaatComponent() {
     fetchAdvisors();
   }, []);
 
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+    setIsOpen(false); // Close dropdown after selection
+    setShowInitialData(false); // Hide initial data
+  };
+
+  // Filter advisors based on selected category
+  const filteredAdvisors = selectedCategory
+    ? advisors.filter((advisor) =>
+        advisor.Expertise.toLowerCase().includes(selectedCategory.toLowerCase())
+      )
+    : advisors;
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -89,7 +104,7 @@ export function AdvisorManKiBaatComponent() {
         <div className="container">
           <div className="row">
             <div className="col-md-6 form-group mt-2 d-flex">
-              <h1>MKB</h1>
+              <h1 style={{ fontFamily: "French Script MT" }}>MKB</h1>
               <input
                 type="search"
                 className="form-control ms-5"
@@ -127,38 +142,107 @@ export function AdvisorManKiBaatComponent() {
                   <a className="dropdown-item" href="advisor">
                     All Advisor
                   </a>
-                  <a className="dropdown-item" href="stress">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Stress")}
+                  >
                     Stress
                   </a>
-                  <a className="dropdown-item" href="anxiety">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Anxiety")}
+                  >
                     Anxiety
                   </a>
-                  <a className="dropdown-item" href="emotion">
-                    Emotion
-                  </a>
-                  <a className="dropdown-item" href="elicit">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Elicit")}
+                  >
                     Elicit
                   </a>
-                  <a className="dropdown-item" href="motivation">
-                    Motivation
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Job")}
+                  >
+                    Job
                   </a>
-                  <a className="dropdown-item" href="law">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Law")}
+                  >
                     Law
                   </a>
-                  <a className="dropdown-item" href="love">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Marriage")}
+                  >
+                    Marriage
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Social issues")}
+                  >
+                    Social Issues
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Kisan")}
+                  >
+                    Kisan
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Property")}
+                  >
+                    Property
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Education")}
+                  >
+                    Education
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Carrer")}
+                  >
+                    Carrer
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Medical")}
+                  >
+                    Medical
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Love")}
+                  >
                     Love
                   </a>
-                  <a className="dropdown-item" href="break-up">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Affair")}
+                  >
+                    Affair
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Breakup")}
+                  >
                     Break Up
                   </a>
-                  <a className="dropdown-item" href="ex">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Ex")}
+                  >
                     Ex
                   </a>
-                  <a className="dropdown-item" href="depressed">
-                    Depressed
-                  </a>
-                  <a className="dropdown-item" href="over-thinking">
-                    Over Thinking
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Hyper thinking")}
+                  >
+                    Hyper Thinking
                   </a>
                 </div>
                 <li
@@ -185,18 +269,19 @@ export function AdvisorManKiBaatComponent() {
                 >
                   My Contacts
                 </li>
-                {user.map((detail, index)=>(
+                {user.map((detail, index) => (
                   <img
-                  className="ms-4 mt-2"
-                  src={`http://localhost:3001/${detail.image}`}
-                  alt=""
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "100px",
-                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
-                  }}
-                />
+                    key={index}
+                    className="ms-4 mt-2"
+                    src={`http://localhost:3001/${detail.image}`}
+                    alt=""
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "100px",
+                      // boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    }}
+                  />
                 ))}
                 <FontAwesomeIcon
                   className="ms-4"
@@ -215,10 +300,18 @@ export function AdvisorManKiBaatComponent() {
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "150px" }}
         >
-          <h3 className="display-2 font-weight-bold text-white">
+          <h3
+            className="display-2 font-weight-bold text-white"
+            style={{ fontFamily: "Edwardian  Script ITC" }}
+          >
             {" "}
-            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span> Advisor{" "}
-            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span>
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#10049;
+            </span>{" "}
+            Advisor{" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#10049;
+            </span>
           </h3>
           <div className="d-inline-flex text-white">
             <p className="m-0">
@@ -237,123 +330,245 @@ export function AdvisorManKiBaatComponent() {
         style={{ background: "white" }}
       >
         <div className="row">
-          {advisors.map((advisor) => (
-            <div className="col-md-4 mt-3 mb-5" key={advisor._id}>
-              <div
-                className="card"
-                style={{
-                  borderTop: "8px solid blue",
-                  borderBottom: "8px solid cyan",
-                }}
-              >
-                <div className="card-body">
-                  <div className="text-center">
-                    <img
-                      src={`http://localhost:3001/${advisor.Image}`}
-                      alt=""
+          {showInitialData
+            ? advisors.map((details, index) => (
+                <div className="col-md-4 mt-3 mb-5" key={index}>
+                  <div
+                    className="card"
+                    style={{
+                      borderTop: "8px solid blue",
+                      borderBottom: "8px solid cyan",
+                    }}
+                  >
+                    <div className="card-body">
+                      <div className="text-center">
+                        <img
+                          src={`http://localhost:3001/${details.Image}`}
+                          alt=""
+                          style={{
+                            height: "110px",
+                            width: "110px",
+                            borderRadius: "100px",
+                            boxShadow: "0 0 8px rgb(145, 144, 146)",
+                          }}
+                        />
+                      </div>
+                      <h5
+                        className="mt-3"
+                        style={{ fontWeight: "bold", fontFamily: "Arial" }}
+                      >
+                        {details.Name}
+                      </h5>
+                      <p>
+                        {details.Rating}{" "}
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "blue" }}
+                        />
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "blue" }}
+                        />
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "blue" }}
+                        />
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "blue" }}
+                        />
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "darkgray" }}
+                        />
+                      </p>
+                      <button
+                        className="btn btn-primary me-2"
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,blue,cyan)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "100px",
+                          height: "45px",
+                          color: "white",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
+                        <FontAwesomeIcon className="me-2" icon={faPhone} />
+                        Call
+                      </button>
+                      <button
+                        className="btn btn-primary mt-2"
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,blue,cyan)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "150px",
+                          height: "45px",
+                          color: "white",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
+                        <FontAwesomeIcon className="me-2" icon={faPhone} />
+                        Waiting Call
+                      </button>
+                      <p className="mt-3">
+                        <FontAwesomeIcon icon={faComment} /> No. of chats
+                      </p>
+                      <p className="mt-3">
+                        <FontAwesomeIcon icon={faVideo} /> No. of video-calls
+                      </p>
+                      <p className="mt-3">
+                        <FontAwesomeIcon icon={faMinus} /> review{" "}
+                        <FontAwesomeIcon className="" icon={faPlus} /> review
+                      </p>
+                    </div>
+                    <div
+                      className="card-footer ms-4"
                       style={{
-                        height: "110px",
-                        width: "110px",
-                        borderRadius: "100px",
-                        boxShadow: "0 0 8px rgb(145, 144, 146)",
+                        borderTopLeftRadius: "30px",
+                        borderBottomRightRadius: "30px",
+                        padding: "20px",
                       }}
-                    />
+                    >
+                      <h6 style={{ fontWeight: "bold" }}>
+                        Year of Experience :-
+                      </h6>
+                      <p>{details.Experience}</p>
+                      <h6 style={{ fontWeight: "bold" }}>Expertise :-</h6>
+                      <p>{details.Expertise}</p>
+                      <h6 style={{ fontWeight: "bold" }}>Language :-</h6>
+                      <p>{details.Language}</p>
+                    </div>
                   </div>
-                  <h5
-                    className="mt-3"
-                    style={{ fontWeight: "bold", fontFamily: "Arial" }}
-                  >
-                    {advisor.Name}
-                  </h5>
-                  <p>
-                    {advisor.rating}{" "}
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "blue" }}
-                    />
-                    <FontAwesomeIcon
-                      className="ms-2"
-                      icon={faStar}
-                      style={{ color: "darkgray" }}
-                    />
-                  </p>
-                  <button
-                    className="btn btn-primary me-2"
-                    type="button"
+                </div>
+              ))
+            : filteredAdvisors.map((details, index) => (
+                <div className="col-md-4 mt-3 mb-5" key={index}>
+                  <div
+                    className="card"
                     style={{
-                      background: "linear-gradient(135deg,blue,cyan)",
-                      border: "none",
-                      borderRadius: "7px",
-                      width: "100px",
-                      height: "45px",
-                      color: "white",
-                      boxShadow: "0 0 3px rgb(81, 80, 82)",
+                      borderTop: "8px solid blue",
+                      borderBottom: "8px solid cyan",
                     }}
                   >
-                    <FontAwesomeIcon className="me-2" icon={faPhone} />
-                    Call
-                  </button>
-                  <button
-                    className="btn btn-primary mt-2"
-                    type="button"
-                    style={{
-                      background: "linear-gradient(135deg,blue,cyan)",
-                      border: "none",
-                      borderRadius: "7px",
-                      width: "150px",
-                      height: "45px",
-                      color: "white",
-                      boxShadow: "0 0 3px rgb(81, 80, 82)",
-                    }}
-                  >
-                    <FontAwesomeIcon className="me-2" icon={faPhone} />
-                    Waiting Call
-                  </button>
-                  <p className="mt-3">
-                    <FontAwesomeIcon icon={faComment} /> No. of chats
-                  </p>
-                  <p className="mt-3">
-                    <FontAwesomeIcon icon={faVideo} /> No. of video-calls
-                  </p>
-                  <p className="mt-3">
-                    <FontAwesomeIcon icon={faMinus} /> review{" "}
-                    <FontAwesomeIcon className="" icon={faPlus} /> review
-                  </p>
+                    <div className="card-body">
+                      <div className="text-center">
+                        <img
+                          src={`http://localhost:3001/${details.Image}`}
+                          alt=""
+                          style={{
+                            height: "110px",
+                            width: "110px",
+                            borderRadius: "100px",
+                            boxShadow: "0 0 8px rgb(145, 144, 146)",
+                          }}
+                        />
+                      </div>
+                      <h5
+                        className="mt-3"
+                        style={{ fontWeight: "bold", fontFamily: "Arial" }}
+                      >
+                        {details.Name}
+                      </h5>
+                      <p>
+                        {details.Rating}{" "}
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "blue" }}
+                        />
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "blue" }}
+                        />
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "blue" }}
+                        />
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "blue" }}
+                        />
+                        <FontAwesomeIcon
+                          className="ms-2"
+                          icon={faStar}
+                          style={{ color: "darkgray" }}
+                        />
+                      </p>
+                      <button
+                        className="btn btn-primary me-2"
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,blue,cyan)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "100px",
+                          height: "45px",
+                          color: "white",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
+                        <FontAwesomeIcon className="me-2" icon={faPhone} />
+                        Call
+                      </button>
+                      <button
+                        className="btn btn-primary mt-2"
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,blue,cyan)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "150px",
+                          height: "45px",
+                          color: "white",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
+                        <FontAwesomeIcon className="me-2" icon={faPhone} />
+                        Waiting Call
+                      </button>
+                      <p className="mt-3">
+                        <FontAwesomeIcon icon={faComment} /> No. of chats
+                      </p>
+                      <p className="mt-3">
+                        <FontAwesomeIcon icon={faVideo} /> No. of video-calls
+                      </p>
+                      <p className="mt-3">
+                        <FontAwesomeIcon icon={faMinus} /> review{" "}
+                        <FontAwesomeIcon className="" icon={faPlus} /> review
+                      </p>
+                    </div>
+                    <div
+                      className="card-footer ms-4"
+                      style={{
+                        borderTopLeftRadius: "30px",
+                        borderBottomRightRadius: "30px",
+                        padding: "20px",
+                      }}
+                    >
+                      <h6 style={{ fontWeight: "bold" }}>
+                        Year of Experience :-
+                      </h6>
+                      <p>{details.Experience}</p>
+                      <h6 style={{ fontWeight: "bold" }}>Expertise :-</h6>
+                      <p>{details.Expertise}</p>
+                      <h6 style={{ fontWeight: "bold" }}>Language :-</h6>
+                      <p>{details.Language}</p>
+                    </div>
+                  </div>
                 </div>
-                <div
-                  className="card-footer ms-4"
-                  style={{
-                    borderTopLeftRadius: "30px",
-                    borderBottomRightRadius: "30px",
-                    padding: "20px",
-                  }}
-                >
-                  <h6 style={{ fontWeight: "bold" }}>Year of Experience :-</h6>
-                  <p>{advisor.Experience}</p>
-                  <h6 style={{ fontWeight: "bold" }}>Expertise :-</h6>
-                  <p>{advisor.Expertise}</p>
-                  <h6 style={{ fontWeight: "bold" }}>Language :-</h6>
-                  <p>{advisor.Language}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+              ))}
         </div>
       </div>
 
@@ -364,8 +579,13 @@ export function AdvisorManKiBaatComponent() {
         <div class="container text-center">
           <div class="row d-flex align-items-center justify-content-center">
             <div class="col-lg-8 col-md-6">
-              <div class="" style={{ height: "75px" }}>
-                <p class="mt-4">
+              <div class="" style={{ height: "105px" }}>
+                <span
+                  style={{ fontSize: "30px", textShadow: "3px 2px 3px red" }}
+                >
+                  &#9884;
+                </span>
+                <p>
                   &copy;{" "}
                   <a
                     class="text-white border-bottom"

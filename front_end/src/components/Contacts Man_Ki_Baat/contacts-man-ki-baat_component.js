@@ -70,7 +70,7 @@ export function ContactsManKiBaat() {
         <div className="container">
           <div className="row">
             <div className="col-md-6 form-group mt-2 d-flex">
-              <h1>MKB</h1>
+              <h1 style={{ fontFamily: "French Script MT" }}>MKB</h1>
               <input
                 type="search"
                 className="form-control ms-5"
@@ -167,7 +167,7 @@ export function ContactsManKiBaat() {
                 </li>
                 {contact.map((detail, index) => (
                   <img
-                    key={indexedDB}
+                    key={index}
                     className="ms-4 mt-2"
                     src={`http://localhost:3001/${detail.image}`}
                     alt=""
@@ -196,7 +196,10 @@ export function ContactsManKiBaat() {
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "150px" }}
         >
-          <h3 className="display-2 font-weight-bold text-white">
+          <h3
+            className="display-2 font-weight-bold text-white"
+            style={{ fontFamily: "Edwardian  Script ITC" }}
+          >
             {" "}
             <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
               &#10049;
@@ -330,8 +333,13 @@ export function ContactsManKiBaat() {
         <div class="container text-center">
           <div class="row d-flex align-items-center justify-content-center">
             <div class="col-lg-8 col-md-6">
-              <div class="" style={{ height: "75px" }}>
-                <p class="mt-4">
+              <div class="" style={{ height: "105px" }}>
+                <span
+                  style={{ fontSize: "30px", textShadow: "3px 2px 3px red" }}
+                >
+                  &#9884;
+                </span>
+                <p>
                   &copy;{" "}
                   <a
                     class="text-white border-bottom"

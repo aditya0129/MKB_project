@@ -1,7 +1,10 @@
 import React from "react";
 import "./man-ki-baat_component.css";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -17,39 +20,23 @@ import {
   faVideo,
   faWallet,
   faPowerOff,
+  faChevronRight,
+  faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import {} from "@fortawesome/free-brands-svg-icons";
 
 export function ManKiBaatComponent({ data }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [showStress, setShowStress] = useState(false);
-  const [showAnxiety, setShowAnxiety] = useState(false);
-  const [showEmotion, setShowEmotion] = useState(false);
   const [user, setUser] = useState([]);
-  const [expertise, setExpertise] = useState([]);
+  const [advisorData, setAdvisorData] = useState([]);
+  const [advisors, setAdvisors] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(""); // State for selected category
+  const [showInitialData, setShowInitialData] = useState(true); // State to control visibility of initial data
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
-  };
-
-  const handleStressButtonClick = () => {
-    setShowStress(true);
-    setShowAnxiety(false);
-    setShowEmotion(false);
-  };
-
-  const handleAnxietyButtonClick = () => {
-    setShowAnxiety(true);
-    setShowStress(false);
-    setShowEmotion(false);
-  };
-
-  const handleEmotionButtonClick = () => {
-    setShowEmotion(true);
-    setShowStress(false);
-    setShowAnxiety(false);
   };
 
   useEffect(() => {
@@ -89,7 +76,7 @@ export function ManKiBaatComponent({ data }) {
           }
         );
         console.log("Response:", response);
-        setExpertise(response.data.data);
+        setAdvisors(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
       }
@@ -97,6 +84,111 @@ export function ManKiBaatComponent({ data }) {
 
     fetchAdvisorExpertise();
   }, []);
+
+  // Define arrow components before using them in settings
+  const SampleNextArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <div
+        className="slick-arrow slick-next"
+        onClick={onClick}
+        style={{
+          right: "20px",
+          top: "55%",
+          transform: "translateY(-50%)",
+          cursor: "pointer",
+          zIndex: 1,
+          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          backgroundColor: "white",
+          boxShadow: "0 0 5px rgba(0, 0, 0, 0.3)",
+        }}
+      >
+        <FontAwesomeIcon
+          icon={faChevronRight}
+          style={{ fontSize: "25px", color: "cyan" }}
+        />
+      </div>
+    );
+  };
+
+  const SamplePrevArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <div
+        className="slick-arrow slick-prev"
+        onClick={onClick}
+        style={{
+          left: "20px",
+          top: "55%",
+          transform: "translateY(-50%)",
+          cursor: "pointer",
+          zIndex: 1,
+          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          backgroundColor: "white",
+          boxShadow: "0 0 5px rgba(0, 0, 0, 0.3)",
+        }}
+      >
+        <FontAwesomeIcon
+          icon={faChevronLeft}
+          style={{ fontSize: "25px", color: "blue" }}
+        />
+      </div>
+    );
+  };
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
+    arrows: true,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  };
+
+  useEffect(() => {
+    async function fetchAdvisors() {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/Advisor_All_Data`
+        );
+        setAdvisorData(response.data.Data);
+      } catch (error) {
+        console.error("Error fetching advisors data:", error);
+      }
+    }
+
+    fetchAdvisors();
+  }, []);
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+    setIsOpen(false); // Close dropdown after selection
+    setShowInitialData(false); // Hide initial data
+  };
+
+  // Filter advisors based on selected category
+  const filteredAdvisors = selectedCategory
+    ? advisorData.filter((advisor) =>
+        advisor.Expertise.toLowerCase().includes(selectedCategory.toLowerCase())
+      )
+    : advisorData;
 
   useEffect(() => {
     if (cookies["token"] === undefined) {
@@ -115,6 +207,10 @@ export function ManKiBaatComponent({ data }) {
 
   const redirectToVideoChat = () => {
     window.location.href = "http://localhost:3030";
+  };
+
+  const redirectToMsgChat = () => {
+    window.location.href = "http://localhost:3002";
   };
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -137,13 +233,17 @@ export function ManKiBaatComponent({ data }) {
     navigate("/contacts");
   }
 
+  function handleWalletClick() {
+    navigate("/wallet");
+  }
+
   return (
     <>
       <div id="header">
         <div className="container">
           <div className="row">
             <div className="col-md-6 form-group mt-2 d-flex">
-              <h1>MKB</h1>
+              <h1 style={{ fontFamily: "French Script MT" }}>MKB</h1>
               <input
                 type="search"
                 className="form-control ms-5"
@@ -184,45 +284,105 @@ export function ManKiBaatComponent({ data }) {
                   </a>
                   <a
                     className="dropdown-item"
-                    onClick={handleStressButtonClick}
+                    onClick={() => handleCategorySelect("Stress")}
                   >
                     Stress
                   </a>
                   <a
                     className="dropdown-item"
-                    onClick={handleAnxietyButtonClick}
+                    onClick={() => handleCategorySelect("Anxiety")}
                   >
                     Anxiety
                   </a>
                   <a
                     className="dropdown-item"
-                    onClick={handleEmotionButtonClick}
+                    onClick={() => handleCategorySelect("Elicit")}
                   >
-                    Emotion
-                  </a>
-                  <a className="dropdown-item" href="">
                     Elicit
                   </a>
-                  <a className="dropdown-item" href="">
-                    Motivation
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Job")}
+                  >
+                    Job
                   </a>
-                  <a className="dropdown-item" href="">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Law")}
+                  >
                     Law
                   </a>
-                  <a className="dropdown-item" href="">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Marriage")}
+                  >
+                    Marriage
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Social issues")}
+                  >
+                    Social Issues
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Kisan")}
+                  >
+                    Kisan
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Property")}
+                  >
+                    Property
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Education")}
+                  >
+                    Education
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Carrer")}
+                  >
+                    Carrer
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Medical")}
+                  >
+                    Medical
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Love")}
+                  >
                     Love
                   </a>
-                  <a className="dropdown-item" href="">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Affair")}
+                  >
+                    Affair
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Breakup")}
+                  >
                     Break Up
                   </a>
-                  <a className="dropdown-item" href="">
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Ex")}
+                  >
                     Ex
                   </a>
-                  <a className="dropdown-item" href="">
-                    Depressed
-                  </a>
-                  <a className="dropdown-item" href="">
-                    Over Thinking
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect("Hyper thinking")}
+                  >
+                    Hyper Thinking
                   </a>
                 </div>
                 <li
@@ -249,19 +409,19 @@ export function ManKiBaatComponent({ data }) {
                 >
                   My Contacts
                 </li>
-                {user.map((u, index)=>(
+                {user.map((u, index) => (
                   <img
-                  key={index}
-                  className="ms-4 mt-2"
-                  src={`http://localhost:3001/${u.image}`}
-                  alt=""
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "100px",
-                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
-                  }}
-                />
+                    key={index}
+                    className="ms-4 mt-2"
+                    src={`http://localhost:3001/${u.image}`}
+                    alt=""
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "100px",
+                      // boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    }}
+                  />
                 ))}
                 <FontAwesomeIcon
                   className="ms-4"
@@ -280,9 +440,17 @@ export function ManKiBaatComponent({ data }) {
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "100px" }}
         >
-          <h3 className="display-2 font-weight-bold text-white">
-          <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span> User-Profile{" "}
-          <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>&#10049;</span>
+          <h3
+            className="display-2 font-weight-bold text-white"
+            style={{ fontFamily: "Edwardian  Script ITC" }}
+          >
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#10049;
+            </span>{" "}
+            User-Profile{" "}
+            <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
+              &#10049;
+            </span>
           </h3>
         </div>
       </div>
@@ -290,24 +458,25 @@ export function ManKiBaatComponent({ data }) {
       <div className="container">
         <div className="row">
           <div className="col-md-4 mt-5">
-            {user.map((u, index)=>(
+            {user.map((u, index) => (
               <img
-              className="p-1"
-              src={`http://localhost:3001/${u.image}`}
-              alt=""
-              style={{
-                height: "350px",
-                width: "350px",
-                borderRadius: "50px",
-                boxShadow: "0 0 8px rgb(145, 144, 146)",
-              }}
-            />
+                key={index}
+                className="p-1"
+                src={`http://localhost:3001/${u.image}`}
+                alt=""
+                style={{
+                  height: "350px",
+                  width: "350px",
+                  borderRadius: "50px",
+                  boxShadow: "0 0 8px rgb(145, 144, 146)",
+                }}
+              />
             ))}
           </div>
           <div className="col-md-4 mt-5">
             {user.map((u, index) => (
               <div key={index}>
-                <h3>
+                <h1 style={{ fontFamily: "Brush Script MT" }}>
                   {u.name}{" "}
                   <FontAwesomeIcon
                     className="ms-2"
@@ -317,13 +486,15 @@ export function ManKiBaatComponent({ data }) {
                   <span style={{ fontSize: "1.2rem", color: "grey" }}>
                     {u.place}
                   </span>
-                </h3>
+                </h1>
                 <p style={{ color: "blue" }}>Product Designer</p>
-                <p style={{ color: "grey", fontSize: "1.1rem" }}>{u.category}</p>
+                <p style={{ color: "grey", fontSize: "1.1rem" }}>
+                  {u.category}
+                </p>
               </div>
             ))}
             <p>
-              8,6{" "}
+              8.6{" "}
               <FontAwesomeIcon
                 className="ms-2"
                 icon={faStar}
@@ -362,6 +533,7 @@ export function ManKiBaatComponent({ data }) {
                 color: "white",
                 boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
+              onClick={redirectToMsgChat}
             >
               <FontAwesomeIcon className="me-2" icon={faMessage} />
               Msg
@@ -400,261 +572,243 @@ export function ManKiBaatComponent({ data }) {
               Call
             </button>
             <p className="mt-4">
-              <FontAwesomeIcon icon={faWallet} /> My Wallet
+              <FontAwesomeIcon
+                icon={faWallet}
+                onClick={handleWalletClick}
+                style={{ cursor: "pointer" }}
+              />{" "}
+              My Wallet
             </p>
             <p className="mt-3" style={{ color: "darkgray" }}>
               <FontAwesomeIcon icon={faEye} /> Timeline{" "}
-              <p
-                className="ms-3 mt-3"
+              <span
+                className="ms-3"
                 style={{ display: "inline-block", color: "black" }}
               >
                 <FontAwesomeIcon icon={faUser} /> About
-              </p>
+              </span>
             </p>
           </div>
-          {showStress && (
-            <div className="col-md-4 mt-5 user">
-              <img
-                className="mt-4"
-                src="boy-img.jpg"
-                alt=""
-                style={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "100px",
-                  display: "flex",
-                  margin: "auto",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              />
-              <p className="text-center mt-3">Jeremy Rose</p>
-              <p className="text-center">People: Stress</p>
-              <p className="text-center">Experience: 3 Years</p>
-              <p className="text-center">
-                8,6{" "}
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "darkgray" }}
-                />
-              </p>
-              <button
-                className="mt-3"
-                type="button"
-                style={{
-                  background: "linear-gradient(135deg,cyan,blue)",
-                  border: "none",
-                  borderRadius: "7px",
-                  width: "70px",
-                  height: "40px",
-                  color: "white",
-                  marginLeft: "110px",
-                  boxShadow: "0 0 3px rgb(81, 80, 82)",
-                }}
-              >
-                <FontAwesomeIcon className="me-2" icon={faMessage} />
-                Msg
-              </button>
-              <button
-                className="ms-2 mt-3"
-                type="button"
-                style={{
-                  background: "linear-gradient(135deg,cyan,blue)",
-                  border: "none",
-                  borderRadius: "7px",
-                  width: "70px",
-                  height: "40px",
-                  color: "white",
-                  boxShadow: "0 0 3px rgb(81, 80, 82)",
-                }}
-              >
-                <FontAwesomeIcon className="me-2" icon={faVideo} />
-                Call
-              </button>
-            </div>
-          )}
-          {showAnxiety && (
-            <div className="col-md-4 mt-5 user">
-              <img
-                className="mt-4"
-                src="boy-img.jpg"
-                alt=""
-                style={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "100px",
-                  display: "flex",
-                  margin: "auto",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              />
-              <p className="text-center mt-3">Jeremy Rose</p>
-              <p className="text-center">People: Anxiety</p>
-              <p className="text-center">Experience: 2 Years</p>
-              <p className="text-center">
-                8,3{" "}
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "darkgray" }}
-                />
-              </p>
-              <button
-                className="mt-3"
-                type="button"
-                style={{
-                  background: "linear-gradient(135deg,cyan,blue)",
-                  border: "none",
-                  borderRadius: "7px",
-                  width: "70px",
-                  height: "40px",
-                  color: "white",
-                  marginLeft: "110px",
-                  boxShadow: "0 0 3px rgb(81, 80, 82)",
-                }}
-              >
-                <FontAwesomeIcon className="me-2" icon={faMessage} />
-                Msg
-              </button>
-              <button
-                className="ms-2 mt-3"
-                type="button"
-                style={{
-                  background: "linear-gradient(135deg,cyan,blue)",
-                  border: "none",
-                  borderRadius: "7px",
-                  width: "70px",
-                  height: "40px",
-                  color: "white",
-                  boxShadow: "0 0 3px rgb(81, 80, 82)",
-                }}
-              >
-                <FontAwesomeIcon className="me-2" icon={faVideo} />
-                Call
-              </button>
-            </div>
-          )}
-          {showEmotion && (
-            <div className="col-md-4 mt-5 user">
-              <img
-                className="mt-4"
-                src="boy-img.jpg"
-                alt=""
-                style={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "100px",
-                  display: "flex",
-                  margin: "auto",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
-              />
-              <p className="text-center mt-3">Jeremy Rose</p>
-              <p className="text-center">People: Emotion</p>
-              <p className="text-center">Experience: 2.5 Years</p>
-              <p className="text-center">
-                7{" "}
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "blue" }}
-                />
-                <FontAwesomeIcon
-                  className="ms-2"
-                  icon={faStar}
-                  style={{ color: "darkgray" }}
-                />
-              </p>
-              <button
-                className="mt-3"
-                type="button"
-                style={{
-                  background: "linear-gradient(135deg,cyan,blue)",
-                  border: "none",
-                  borderRadius: "7px",
-                  width: "70px",
-                  height: "40px",
-                  color: "white",
-                  marginLeft: "110px",
-                  boxShadow: "0 0 3px rgb(81, 80, 82)",
-                }}
-              >
-                <FontAwesomeIcon className="me-2" icon={faMessage} />
-                Msg
-              </button>
-              <button
-                className="ms-2 mt-3"
-                type="button"
-                style={{
-                  background: "linear-gradient(135deg,cyan,blue)",
-                  border: "none",
-                  borderRadius: "7px",
-                  width: "70px",
-                  height: "40px",
-                  color: "white",
-                  boxShadow: "0 0 3px rgb(81, 80, 82)",
-                }}
-              >
-                <FontAwesomeIcon className="me-2" icon={faVideo} />
-                Call
-              </button>
-            </div>
-          )}
+
+          <style>
+            {`
+          .slick-dots li button:before {
+            font-size: 20px; /* Increase dot size */
+            color: cyan; /* Dot color */
+            opacity: 1; /* Ensure dots are visible */
+          }
+
+          .slick-dots li.slick-active button:before {
+            color: blue; /* Color of the active dot */
+          }
+
+          .slick-dots {
+            bottom: -30px; /* Position dots */
+          }
+
+          .slick-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1; /* Ensure arrows are on top */
+          }
+
+          .slick-prev {
+            left: 10px; /* Position of the left arrow */
+          }
+
+          .slick-next {
+            right: 10px; /* Position of the right arrow */
+          }
+
+          .slick-arrow:before {
+            content: ''; /* Remove default text */
+          }
+        `}
+          </style>
+
+          <Slider {...settings} style={{ width: "380px", margin: "0 auto" }}>
+            {showInitialData
+              ? advisors.map((details, index) => (
+                  <div
+                    key={index}
+                    className="d-flex justify-content-center align-items-center flex-column mt-5 user"
+                  >
+                    <img
+                      className="mt-4"
+                      src={`http://localhost:3001/${details.Image}`}
+                      alt=""
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        borderRadius: "100px",
+                        boxShadow: "0 0 8px rgb(145, 144, 146)",
+                      }}
+                    />
+                    <p className="text-center fw-bold mt-3">{details.Name}</p>
+                    <p className="text-center">
+                      <span className="fw-bold">People :-</span>{" "}
+                      {details.Expertise}
+                    </p>
+                    <p className="text-center">
+                      <span className="fw-bold">Experience :-</span>{" "}
+                      {details.Experience}
+                    </p>
+                    <p className="text-center fw-bold">
+                      8.6{" "}
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "blue" }}
+                      />
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "blue" }}
+                      />
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "blue" }}
+                      />
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "blue" }}
+                      />
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "darkgray" }}
+                      />
+                    </p>
+                    <div className="d-flex justify-content-center mt-3 mb-3">
+                      <button
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,cyan,blue)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "70px",
+                          height: "40px",
+                          color: "white",
+                          margin: "0 5px",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
+                        <FontAwesomeIcon className="me-2" icon={faMessage} />
+                        Msg
+                      </button>
+                      <button
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,cyan,blue)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "70px",
+                          height: "40px",
+                          color: "white",
+                          margin: "0 5px",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
+                        <FontAwesomeIcon className="me-2" icon={faVideo} />
+                        Call
+                      </button>
+                    </div>
+                  </div>
+                ))
+              : filteredAdvisors.map((details, index) => (
+                  <div
+                    key={index}
+                    className="d-flex justify-content-center align-items-center flex-column mt-5 user"
+                  >
+                    <img
+                      className="mt-4"
+                      src={`http://localhost:3001/${details.Image}`}
+                      alt=""
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        borderRadius: "100px",
+                        boxShadow: "0 0 8px rgb(145, 144, 146)",
+                      }}
+                    />
+                    <p className="text-center fw-bold mt-3">{details.Name}</p>
+                    <p className="text-center">
+                      <span className="fw-bold">People :-</span>{" "}
+                      {details.Expertise}
+                    </p>
+                    <p className="text-center">
+                      <span className="fw-bold">Experience :-</span>{" "}
+                      {details.Experience}
+                    </p>
+                    <p className="text-center fw-bold">
+                      8.6{" "}
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "blue" }}
+                      />
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "blue" }}
+                      />
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "blue" }}
+                      />
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "blue" }}
+                      />
+                      <FontAwesomeIcon
+                        className="ms-2"
+                        icon={faStar}
+                        style={{ color: "darkgray" }}
+                      />
+                    </p>
+                    <div className="d-flex justify-content-center mt-3 mb-3">
+                      <button
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,cyan,blue)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "70px",
+                          height: "40px",
+                          color: "white",
+                          margin: "0 5px",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
+                        <FontAwesomeIcon className="me-2" icon={faMessage} />
+                        Msg
+                      </button>
+                      <button
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,cyan,blue)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "70px",
+                          height: "40px",
+                          color: "white",
+                          margin: "0 5px",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
+                        <FontAwesomeIcon className="me-2" icon={faVideo} />
+                        Call
+                      </button>
+                    </div>
+                  </div>
+                ))}
+          </Slider>
         </div>
       </div>
 
@@ -693,13 +847,15 @@ export function ManKiBaatComponent({ data }) {
               <div key={index}>
                 <p>
                   Phone{" "}
-                  <span className="" style={{ color: "blue", marginLeft: "55px" }}>
+                  <span
+                    className=""
+                    style={{ color: "blue", marginLeft: "55px" }}
+                  >
                     {u.number}
                   </span>
                 </p>
                 <p>
-                  Address{" "}
-                  <span style={{ marginLeft: "40px" }}>{u.place}</span>
+                  Address <span style={{ marginLeft: "40px" }}>{u.place}</span>
                 </p>
                 <p style={{ marginLeft: "110px", marginTop: "-15px" }}>
                   {u.place}
@@ -736,8 +892,13 @@ export function ManKiBaatComponent({ data }) {
         <div class="container text-center">
           <div class="row d-flex align-items-center justify-content-center">
             <div class="col-lg-8 col-md-6">
-              <div class="" style={{ height: "75px" }}>
-                <p class="mt-4">
+              <div class="" style={{ height: "105px" }}>
+                <span
+                  style={{ fontSize: "30px", textShadow: "3px 2px 3px red" }}
+                >
+                  &#9884;
+                </span>
+                <p>
                   &copy;{" "}
                   <a
                     class="text-white border-bottom"
