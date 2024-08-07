@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Number } = require("twilio/lib/twiml/VoiceResponse");
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const UserSchema = new mongoose.Schema(
   {
@@ -27,10 +28,12 @@ const UserSchema = new mongoose.Schema(
     is_verified: { type: Number, default: 0 },
     image: { type: String, required: true },
     category: { type: String, required: true },
-    wallet:{
-      type:String,
-      default:0,
-    }
+
+    walletBalance: {
+      type: Number,
+    },
+
+    transactions: [{ type: ObjectId, ref: "Transaction" }],
   },
 
   { timestamps: true }

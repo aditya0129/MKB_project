@@ -30,7 +30,7 @@ const {
   verify_otp_fp,
 } = require("../Controllers/UserControllers");
 
-const {User_Wallet}= require('../Controllers/Wallet_Controller')
+const {wallet,add_amount,deduct_amount,}= require('../Controllers/Wallet_Controller')
 
 //----------------------------------------------Multer function for uploding Files/Images----------------------------------------------//
 const path = require("path");
@@ -75,6 +75,15 @@ router.post('/reset-password', resetPassword);
 router.post('/forget_password',forget_password)
 // router.get('/generateOTP/:userId',generate_Otp)
 // router.get('/verifyOTP/:userId/:otp',Verify_Otp)
+
+
+//user wallet api's
+router.get('/wallet',isAuthenticated,wallet)
+//Add amount to wallet
+router.post('/add-amount',add_amount)
+// Deduct amount from wallet
+router.post('/deduct-amount',deduct_amount)
+
 
 //OTP_APIS
 router.post("/sendOtp", sendOtp);
