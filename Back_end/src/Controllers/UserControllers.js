@@ -42,7 +42,7 @@ const calculateAge = (birthdate) => {
 const Register_User = async function (req, res) {
   try {
     let data = req.body;
-    let { name, email, password, birthdate, gender, number, place, category } =
+    let { name, email, password, birthdate, gender, number, place, category,walletBalance } =
       data;
 
     if (!name)
@@ -155,6 +155,7 @@ const Register_User = async function (req, res) {
       place,
       category,
       image: "images/" + req.file.filename,
+      walletBalance
     });
     const userData = await newUser.save();
 
@@ -977,3 +978,6 @@ module.exports = {
   Update_password,
   resetSuccess
 };
+
+
+

@@ -48,7 +48,6 @@ const User_Wallet = async function (req, res) {
 module.exports={User_Wallet}
  */
 
-
 /* // Get user wallet balance
 router.get('/wallet', async (req, res) => {
   const user = await User.findById(req.user._id);
@@ -80,3 +79,63 @@ router.post('/deduct-amount', async (req, res) => {
     res.json({ success: false, message: 'Insufficient balance' });
   }
 }); */
+
+
+
+
+
+const userModel = require("../models/userModel");
+const Wallet_Model = require("../models/Wallet_Model");
+
+
+// Get user wallet balance
+
+const wallet = async (req, res) => {
+
+  const {userId}=req.params
+  const user = await userModel.findById({_id:userId});
+  if(!user){
+    return res.status(201).json({status:false,MSg:"user not Find"})
+  }
+ return  res.status(201).json({ walletBalance: user.walletBalance });
+};
+
+
+const add_amount = async (req, res) => {
+  const { amount } = req.body;
+  const user = await userModel.findById(req.user._id);
+  user.walletBalance += amount;
+  await user.save();
+  const transaction = new Transaction({
+    userId: user._id,
+    amount,
+    type: "credit",
+  });
+  await transaction.save();
+  res.json({ success: true, message: "Amount added to wallet" });
+};
+
+
+const deduct_amount = async (req, res) => {
+  const { amount } = req.body;
+  const user = await userModel.findById(req.user._id);
+  if (user.walletBalance >= amount) {
+    user.walletBalance -= amount;
+    await user.save();
+    const transaction = new Transaction({
+      userId: user._id,
+      amount,
+      type: "debit",
+    });
+    await transaction.save();
+    res.json({ success: true, message: "Amount deducted from wallet" });
+  } else {
+    res.json({ success: false, message: "Insufficient balance" });
+  }
+};
+
+module.exports = {
+  wallet,
+  add_amount,
+  deduct_amount,
+};
