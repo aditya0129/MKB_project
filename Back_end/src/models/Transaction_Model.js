@@ -5,7 +5,7 @@ const transactionSchema = new mongoose.Schema({
   userId: { type: ObjectId, ref: "UserData" },
   amount: Number,
   type: String,
-  date: Date,
+  date: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model("Transaction", transactionSchema);

@@ -78,11 +78,11 @@ router.post('/forget_password',forget_password)
 
 
 //user wallet api's
-router.get('/wallet',isAuthenticated,wallet)
+router.get('/wallet' ,isAuthenticated, wallet)
 //Add amount to wallet
-router.post('/add-amount',add_amount)
+router.post('/add_amount',isAuthenticated,add_amount)
 // Deduct amount from wallet
-router.post('/deduct-amount',deduct_amount)
+router.post('/deduct_amount',isAuthenticated,deduct_amount)
 
 
 //OTP_APIS
