@@ -78,7 +78,7 @@ router.post('/forget_password',forget_password)
 
 
 //user wallet api's
-router.get('/wallet/:userId',wallet)
+router.get('/wallet',isAuthenticated,wallet)
 //Add amount to wallet
 router.post('/add-amount',add_amount)
 // Deduct amount from wallet

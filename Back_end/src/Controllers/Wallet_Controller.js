@@ -92,7 +92,7 @@ const Wallet_Model = require("../models/Wallet_Model");
 
 const wallet = async (req, res) => {
 
-  const {userId}=req.params
+  const {userId}=req.token
   const user = await userModel.findById({_id:userId});
   if(!user){
     return res.status(201).json({status:false,MSg:"user not Find"})
