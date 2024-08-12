@@ -42,8 +42,19 @@ const calculateAge = (birthdate) => {
 const Register_User = async function (req, res) {
   try {
     let data = req.body;
-    let { name, email, password, birthdate, gender, number, place, category,walletBalance } =
-      data;
+    let {
+      name,
+      email,
+      password,
+      birthdate,
+      gender,
+      number,
+      place,
+      category,
+      sub_category,
+      profasion,
+      walletBalance,
+    } = data;
 
     if (!name)
       return res
@@ -118,6 +129,10 @@ const Register_User = async function (req, res) {
       return res
         .status(400)
         .send({ Status: false, Msg: "please provide your category" });
+    if (!sub_category)
+      return res
+        .status(400)
+        .send({ Status: false, Msg: "please provide your sub_category" });
 
     // if (!validateName(category)) {
     //   return res
@@ -140,6 +155,11 @@ const Register_User = async function (req, res) {
       return res
         .status(400)
         .send({ status: false, msg: "plcae must be required" });
+    if (!profasion)
+      return res
+        .status(400)
+        .send({ status: false, msg: "profasion must be required" });
+
     // if (!validateName(place))
     //   return res
     //     .status(400)
@@ -154,8 +174,10 @@ const Register_User = async function (req, res) {
       age,
       place,
       category,
+      sub_category,
+      profasion,
       image: "images/" + req.file.filename,
-      walletBalance
+      walletBalance,
     });
     const userData = await newUser.save();
 
@@ -946,21 +968,19 @@ const Update_password = async function (req, res) {
       user_id,
     });
 
-    return res.redirect('/reset-success');
+    return res.redirect("/reset-success");
   } catch (error) {
     return res.render("404");
   }
 };
 
-
- const resetSuccess=async function(req,res){
-  try{
-    return res.render('reset-success')
-
-  }catch(error){
-    return res.render('404')
+const resetSuccess = async function (req, res) {
+  try {
+    return res.render("reset-success");
+  } catch (error) {
+    return res.render("404");
   }
- }
+};
 module.exports = {
   verify_otp_fp,
   send_otp_fp,
@@ -976,8 +996,5 @@ module.exports = {
   forget_password,
   reset_password,
   Update_password,
-  resetSuccess
+  resetSuccess,
 };
-
-
-

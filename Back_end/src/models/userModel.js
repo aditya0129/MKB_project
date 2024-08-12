@@ -28,12 +28,27 @@ const UserSchema = new mongoose.Schema(
     is_verified: { type: Number, default: 0 },
     image: { type: String, required: true },
     category: { type: String, required: true },
+    sub_category: { type: String, required: true },
 
     walletBalance: {
       type: Number,
     },
 
     transactions: [{ type: ObjectId, ref: "Transaction" }],
+    profasion: {
+      type: String,
+      required: true,
+    },
+
+    advisor_history: {
+      type: String,
+      default: "in future here we will be show a Advisor History",
+    },
+    review: {
+      type: String,
+      default:
+        "in future we will give a feature here will be shown a all user review_history by given the user",
+    },
   },
 
   { timestamps: true }
