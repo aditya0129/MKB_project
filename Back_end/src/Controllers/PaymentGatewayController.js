@@ -1,8 +1,9 @@
 const Razorpay = require("razorpay");
+const usermodel=require('../models/userModel')
 
 const razorpay = new Razorpay({
-  key_id: "YOUR_RAZORPAY_KEY_ID",
-  key_secret: "YOUR_RAZORPAY_KEY_SECRET",
+  key_id: process.env.RAZOR_KEY,
+  key_secret: process.env.RAZOR_KEY_SECRET,
 });
 
 async function addAmountToWallet(userId, amount) {
@@ -20,7 +21,7 @@ async function addAmountToWallet(userId, amount) {
     // Check if payment was successful
     if (payment.status === "captured") {
       // Add amount to wallet
-      const user = await User.findById(userId);
+      const user = await usermodel.findById(userId);
       user.walletBalance += amount;
       await user.save();
       return { success: true, message: "Amount added to wallet successfully" };
