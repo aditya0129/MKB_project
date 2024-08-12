@@ -23,13 +23,15 @@ import {
   faChevronRight,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import {} from "@fortawesome/free-brands-svg-icons";
+import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
+import { Button } from "bootstrap";
 
 export function ManKiBaatComponent({ data }) {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState([]);
   const [advisorData, setAdvisorData] = useState([]);
   const [advisors, setAdvisors] = useState([]);
+  const [wallet, setWallet] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(""); // State for selected category
   const [showInitialData, setShowInitialData] = useState(true); // State to control visibility of initial data
   const [cookies, setCookie, removeCookie] = useCookies();
@@ -83,6 +85,30 @@ export function ManKiBaatComponent({ data }) {
     }
 
     fetchAdvisorExpertise();
+  }, []);
+
+  useEffect(() => {
+    async function fetchWallet() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(`http://localhost:3001/wallet`, {
+          headers: {
+            "x-auth-token": token,
+          },
+        });
+        console.log("Response:", response);
+        if (response.data.status) {
+          setWallet([response.data.data]);
+        } else {
+          console.error("Failed to fetch wallet data:", response.data.msg);
+        }
+      } catch (error) {
+        console.error("Error fetching wallet data:", error);
+      }
+    }
+
+    fetchWallet();
   }, []);
 
   // Define arrow components before using them in settings
@@ -495,7 +521,7 @@ export function ManKiBaatComponent({ data }) {
             ))}
             <p>
               8.6{" "}
-              <FontAwesomeIcon
+              {/* <FontAwesomeIcon
                 className="ms-2"
                 icon={faStar}
                 style={{ color: "blue" }}
@@ -519,7 +545,15 @@ export function ManKiBaatComponent({ data }) {
                 className="ms-2"
                 icon={faStar}
                 style={{ color: "darkgray" }}
-              />
+              /> */}
+              <meter
+                min="1"
+                max="100"
+                value="100"
+                low="0"
+                high="0"
+                className="w-50"
+              ></meter>
             </p>
             <button
               className="mt-3"
@@ -571,14 +605,23 @@ export function ManKiBaatComponent({ data }) {
               <FontAwesomeIcon className="me-2" icon={faVideo} />
               Call
             </button>
-            <p className="mt-4">
-              <FontAwesomeIcon
-                icon={faWallet}
-                onClick={handleWalletClick}
-                style={{ cursor: "pointer" }}
-              />{" "}
-              My Wallet
-            </p>
+            {wallet.map((balance, index) => (
+              <p className="mt-4 fw-semibold fs-5">
+                <FontAwesomeIcon
+                  icon={faWallet}
+                  onClick={handleWalletClick}
+                  style={{
+                    cursor: "pointer",
+                    color: "brown",
+                  }}
+                />{" "}
+                ₹ {balance.walletBalance}/-
+              </p>
+            ))}
+            <button className="btn btn-outline-success p-1 w-25">Review</button>
+            <span className="fw-semibold fs-6 ms-3">
+              <FontAwesomeIcon icon={faStackExchange} /> History
+            </span>
             <p className="mt-3" style={{ color: "darkgray" }}>
               <FontAwesomeIcon icon={faEye} /> Timeline{" "}
               <span
@@ -816,7 +859,7 @@ export function ManKiBaatComponent({ data }) {
         <div className="row">
           <div className="col-md-6 mt-5 mb-5">
             <h3>
-              Spotify New York{" "}
+              Category{" "}
               <button type="button" className="btn btn-outline-primary ms-4">
                 Primary
               </button>
@@ -826,7 +869,7 @@ export function ManKiBaatComponent({ data }) {
               New York, NY 10038.78 212.312.51
             </p>
             <h3>
-              Metropolitian Museum{" "}
+              Sub-Category{" "}
               <button type="button" className="btn btn-outline-primary ms-4">
                 Secondary
               </button>
