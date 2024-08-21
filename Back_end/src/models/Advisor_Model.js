@@ -2,17 +2,17 @@ const mongoose = require("mongoose");
 
 const advisorSchema = new mongoose.Schema(
   {
-    Name: { type: String, required: true },
+    Name: { type: String },
 
-    Number: { type: Number, required: true },
+    Number: { type: Number },
 
-    Email: { type: String, required: true },
+    Email: { type: String },
 
-    Password: { type: String, required: true },
+    Password: { type: String },
 
-    Expertise: { type: String, required: true },
+    Expertise: { type: String },
 
-    Image: { type: String , required:true},
+    Image: { type: String },
 
     DOB: { type: Date },
 

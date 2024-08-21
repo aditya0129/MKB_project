@@ -7,6 +7,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const AuthRoute=require('./routes/AuthRoute.js')
 const ejs = require('ejs')
+const Razorpay=require("razorpay")
 
 const app = express();
 
@@ -22,6 +23,11 @@ mongoose.set("strictQuery", true);
 
 app.use(express.json());
 app.use(cors());
+
+/* const instance = new Razorpay({
+  key_id: process.env.RAZORPAY_API_KEY,
+  key_secret: process.env.RAZORPAY_API_SECRET,
+}); */
 
 mongoose
   .connect(
@@ -41,3 +47,4 @@ app.listen(process.env.PORT || 3001, function () {
     "Express app running on port " + " " + (process.env.PORT || 3001)
   );
 });
+

@@ -186,7 +186,7 @@ const Advisor_register = async function (req, res) {
       State,
       DOB,
       Age,
-      Image:  "images/" + req.file.filename,
+      Image: "images/" + req.file.filename,
     });
     await newUser.save();
     res.status(201).json({ status: true, user: newUser });
@@ -236,14 +236,14 @@ const Advisor_Login = async function (req, res) {
       return res
         .status(400)
         .send({ status: false, MSG: "please provide password" });
-    } 
+    }
     if (!validatePassword(Password)) {
       return res.status(400).send({
         status: false,
         MSG: "Please provide valid password,it should contain uppercase,number and special character and 8-15 length",
       });
     }
-    let hash = verifyUser.Password; 
+    let hash = verifyUser.Password;
 
     let isCorrect = bcrypt.compareSync(Password, hash);
     if (!isCorrect) {
@@ -303,9 +303,64 @@ const Get_All_Advisor = async function (req, res) {
   }
 };
 
+const Edit_Advisor_Profile = async function (req, res) {
+  try {
+    const {
+      Name,
+      Language,
+      State,
+      City,
+      Experience,
+      DOB,
+      Expertise,
+      Email,
+      Number,
+      About,
+      Goal,
+      Skills,
+      Personality,
+    } = req.body;
+    const { userId } = req.token;
+    const Advisor_data = await Advisor_Model.findById({ _id: userId });
+    if (!Advisor_data) {
+      return res
+        .status(404)
+        .send({ status: false, Message: "Advisor dosen't exits" });
+    }
+
+    const New_Advisor = new Advisor_Model({
+      Name,
+      Language,
+      State,
+      City,
+      Experience,
+      DOB,
+      Expertise,
+      Email,
+      Number,
+      About,
+      Goal,
+      Skills,
+      Personality,
+    });
+    const Update_Advisor = await New_Advisor.save();
+
+    return res
+      .status(201)
+      .send({
+        status: true,
+        msg: "Advisor data Updated successfully",
+        data: Update_Advisor,
+      });
+  } catch (error) {
+    return res.status(500).send({ status: false, Error:error.message });
+  }
+};
+
 module.exports = {
   Advisor_register,
   Advisor_Login,
   get_Advisor,
   Get_All_Advisor,
+  Edit_Advisor_Profile
 };
