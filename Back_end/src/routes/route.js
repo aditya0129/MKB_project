@@ -19,7 +19,9 @@ const {
   Advisor_Login,
   get_Advisor,
   Get_All_Advisor,
+  Edit_Advisor_Profile
 } = require("../Controllers/Advisor_controller");
+//const {createOrder,addAmountToWallet}=require('../Controllers/PaymentGatewayController')
 const { isAuthenticated, isAuthorized } = require("../Auth/Middi");
 const {
   otpmailvalidator,
@@ -32,6 +34,7 @@ const {
 
 const {wallet,add_amount,deduct_amount,}= require('../Controllers/Wallet_Controller')
 
+const {checkout,paymentVerification,Razor_Key}=require("../Controllers/PaymentGatewayController")
 //----------------------------------------------Multer function for uploding Files/Images----------------------------------------------//
 const path = require("path");
 const multer = require("multer");
@@ -85,6 +88,22 @@ router.post('/add_amount',isAuthenticated,add_amount)
 router.post('/deduct_amount',isAuthenticated,deduct_amount)
 
 
+//payment-intigration by razorpay*
+// Route to create an order
+//router.post("/create-order", createOrder);
+
+// Route to add amount to wallet
+//router.post("/add-to-wallet", addAmountToWallet);
+
+// router.route("/checkout").post(checkout);
+// router.route("/paymentverification").post(paymentVerification);
+
+router.post("/checkout",checkout)
+router.post("/paymentverification",paymentVerification)
+router.get("/getkey",Razor_Key)
+
+
+
 //OTP_APIS
 router.post("/sendOtp", sendOtp);
 router.post("/VerifyOtp", VerifyOtp);
@@ -95,6 +114,9 @@ router.post("/Advisor_login", Advisor_Login);
 //router.get( "/user/:userId/profile", get_Advisor );
 router.get("/get_Advisor/profile", isAuthenticated, get_Advisor);
 router.get("/Advisor_All_Data", Get_All_Advisor);
+router.put("/Edit_Advisor_Profile",isAuthenticated,Edit_Advisor_Profile)
+
+
 
 // otp_verification for forgot password
 router.post("/send_otp", otpmailvalidator, send_otp_fp);
