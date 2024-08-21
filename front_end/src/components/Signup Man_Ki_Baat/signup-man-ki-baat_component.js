@@ -285,8 +285,8 @@ export function SignupManKiBaatComponent() {
       width: "90%",
       padding: "10px",
       borderRadius: "5px",
-      border: "1px solid #dd033a",
-      backgroundColor: "#dd033a",
+      border: "1px solid #45f3ff",
+      backgroundColor: "#45f3ff",
       color: "white",
       outline: "none",
       transition: "0.3s",
@@ -302,8 +302,8 @@ export function SignupManKiBaatComponent() {
       width: "135%",
       padding: "10px",
       borderRadius: "5px",
-      border: "1px solid #45f3ff",
-      backgroundColor: "#45f3ff",
+      border: "1px solid #dd033a",
+      backgroundColor: "#dd033a",
       color: "white",
       outline: "none",
       transition: "0.3s",
@@ -466,6 +466,8 @@ export function SignupManKiBaatComponent() {
                   place: "",
                   gender: "",
                   category: "",
+                  sub_category: "",
+                  profasion: "",
                   image: null,
                 }}
                 validationSchema={yup.object({
@@ -482,6 +484,7 @@ export function SignupManKiBaatComponent() {
                     .required("Email Required")
                     .email("Invalid Email"),
                   birthdate: yup.string().required("Age Required"),
+                  profasion: yup.string().required("Profession Required"),
                   number: yup
                     .string()
                     .required("Mobile Required")
@@ -492,6 +495,7 @@ export function SignupManKiBaatComponent() {
                   gender: yup.string().required("Gender Is Required"),
                   place: yup.string().required("Place Is Required"),
                   category: yup.string().required("Category Is Required"),
+                  sub_category: yup.string().required("Sub-Category Required"),
                   image: yup
                     .mixed()
                     .required("Image Is Required")
@@ -593,9 +597,17 @@ export function SignupManKiBaatComponent() {
                       <div className="text-danger">
                         <ErrorMessage name="password" />
                       </div>
+                      <div id="inputBoxing">
+                        <Field type="text" name="profasion" />
+                        <span>Profession</span>
+                        <i></i>
+                      </div>
+                      <div className="text-danger">
+                        <ErrorMessage name="profasion" />
+                      </div>
                       <div className="mt-3">
                         <div className="">
-                          <span style={{ color: "#dd033a", fontSize: "13px" }}>
+                          <span style={{ color: "#45f3ff", fontSize: "13px" }}>
                             Number
                           </span>
                           <i></i>
@@ -620,7 +632,7 @@ export function SignupManKiBaatComponent() {
                         <div className="text-danger">{useErrors}</div>
                       )}
                       <div className="mt-3">
-                        <span style={{ color: "#45f3ff", fontSize: "13px" }}>
+                        <span style={{ color: "#dd033a", fontSize: "13px" }}>
                           Birthdate
                         </span>
                         <i></i>
@@ -651,13 +663,13 @@ export function SignupManKiBaatComponent() {
                           <div className="text-danger">{ageError}</div>
                         )}
                         <div className="mt-3">
-                          <span style={{ color: "#dd033a", fontSize: "13px" }}>
+                          <span style={{ color: "#45f3ff", fontSize: "13px" }}>
                             Place
                           </span>
                           <Select
                             components={animatedComponents}
                             options={cityOptions}
-                            styles={customStyles}
+                            styles={expertiseStyles}
                             name="place"
                             className="basic-single-select"
                             classNamePrefix="select"
@@ -673,7 +685,7 @@ export function SignupManKiBaatComponent() {
                       <div className="mt-3">
                         <span
                           style={{
-                            color: "#45f3ff",
+                            color: "#dd033a",
                             fontSize: "13px",
                           }}
                         >
@@ -683,7 +695,7 @@ export function SignupManKiBaatComponent() {
                           options={genderOptions}
                           classNamePrefix="react-select"
                           placeholder="Select..."
-                          styles={expertiseStyles}
+                          styles={customStyles}
                           onChange={(option) =>
                             setFieldValue("gender", option.value)
                           }
@@ -694,24 +706,43 @@ export function SignupManKiBaatComponent() {
                       </div>
                     </div>
                     <div className="mt-3">
-                    <span style={{ color: "#dd033a", fontSize: "13px" }}>
-                      Category
-                    </span>
-                    <Select
-                      components={animatedComponents}
-                      options={categoryOptions}
-                      styles={customStyles}
-                      name="category"
-                      className="basic-single-select"
-                      classNamePrefix="select"
-                      onChange={(option) =>
-                        setFieldValue("category", option.value)
-                      }
-                    />
-                  </div>
-                  <div className="text-danger">
-                    <ErrorMessage name="category" />
-                  </div>
+                      <span style={{ color: "#45f3ff", fontSize: "13px" }}>
+                        Category
+                      </span>
+                      <Select
+                        components={animatedComponents}
+                        options={categoryOptions}
+                        styles={expertiseStyles}
+                        name="category"
+                        className="basic-single-select"
+                        classNamePrefix="select"
+                        onChange={(option) =>
+                          setFieldValue("category", option.value)
+                        }
+                      />
+                    </div>
+                    <div className="text-danger">
+                      <ErrorMessage name="category" />
+                    </div>
+                    <div className="mt-3">
+                      <span style={{ color: "#dd033a", fontSize: "13px" }}>
+                        Sub-Category
+                      </span>
+                      <Select
+                        components={animatedComponents}
+                        options={categoryOptions}
+                        styles={customStyles}
+                        name="sub_category"
+                        className="basic-single-select"
+                        classNamePrefix="select"
+                        onChange={(option) =>
+                          setFieldValue("sub_category", option.value)
+                        }
+                      />
+                    </div>
+                    <div className="text-danger">
+                      <ErrorMessage name="sub_category" />
+                    </div>
                     <div className="mt-3">
                       <span
                         style={{

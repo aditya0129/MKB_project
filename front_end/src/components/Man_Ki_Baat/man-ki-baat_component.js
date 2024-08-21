@@ -22,6 +22,7 @@ import {
   faPowerOff,
   faChevronRight,
   faChevronLeft,
+  faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 import { Button } from "bootstrap";
@@ -211,8 +212,12 @@ export function ManKiBaatComponent({ data }) {
 
   // Filter advisors based on selected category
   const filteredAdvisors = selectedCategory
-    ? advisorData.filter((advisor) =>
-        advisor.Expertise.toLowerCase().includes(selectedCategory.toLowerCase())
+    ? advisorData.filter(
+        (advisor) =>
+          advisor.Expertise &&
+          advisor.Expertise.toLowerCase().includes(
+            selectedCategory.toLowerCase()
+          )
       )
     : advisorData;
 
@@ -513,39 +518,14 @@ export function ManKiBaatComponent({ data }) {
                     {u.place}
                   </span>
                 </h1>
-                <p style={{ color: "blue" }}>Product Designer</p>
+                <h5 style={{ color: "blue" }}>{u.profasion}</h5>
                 <p style={{ color: "grey", fontSize: "1.1rem" }}>
                   {u.category}
                 </p>
               </div>
             ))}
-            <p>
+            <p className="fw-bold">
               8.6{" "}
-              {/* <FontAwesomeIcon
-                className="ms-2"
-                icon={faStar}
-                style={{ color: "blue" }}
-              />
-              <FontAwesomeIcon
-                className="ms-2"
-                icon={faStar}
-                style={{ color: "blue" }}
-              />
-              <FontAwesomeIcon
-                className="ms-2"
-                icon={faStar}
-                style={{ color: "blue" }}
-              />
-              <FontAwesomeIcon
-                className="ms-2"
-                icon={faStar}
-                style={{ color: "blue" }}
-              />
-              <FontAwesomeIcon
-                className="ms-2"
-                icon={faStar}
-                style={{ color: "darkgray" }}
-              /> */}
               <meter
                 min="1"
                 max="100"
@@ -556,7 +536,7 @@ export function ManKiBaatComponent({ data }) {
               ></meter>
             </p>
             <button
-              className="mt-3"
+              className=""
               type="button"
               style={{
                 background: "linear-gradient(135deg,cyan,blue)",
@@ -573,7 +553,7 @@ export function ManKiBaatComponent({ data }) {
               Msg
             </button>
             <button
-              className="ms-2 mt-3"
+              className="ms-2"
               type="button"
               style={{
                 background: "linear-gradient(135deg,cyan,blue)",
@@ -589,7 +569,7 @@ export function ManKiBaatComponent({ data }) {
               Call
             </button>
             <button
-              className="ms-2 mt-3"
+              className="ms-2"
               type="button"
               style={{
                 background: "linear-gradient(135deg,cyan,blue)",
@@ -619,17 +599,11 @@ export function ManKiBaatComponent({ data }) {
               </p>
             ))}
             <button className="btn btn-outline-success p-1 w-25">Review</button>
-            <span className="fw-semibold fs-6 ms-3">
+            <span className="fw-semibold fs-6 ms-4">
               <FontAwesomeIcon icon={faStackExchange} /> History
             </span>
             <p className="mt-3" style={{ color: "darkgray" }}>
               <FontAwesomeIcon icon={faEye} /> Timeline{" "}
-              <span
-                className="ms-3"
-                style={{ display: "inline-block", color: "black" }}
-              >
-                <FontAwesomeIcon icon={faUser} /> About
-              </span>
             </p>
           </div>
 
@@ -756,6 +730,25 @@ export function ManKiBaatComponent({ data }) {
                           boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
+                        <FontAwesomeIcon
+                          className="me-2"
+                          icon={faPhoneVolume}
+                        />
+                        Msg
+                      </button>
+                      <button
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,cyan,blue)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "70px",
+                          height: "40px",
+                          color: "white",
+                          margin: "0 5px",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
                         <FontAwesomeIcon className="me-2" icon={faVideo} />
                         Call
                       </button>
@@ -845,6 +838,25 @@ export function ManKiBaatComponent({ data }) {
                           boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
+                        <FontAwesomeIcon
+                          className="me-2"
+                          icon={faPhoneVolume}
+                        />
+                        Call
+                      </button>
+                      <button
+                        type="button"
+                        style={{
+                          background: "linear-gradient(135deg,cyan,blue)",
+                          border: "none",
+                          borderRadius: "7px",
+                          width: "70px",
+                          height: "40px",
+                          color: "white",
+                          margin: "0 5px",
+                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                        }}
+                      >
                         <FontAwesomeIcon className="me-2" icon={faVideo} />
                         Call
                       </button>
@@ -855,39 +867,86 @@ export function ManKiBaatComponent({ data }) {
         </div>
       </div>
 
+      <div
+        className="container mt-5"
+        style={{
+          borderTop: "8px solid blue",
+          borderBottom: "8px solid cyan",
+          borderRadius: "30px",
+        }}
+      >
+        <div className="row">
+          <div className="col-md-12">
+            <div className="text-center p-2">
+              <h3>DESCRIPTION</h3>
+              <hr className="w-25 d-flex m-auto mb-4"></hr>
+              <p style={{ textAlign: "justify" }}>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                mollitia, molestiae quas vel sint commodi repudiandae
+                consequuntur voluptatum laborum numquam blanditiis harum
+                quisquam eius sed odit fugiat iusto fuga praesentium optio,
+                eaque rerum! Provident similique accusantium nemo autem.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="container">
         <div className="row">
           <div className="col-md-6 mt-5 mb-5">
             <h3>
               Category{" "}
-              <button type="button" className="btn btn-outline-primary ms-4">
+              <button type="button" className="btn btn-outline-warning ms-4">
                 Primary
               </button>
             </h3>
-            <p>170 William Street</p>
-            <p style={{ marginTop: "-15px" }}>
-              New York, NY 10038.78 212.312.51
-            </p>
-            <h3>
-              Sub-Category{" "}
-              <button type="button" className="btn btn-outline-primary ms-4">
-                Secondary
-              </button>
-            </h3>
-            <p>S25 Earth Street</p>
-            <p style={{ marginTop: "-15px" }}>
-              New York, NY 10038.78 212.312.51
-            </p>
-            <hr></hr>
-            <h5>Branding</h5>
-            <h5>UI/UX</h5>
-            <h5>Web-Design</h5>
-            <h5>Packaging</h5>
-            <h5>Print & Editorial</h5>
+            {user.map((u, index) => (
+              <div>
+                <p className="text-primary">{u.category}</p>
+                <p className="fw-bold">
+                  5{" "}
+                  <meter
+                    min="1"
+                    max="100"
+                    value="100"
+                    low="40"
+                    high="80"
+                    className="w-50"
+                  ></meter>
+                </p>
+                <hr className="w-75"></hr>
+                <h3>
+                  Sub-Category{" "}
+                  <button type="button" className="btn btn-outline-danger ms-4">
+                    Secondary
+                  </button>
+                </h3>
+                <p className="text-primary">{u.sub_category}</p>
+                <p className="fw-bold">
+                  3.5{" "}
+                  <meter
+                    min="1"
+                    max="100"
+                    value="100"
+                    low="60"
+                    high="80"
+                    className="w-50"
+                  ></meter>
+                </p>
+              </div>
+            ))}
           </div>
           <div className="col-md-6 mt-5">
             {user.map((u, index) => (
               <div key={index}>
+                <span
+                  className="mb-3 fw-bold"
+                  style={{ display: "inline-block", color: "black" }}
+                >
+                  <FontAwesomeIcon icon={faUserTie} />{" "}
+                  <span className="ms-1">About :-</span>
+                </span>
                 <p>
                   Phone{" "}
                   <span
@@ -900,9 +959,6 @@ export function ManKiBaatComponent({ data }) {
                 <p>
                   Address <span style={{ marginLeft: "40px" }}>{u.place}</span>
                 </p>
-                <p style={{ marginLeft: "110px", marginTop: "-15px" }}>
-                  {u.place}
-                </p>
                 <p>
                   Email{" "}
                   <span style={{ color: "blue", marginLeft: "63px" }}>
@@ -910,12 +966,12 @@ export function ManKiBaatComponent({ data }) {
                   </span>
                 </p>
                 <p>
-                  Size{" "}
+                  Age{" "}
                   <span style={{ color: "blue", marginLeft: "77px" }}>
-                    {u.email}
+                    {u.age}
                   </span>
                 </p>
-                <hr style={{ marginTop: "56px" }}></hr>
+                <hr className="w-75"></hr>
                 <p>
                   Birthday <span className="ms-5">{u.birthdate}</span>
                 </p>

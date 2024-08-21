@@ -18,7 +18,11 @@ import {
   faBuildingWheat,
   faLanguage,
   faTransgender,
+  faVideo,
+  faPhoneVolume,
+  faMessage,
 } from "@fortawesome/free-solid-svg-icons";
+import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 
 export function AdvisorProfileManKiBaatComponent() {
   const [isOpen, setIsOpen] = useState(false);
@@ -248,14 +252,57 @@ export function AdvisorProfileManKiBaatComponent() {
                 }}
               />
             ))}
+            <div className="mt-4 d-flex m-auto justify-content-center">
+              <button
+                className=""
+                type="button"
+                style={{
+                  background: "linear-gradient(135deg,cyan,blue)",
+                  border: "none",
+                  borderRadius: "7px",
+                  width: "90px",
+                  height: "40px",
+                  color: "white",
+                }}
+              >
+                <FontAwesomeIcon className="me-2" icon={faMessage} />
+                Msg
+              </button>
+              <button
+                className="ms-4"
+                type="button"
+                style={{
+                  background: "linear-gradient(135deg,cyan,blue)",
+                  border: "none",
+                  borderRadius: "7px",
+                  width: "90px",
+                  height: "40px",
+                  color: "white",
+                }}
+              >
+                <FontAwesomeIcon className="me-2" icon={faPhoneVolume} />
+                Call
+              </button>
+              <button
+                className="ms-4"
+                type="button"
+                style={{
+                  background: "linear-gradient(135deg,cyan,blue)",
+                  border: "none",
+                  borderRadius: "7px",
+                  width: "90px",
+                  height: "40px",
+                  color: "white",
+                }}
+              >
+                <FontAwesomeIcon className="me-2" icon={faVideo} />
+                Call
+              </button>
+            </div>
           </div>
 
           {advisors.map((advisor) => (
-            <div
-              className="col-md-3 mt-5 mb-5"
-              style={{ borderLeft: "25px dotted grey", paddingLeft: "45px" }}
-              key={advisor._id}
-            >
+            <div className="col-md-3 mt-5 mb-5" key={advisor._id}>
               <div className="d-flex">
                 <div
                   className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
@@ -450,6 +497,160 @@ export function AdvisorProfileManKiBaatComponent() {
               </div>
             </div>
           ))}
+          <div className="text-center">
+            <h4>ABOUT</h4>
+            <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+              mollitia, molestiae quas vel sint commodi repudiandae consequuntur
+              voluptatum laborum numquam blanditiis harum quisquam eius sed odit
+              fugiat iusto fuga praesentium optio, eaque rerum! Provident
+              similique accusantium nemo autem.
+            </p>
+          </div>
+          <div>
+            <div className="container">
+              <div className="row">
+                <div className="col-md-4">
+                  <h4>PERSONALITY</h4>
+                  <p>
+                    Analytical{" "}
+                    <progress
+                      min="1"
+                      max="100"
+                      value="30"
+                      className="ms-2"
+                    ></progress>
+                  </p>
+                  <p>
+                    Problem Solving{" "}
+                    <progress
+                      min="1"
+                      max="100"
+                      value="50"
+                      className="ms-2"
+                    ></progress>
+                  </p>
+                  <p>
+                    Public Speaking{" "}
+                    <progress
+                      min="1"
+                      max="100"
+                      value="70"
+                      className="ms-2"
+                    ></progress>
+                  </p>
+                  <p>
+                    Adaptable{" "}
+                    <progress
+                      min="1"
+                      max="100"
+                      value="100"
+                      className="ms-2"
+                    ></progress>
+                  </p>
+                </div>
+                <div className="col-md-4 mt-5">
+                  <div className="mt-5">
+                    <button
+                      className=""
+                      type="button"
+                      style={{
+                        background: "linear-gradient(135deg,cyan,blue)",
+                        border: "none",
+                        borderRadius: "7px",
+                        width: "90px",
+                        height: "40px",
+                        color: "white",
+                      }}
+                    >
+                      <FontAwesomeIcon className="me-2" icon={faMessage} />
+                      Msg
+                    </button>
+                    <button
+                      className="ms-4"
+                      type="button"
+                      style={{
+                        background: "linear-gradient(135deg,cyan,blue)",
+                        border: "none",
+                        borderRadius: "7px",
+                        width: "90px",
+                        height: "40px",
+                        color: "white",
+                      }}
+                    >
+                      <FontAwesomeIcon className="me-2" icon={faPhoneVolume} />
+                      Call
+                    </button>
+                    <button
+                      className="ms-4"
+                      type="button"
+                      style={{
+                        background: "linear-gradient(135deg,cyan,blue)",
+                        border: "none",
+                        borderRadius: "7px",
+                        width: "90px",
+                        height: "40px",
+                        color: "white",
+                      }}
+                    >
+                      <FontAwesomeIcon className="me-2" icon={faVideo} />
+                      Call
+                    </button>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <h4>SKILLS</h4>
+                  <p>Communication</p>
+                  <meter
+                    min="1"
+                    max="100"
+                    value="100"
+                    low="0"
+                    high="0"
+                    className="w-75 mb-3"
+                  ></meter>
+                  <p>Problem Solving</p>
+                  <meter
+                    min="1"
+                    max="100"
+                    value="100"
+                    low="40"
+                    high="80"
+                    className="w-75 mb-3"
+                  ></meter>
+                  <p>Leadership Experience</p>
+                  <meter
+                    min="1"
+                    max="100"
+                    value="100"
+                    low="60"
+                    high="80"
+                    className="w-75 mb-3"
+                  ></meter>
+                </div>
+              </div>
+            </div>
+            <div className="text-center">
+              <h4>GOAL</h4>
+              <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                mollitia, molestiae quas vel sint commodi repudiandae
+                consequuntur voluptatum laborum numquam blanditiis harum
+                quisquam eius sed odit fugiat iusto fuga praesentium optio,
+                eaque rerum! Provident similique accusantium nemo autem.
+              </p>
+              <div className="mb-4">
+                <button className="btn btn-outline-success p-1 w-25 mt-3">
+                  Review
+                </button>
+                <div className="fw-semibold fs-6 mt-3">
+                  <FontAwesomeIcon icon={faStackExchange} /> History
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

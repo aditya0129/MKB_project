@@ -105,8 +105,12 @@ export function HomeManKiBaatComponenet() {
 
   // Filter advisors based on selected category
   const filteredAdvisors = selectedCategory
-    ? advisors.filter((advisor) =>
-        advisor.Expertise.toLowerCase().includes(selectedCategory.toLowerCase())
+    ? advisors.filter(
+        (advisor) =>
+          advisor.Expertise &&
+          advisor.Expertise.toLowerCase().includes(
+            selectedCategory.toLowerCase()
+          )
       )
     : advisors;
 
