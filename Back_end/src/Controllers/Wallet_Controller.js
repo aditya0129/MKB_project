@@ -11,9 +11,11 @@ const wallet = async (req, res) => {
     if (!user) {
       return res.status(201).json({ status: false, MSg: "user not Find" });
     }
-    return res.status(201).json({ walletBalance: user.walletBalance });
+    return res
+      .status(201)
+      .json({ status: true, data: { walletBalance: user.walletBalance } });
   } catch (error) {
-    return res.status(500).json({ status: true, data: { walletBalance: user.walletBalance } });
+    return res.status(500).json({ status: false, MSG: error.message });
   }
 };
 
@@ -40,24 +42,23 @@ const deduct_amount = async (req, res) => {
   try {
     const { userId } = req.token;
     const { amount } = req.body;
-  const user = await userModel.findById({_id:userId});
-  if (user.walletBalance >= amount) {
-    user.walletBalance -= amount;
-    await user.save();
-    const transaction = new Transaction_Model({
-      userId: user._id,
-      amount,
-      type: "debit",
-    });
-    await transaction.save();
-    res.json({ success: true, message: "Amount deducted from wallet" });
-  } else {
-    res.json({ success: false, message: "Insufficient balance" });
+    const user = await userModel.findById({ _id: userId });
+    if (user.walletBalance >= amount) {
+      user.walletBalance -= amount;
+      await user.save();
+      const transaction = new Transaction_Model({
+        userId: user._id,
+        amount,
+        type: "debit",
+      });
+      await transaction.save();
+      res.json({ success: true, message: "Amount deducted from wallet" });
+    } else {
+      res.json({ success: false, message: "Insufficient balance" });
+    }
+  } catch (error) {
+    return res.status(500).json({ status: false, MSG: error.message });
   }
-}catch(error){
-  return res.status(500).json({status:false,MSG:error.message})
-
-}
 };
 
 module.exports = {
