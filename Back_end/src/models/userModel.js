@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema(
     is_verified: { type: Number, default: 0 },
     image: { type: String, required: true },
     category: { type: String, required: true },
-    sub_category: { type: String, required: true },
+    sub_category: { type: String},
 
     walletBalance: {
       type: Number,
@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema(
     transactions: [{ type: ObjectId, ref: "Transaction" }],
     profasion: {
       type: String,
-      required: true,
+      
     },
 
     advisor_history: {

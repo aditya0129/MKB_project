@@ -98,7 +98,7 @@ router.post('/deduct_amount',isAuthenticated,deduct_amount)
 // router.route("/checkout").post(checkout);
 // router.route("/paymentverification").post(paymentVerification);
 
-router.post("/checkout",checkout)
+router.post("/checkout",isAuthenticated,checkout)
 router.post("/paymentverification",paymentVerification)
 router.get("/getkey",Razor_Key)
 
