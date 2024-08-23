@@ -21,6 +21,7 @@ import { VerifyOTPManKiBaatComponent } from "./components/Verify OTP/verify-otp-
 import { SetPasswordManKiBaatComponent } from "./components/Set Password/set-password-man-ki-baat_component";
 import { HomeManKiBaatComponenet } from "./components/Home Man_Ki_Baat/home-man-ki-baat_component";
 import { WalletManKiBaatComponent } from "./components/Wallet Man_Ki_Baat/wallet-man-ki-baat_component";
+import { PaymentSuccess } from "./components/Payment/PaymentSuccess";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -60,6 +61,7 @@ root.render(
           element={<SetPasswordManKiBaatComponent />}
         />
         <Route path="wallet" element={<WalletManKiBaatComponent />} />
+        <Route path="/paymentsuccess" element={<PaymentSuccess />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
