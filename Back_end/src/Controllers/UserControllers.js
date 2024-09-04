@@ -981,6 +981,25 @@ const resetSuccess = async function (req, res) {
     return res.render("404");
   }
 };
+
+const sendNotification = async function (req, res) {
+  try {
+    const { userId } = req.token;
+    let findAdvisor = await Advisor_Model.findById({ _id: userId });
+    if (!findAdvisor) {
+      return res.status(404).send({ status: false, msg: "Advisor not found" });
+    }
+    findAdvisor.Notification = "Are you available now?";
+    await findAdvisor.save();
+    return res.status(200).send({
+      status: true,
+      msg: "Notification updated successfully",
+      advisor: findAdvisor,
+    });
+  } catch (error) {
+    return res.status(500).send({ status: false, msg: error.message });
+  }
+};
 module.exports = {
   verify_otp_fp,
   send_otp_fp,
@@ -997,4 +1016,5 @@ module.exports = {
   reset_password,
   Update_password,
   resetSuccess,
+  sendNotification,
 };

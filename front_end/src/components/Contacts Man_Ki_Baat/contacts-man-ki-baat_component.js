@@ -17,6 +17,7 @@ import {
   faPowerOff,
   faMapMarkerAlt,
   faUserTie,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 export function ContactsManKiBaat() {
@@ -64,6 +65,10 @@ export function ContactsManKiBaat() {
     navigate("/register-case");
   }
 
+  const handleUserProfileClick = () => {
+    navigate("/user-profile");
+  };
+
   return (
     <>
       <div id="header">
@@ -107,39 +112,7 @@ export function ContactsManKiBaat() {
                 >
                   <a className="dropdown-item" href="advisor">
                     All Advisor
-                  </a>
-                  <a className="dropdown-item" href="stress">
-                    Stress
-                  </a>
-                  <a className="dropdown-item" href="anxiety">
-                    Anxiety
-                  </a>
-                  <a className="dropdown-item" href="emotion">
-                    Emotion
-                  </a>
-                  <a className="dropdown-item" href="elicit">
-                    Elicit
-                  </a>
-                  <a className="dropdown-item" href="motivation">
-                    Motivation
-                  </a>
-                  <a className="dropdown-item" href="law">
-                    Law
-                  </a>
-                  <a className="dropdown-item" href="love">
-                    Love
-                  </a>
-                  <a className="dropdown-item" href="break-up">
-                    Break Up
-                  </a>
-                  <a className="dropdown-item" href="ex">
-                    Ex
-                  </a>
-                  <a className="dropdown-item" href="depressed">
-                    Depressed
-                  </a>
-                  <a className="dropdown-item" href="over-thinking">
-                    Over Thinking
+                    <FontAwesomeIcon icon={faUsers} className="ms-4" />
                   </a>
                 </div>
                 <li
@@ -170,11 +143,13 @@ export function ContactsManKiBaat() {
                     key={index}
                     className="ms-4 mt-2"
                     src={`http://localhost:3001/${detail.image}`}
+                    onClick={handleUserProfileClick}
                     alt=""
                     style={{
                       width: "50px",
                       height: "50px",
                       borderRadius: "100px",
+                      cursor: "pointer",
                       // boxShadow: "0 0 8px rgb(145, 144, 146)",
                     }}
                   />

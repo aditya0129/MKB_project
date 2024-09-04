@@ -5,8 +5,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faCoins } from "@fortawesome/free-solid-svg-icons";
 
 export function WalletManKiBaatComponent() {
+  const [user, setUser] = useState([]);
   const [wallet, setWallet] = useState([]);
   const [amount, setAmount] = useState("");
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/get_user/profile`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setUser(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     async function fetchWallet() {
@@ -31,25 +55,45 @@ export function WalletManKiBaatComponent() {
   }, []);
 
   const checkoutHandler = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You are not logged in. Please log in to proceed.");
+      return;
+    }
+
     if (!amount) {
       alert("Please enter an amount.");
       return;
     }
 
     try {
+      // Fetch the Razorpay key from the backend
       const {
         data: { key },
-      } = await axios.get("http://localhost:3001/getkey");
-
-      const {
-        data: { order },
-      } = await axios.post("http://localhost:3001/checkout", {
-        amount,
+      } = await axios.get("http://localhost:3001/getkey", {
+        headers: {
+          "x-auth-token": token, // Add the token to headers
+        },
       });
 
+      // Create an order on the backend
+      const {
+        data: { order },
+      } = await axios.post(
+        "http://localhost:3001/checkout",
+        { amount }, // Include the amount in the request body
+        {
+          headers: {
+            "x-auth-token": token, // Add the token to headers
+          },
+        }
+      );
+
+      // Configure Razorpay payment options
       const options = {
         key,
-        amount: order.amount,
+        amount: order.amount, // Amount in paise
         currency: "INR",
         name: "M.K.B",
         description: "RazorPay Payment",
@@ -66,10 +110,11 @@ export function WalletManKiBaatComponent() {
           address: "Razorpay Corporate Office",
         },
         theme: {
-          color: "#3399cc",
+          color: "#3399cc", // Plain color
         },
       };
 
+      // Open Razorpay checkout
       const razor = new window.Razorpay(options);
       razor.open();
     } catch (error) {

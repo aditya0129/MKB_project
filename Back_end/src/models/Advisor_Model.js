@@ -21,11 +21,14 @@ const advisorSchema = new mongoose.Schema(
     Gender: { type: String, enum: ["Male", "Female", "Other"] },
 
     Experience: { type: String },
+
     City: { type: String },
 
     State: { type: String },
 
     Language: { type: String },
+
+    Notification: { type: String, default: "" },
 
     created_at: { type: Date, default: Date.now },
 

@@ -21,12 +21,15 @@ import {
   faVideo,
   faPhoneVolume,
   faMessage,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 
 export function AdvisorProfileManKiBaatComponent() {
   const [isOpen, setIsOpen] = useState(false);
   const [advisors, setAdvisors] = useState([]);
+  const [user, setUser] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0); // State to store notification count
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
@@ -59,6 +62,37 @@ export function AdvisorProfileManKiBaatComponent() {
     fetchAdvisor();
   }, []);
 
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/get_user/profile`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setUser(response.data.data);
+        // Set the notification count to the number of users fetched
+        setNotificationCount(response.data.data.length);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchUser();
+  }, []);
+
+  // Function to handle viewing notifications
+  const handleViewNotifications = () => {
+    setIsDialogOpen(true);
+    setNotificationCount(0); // Reset the count when viewing notifications
+  };
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -71,6 +105,37 @@ export function AdvisorProfileManKiBaatComponent() {
 
   const handleContactsClick = () => {
     navigate("/contacts");
+  };
+
+  // State to control the visibility of the dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Function to open the dialog
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  // Function to close the dialog
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
+  // Function to handle the Accept action
+  const handleAccept = () => {
+    console.log("Accepted");
+    handleCloseDialog(); // Close the dialog after action
+  };
+
+  // Function to handle the Reject action
+  const handleReject = () => {
+    console.log("Rejected");
+    handleCloseDialog(); // Close the dialog after action
+  };
+
+  // Function to handle the Busy action
+  const handleBusy = () => {
+    console.log("Busy");
+    handleCloseDialog(); // Close the dialog after action
   };
 
   return (
@@ -99,7 +164,7 @@ export function AdvisorProfileManKiBaatComponent() {
                 style={{ listStyle: "none", margin: "0", padding: "0" }}
               >
                 <li
-                  className="ms-4 dropdown-toggle"
+                  className="ms-3 dropdown-toggle"
                   onClick={toggleDropdown}
                   style={{
                     display: "inline-block",
@@ -151,8 +216,9 @@ export function AdvisorProfileManKiBaatComponent() {
                     Over Thinking
                   </a>
                 </div>
-                <li
-                  className="ms-4"
+                {/* <li
+                  onClick={handleOpenDialog}
+                  className="open-dialog-button ms-3"
                   style={{
                     display: "inline-block",
                     // color: "black",
@@ -160,11 +226,49 @@ export function AdvisorProfileManKiBaatComponent() {
                     cursor: "pointer",
                   }}
                 >
-                  Message
-                </li>
-                <FontAwesomeIcon icon={faEnvelope} style={{ color: "white" }} />
+                  Notification
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    className="ms-2"
+                    style={{ color: "white" }}
+                  />
+                </li> */}
                 <li
-                  className="ms-4"
+                  onClick={handleViewNotifications}
+                  className="open-dialog-button ms-3"
+                  style={{
+                    display: "inline-block",
+                    padding: "15px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Notification
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    className="ms-2"
+                    style={{ color: "white" }}
+                  />
+                  {/* Display the notification count */}
+                  {notificationCount > 0 && (
+                    <span
+                      className="notification-count"
+                      style={{
+                        position: "absolute",
+                        top: "5px",
+                        right: "5px",
+                        backgroundColor: "red",
+                        color: "white",
+                        borderRadius: "50%",
+                        padding: "2px 6px",
+                        fontSize: "12px",
+                      }}
+                    >
+                      {notificationCount}
+                    </span>
+                  )}
+                </li>
+                <li
+                  className="ms-3"
                   onClick={handleContactsClick}
                   style={{
                     display: "inline-block",
@@ -178,7 +282,7 @@ export function AdvisorProfileManKiBaatComponent() {
                 {advisors.map((advisor, index) => (
                   <img
                     key={index}
-                    className="ms-4 mt-2"
+                    className="ms-3 mt-2"
                     src={`http://localhost:3001/${advisor.Image}`}
                     alt=""
                     style={{
@@ -193,7 +297,10 @@ export function AdvisorProfileManKiBaatComponent() {
                   className="ms-4"
                   icon={faPowerOff}
                   onClick={SignoutClick}
-                  style={{ color: "white", cursor: "pointer" }}
+                  style={{
+                    color: "white",
+                    cursor: "pointer",
+                  }}
                 />
               </ul>
             </div>
@@ -652,6 +759,88 @@ export function AdvisorProfileManKiBaatComponent() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* <div className="notification-page">
+        {isDialogOpen && (
+          <div className="dialog-overlay">
+            <div className="dialog">
+              <h3>Notification</h3>
+              {user.map((u, index) => (
+                <img
+                  key={index}
+                  src={`http://localhost:3001/${u.image}`}
+                  alt=""
+                />
+              ))}
+
+              {advisors.map((advisor, index) => (
+                <p key={index}>{advisor.Notification}</p>
+              ))}
+              <div className="dialog-actions">
+                <button onClick={handleAccept} className="accept-button">
+                  Accept
+                </button>
+
+                <button onClick={handleReject} className="reject-button">
+                  Reject
+                </button>
+
+                <button onClick={handleBusy} className="busy-button">
+                  Busy
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div> */}
+
+      <div className="notification-page">
+        {/* Dialog for notification */}
+        {isDialogOpen && (
+          <div className="dialog-overlay">
+            <div className="dialog">
+              <h3>Notification</h3>
+
+              {/* Displaying user information */}
+              {user.map((u, index) => (
+                <div key={index} className="user-info">
+                  <img
+                    className="mt-2"
+                    src={`http://localhost:3001/${u.image}`}
+                    alt="User Profile"
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "100px",
+                    }}
+                  />
+                  <span>{u.category}</span>
+                </div>
+              ))}
+
+              {/* Advisor Notifications */}
+              {advisors.map((advisor, index) => (
+                <p key={index}>{advisor.Notification}</p>
+              ))}
+
+              <div className="dialog-actions">
+                {/* Accept Button */}
+                <button onClick={handleAccept} className="accept-button">
+                  Accept
+                </button>
+                {/* Reject Button */}
+                <button onClick={handleReject} className="reject-button">
+                  Reject
+                </button>
+                {/* Busy Button */}
+                <button onClick={handleBusy} className="busy-button">
+                  Busy
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div

@@ -23,6 +23,7 @@ import {
   faChevronRight,
   faChevronLeft,
   faUserTie,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 import { Button } from "bootstrap";
@@ -32,9 +33,11 @@ export function ManKiBaatComponent({ data }) {
   const [user, setUser] = useState([]);
   const [advisorData, setAdvisorData] = useState([]);
   const [advisors, setAdvisors] = useState([]);
+  const [advisor, setAdvisor] = useState([]);
   const [wallet, setWallet] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(""); // State for selected category
   const [showInitialData, setShowInitialData] = useState(true); // State to control visibility of initial data
+  const [notificationCount, setNotificationCount] = useState(0); // State to store notification count
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
@@ -111,6 +114,55 @@ export function ManKiBaatComponent({ data }) {
 
     fetchWallet();
   }, []);
+
+  const sendNotifications = async () => {
+    try {
+      // Retrieve the token from local storage
+      let token = localStorage.getItem("token");
+      console.log("Token from local storage:", token);
+
+      // Make a GET request to get the advisor's profile
+      let profileResponse = await axios.get(
+        "http://localhost:3001/get_Advisor/profile",
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+      console.log("Profile Response:", profileResponse);
+
+      // Update the token if needed
+      if (profileResponse.data.token) {
+        token = profileResponse.data.token; // Update the token variable
+        localStorage.setItem("token", token); // Store the new token in local storage
+        console.log("Updated Token stored in local storage:", token);
+      }
+
+      // Make a POST request to send the notification
+      let notificationResponse = await axios.post(
+        "http://localhost:3001/Notification",
+        {}, // Provide a body here if needed
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+
+      console.log("Notification Response:", notificationResponse);
+
+      // Show alert on successful notification send
+      if (notificationResponse.status === 200) {
+        alert("Successfully sent notification to advisor.");
+      } else {
+        alert("Notification was not sent. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("Error sending notification. Please check console for details.");
+    }
+  };
 
   // Define arrow components before using them in settings
   const SampleNextArrow = (props) => {
@@ -204,6 +256,29 @@ export function ManKiBaatComponent({ data }) {
     fetchAdvisors();
   }, []);
 
+  useEffect(() => {
+    async function fetchAdvisorProfile() {
+      try {
+        const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        const response = await axios.get(
+          `http://localhost:3001/get_Advisor/profile`,
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+        console.log("Response:", response);
+        setAdvisor(response.data.data);
+      } catch (error) {
+        console.error("Error fetching advisor data:", error);
+      }
+    }
+
+    fetchAdvisorProfile();
+  }, []);
+
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     setIsOpen(false); // Close dropdown after selection
@@ -268,6 +343,43 @@ export function ManKiBaatComponent({ data }) {
     navigate("/wallet");
   }
 
+  // Function to handle viewing notifications
+  const handleViewNotifications = () => {
+    setIsDialogOpen(true);
+    setNotificationCount(0); // Reset the count when viewing notifications
+  };
+
+  // State to control the visibility of the dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Function to open the dialog
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  // Function to close the dialog
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
+  // Function to handle the Accept action
+  const handleAccept = () => {
+    console.log("Accepted");
+    handleCloseDialog(); // Close the dialog after action
+  };
+
+  // Function to handle the Reject action
+  const handleReject = () => {
+    console.log("Rejected");
+    handleCloseDialog(); // Close the dialog after action
+  };
+
+  // Function to handle the Busy action
+  const handleBusy = () => {
+    console.log("Busy");
+    handleCloseDialog(); // Close the dialog after action
+  };
+
   return (
     <>
       <div id="header">
@@ -294,7 +406,7 @@ export function ManKiBaatComponent({ data }) {
                 style={{ listStyle: "none", margin: "0", padding: "0" }}
               >
                 <li
-                  className="ms-4 dropdown-toggle"
+                  className="ms-3 dropdown-toggle"
                   onClick={toggleDropdown}
                   style={{
                     display: "inline-block",
@@ -417,7 +529,8 @@ export function ManKiBaatComponent({ data }) {
                   </a>
                 </div>
                 <li
-                  className="ms-4"
+                  onClick={handleViewNotifications}
+                  className="ms-3"
                   style={{
                     display: "inline-block",
                     // color: "black",
@@ -425,11 +538,15 @@ export function ManKiBaatComponent({ data }) {
                     cursor: "pointer",
                   }}
                 >
-                  Message
+                  Notification
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    style={{ color: "white" }}
+                    className="ms-2"
+                  />
                 </li>
-                <FontAwesomeIcon icon={faEnvelope} style={{ color: "white" }} />
                 <li
-                  className="ms-4"
+                  className="ms-3"
                   onClick={handleContactsClick}
                   style={{
                     display: "inline-block",
@@ -443,7 +560,7 @@ export function ManKiBaatComponent({ data }) {
                 {user.map((u, index) => (
                   <img
                     key={index}
-                    className="ms-4 mt-2"
+                    className="ms-3 mt-2"
                     src={`http://localhost:3001/${u.image}`}
                     alt=""
                     style={{
@@ -469,7 +586,7 @@ export function ManKiBaatComponent({ data }) {
       <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
-          style={{ minHeight: "100px" }}
+          style={{ minHeight: "150px" }}
         >
           <h3
             className="display-2 font-weight-bold text-white"
@@ -483,6 +600,15 @@ export function ManKiBaatComponent({ data }) {
               &#10049;
             </span>
           </h3>
+          <div className="d-inline-flex text-white">
+            <p className="m-0">
+              <a className="text-white" href="/">
+                Home
+              </a>
+            </p>
+            <p className="m-0 px-2">/</p>
+            <p className="m-0">User-Profile</p>
+          </div>
         </div>
       </div>
 
@@ -734,7 +860,7 @@ export function ManKiBaatComponent({ data }) {
                           className="me-2"
                           icon={faPhoneVolume}
                         />
-                        Msg
+                        Call
                       </button>
                       <button
                         type="button"
@@ -856,6 +982,7 @@ export function ManKiBaatComponent({ data }) {
                           margin: "0 5px",
                           boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
+                        onClick={sendNotifications}
                       >
                         <FontAwesomeIcon className="me-2" icon={faVideo} />
                         Call
@@ -982,6 +1109,49 @@ export function ManKiBaatComponent({ data }) {
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="notification-page">
+        {/* Dialog for notification */}
+        {isDialogOpen && (
+          <div className="dialog-overlay">
+            <div className="dialog">
+              <h3>Notification</h3>
+
+              {/* Displaying advisor information */}
+              {user.map((u, index) => (
+                <div key={index} className="user-info">
+                  <img
+                    className="mt-2 p-1"
+                    src={`http://localhost:3001/${u.image}`}
+                    alt="User Profile"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "20px",
+                      boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    }}
+                  />
+                  <p className="fw-semibold mt-2">Expertise:- {u.category}</p>
+                </div>
+              ))}
+
+              {/* Advisor Notifications */}
+              {advisors.map((advisor, index) => (
+                <p key={index}>{advisor.Notification}</p>
+              ))}
+
+              <p className="fw-semibold">I am available now...</p>
+
+              <div className="dialog-actions">
+                {/* Accept Button */}
+                <button onClick={handleAccept} className="accept-button">
+                  Enter the room
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div

@@ -102,6 +102,10 @@ export function AdvisorManKiBaatComponent() {
     navigate("/contacts");
   };
 
+  const handleUserProfileClick = () => {
+    navigate("/user-profile");
+  };
+
   return (
     <>
       <div id="header">
@@ -278,11 +282,13 @@ export function AdvisorManKiBaatComponent() {
                     key={index}
                     className="ms-4 mt-2"
                     src={`http://localhost:3001/${detail.image}`}
+                    onClick={handleUserProfileClick}
                     alt=""
                     style={{
                       width: "50px",
                       height: "50px",
                       borderRadius: "100px",
+                      cursor: "pointer",
                       // boxShadow: "0 0 8px rgb(145, 144, 146)",
                     }}
                   />

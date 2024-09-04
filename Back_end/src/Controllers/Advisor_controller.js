@@ -8,6 +8,7 @@ const {
   validatePassword,
   validateMobileNo,
 } = require("../Validation/Validate");
+const userModel = require("../models/userModel");
 ///const { Module } = require("module");
 
 ///**********************************************---------Calculate age from birthdate----------**********************************///
@@ -345,15 +346,70 @@ const Edit_Advisor_Profile = async function (req, res) {
     });
     const Update_Advisor = await New_Advisor.save();
 
-    return res
-      .status(201)
-      .send({
-        status: true,
-        msg: "Advisor data Updated successfully",
-        data: Update_Advisor,
-      });
+    return res.status(201).send({
+      status: true,
+      msg: "Advisor data Updated successfully",
+      data: Update_Advisor,
+    });
   } catch (error) {
-    return res.status(500).send({ status: false, Error:error.message });
+    return res.status(500).send({ status: false, Error: error.message });
+  }
+};
+
+const acceptNotification = async function (req, res) {
+  try {
+    const { userId } = req.token;
+    let findUser = await userModel.findById({ _id: userId });
+    if (!findUser) {
+      return res.status(404).send({ status: false, msg: "User not found" });
+    }
+    findUser.notification = "I am available now...";
+    await findUser.save();
+    return res.status(200).send({
+      status: true,
+      msg: "Notification updated successfully",
+      User: findUser,
+    });
+  } catch (error) {
+    return res.status(500).send({ status: false, msg: error.message });
+  }
+};
+
+const rejectNotification = async function (req, res) {
+  try {
+    const { userId } = req.token;
+    let findUser = await userModel.findById({ _id: userId });
+    if (!findUser) {
+      return res.status(404).send({ status: false, msg: "User not found" });
+    }
+    findUser.notification = "Not available now...";
+    await findUser.save();
+    return res.status(200).send({
+      status: true,
+      msg: "Notification updated successfully",
+      User: findUser,
+    });
+  } catch (error) {
+    return res.status(500).send({ status: false, msg: error.message });
+  }
+};
+
+const busyNotification = async function (req, res) {
+  try {
+    const { userId } = req.token;
+    let findUser = await userModel.findById({ _id: userId });
+    if (!findUser) {
+      return res.status(404).send({ status: false, msg: "User not found" });
+    }
+    findUser.notification = "I am busy now...";
+    await findUser.save();
+    return res.status(200).send({
+      status: true,
+      msg: "Notification updated successfully",
+      User: findUser,
+    });
+  } catch (error) {
+    return res.status(500).send({ status: false, msg: error.message });
   }
 };
 
@@ -362,5 +418,8 @@ module.exports = {
   Advisor_Login,
   get_Advisor,
   Get_All_Advisor,
-  Edit_Advisor_Profile
+  Edit_Advisor_Profile,
+  acceptNotification,
+  rejectNotification,
+  busyNotification,
 };

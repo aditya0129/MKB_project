@@ -11,7 +11,8 @@ const {
   forgotPassword, 
   resetPassword,
   User_Home,
-  forget_password
+  forget_password,
+  sendNotification
 } = require("../Controllers/UserControllers");
 const { sendOtp, VerifyOtp } = require("../Controllers/OtpVerfy");
 const {
@@ -19,7 +20,10 @@ const {
   Advisor_Login,
   get_Advisor,
   Get_All_Advisor,
-  Edit_Advisor_Profile
+  Edit_Advisor_Profile,
+  acceptNotification,
+  rejectNotification,
+  busyNotification
 } = require("../Controllers/Advisor_controller");
 //const {createOrder,addAmountToWallet}=require('../Controllers/PaymentGatewayController')
 const { isAuthenticated, isAuthorized } = require("../Auth/Middi");
@@ -66,6 +70,7 @@ const uplode = multer({ storage: storage, fileFilter: fileFilter });
 // User_APIS
 router.post("/Register", uplode.single("image"), Register_User);
 router.post("/Login", Login_user);
+router.post("/Notification",isAuthenticated,sendNotification);
 router.get("/User_Home/Advisor_detail",isAuthenticated, User_Home);
 router.get("/get_user/profile", isAuthenticated, get_Users);
 router.put("/user/:userId/profile",Update_User);
@@ -111,6 +116,9 @@ router.post("/VerifyOtp", VerifyOtp);
 ///Advisor Apis
 router.post("/Advisor_register",uplode.single("Image") , Advisor_register);
 router.post("/Advisor_login", Advisor_Login);
+router.post("/Accept",isAuthenticated,acceptNotification);
+router.post("/Reject",isAuthenticated,rejectNotification);
+router.post("/Busy",isAuthenticated,busyNotification);
 //router.get( "/user/:userId/profile", get_Advisor );
 router.get("/get_Advisor/profile", isAuthenticated, get_Advisor);
 router.get("/Advisor_All_Data", Get_All_Advisor);
