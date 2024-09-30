@@ -659,9 +659,13 @@ export function AdvisorRegisterManKiBaatComponent() {
                   })
                   .then((response) => {
                     alert("Registered Successfully...");
-                    const { image } = response.data.user;
-                    const imageUrl = `image/${image}`;
-                    setFieldValue("Image", imageUrl);
+                    const user = response.data.user;
+                    if (user && user.image) {
+                      const imageUrl = `image/${user.image}`;
+                      setFieldValue("Image", imageUrl);
+                    } else {
+                      console.warn("User image not found in response.");
+                    }
                     navigate("/advisor-login");
                   })
                   .catch((error) => {
