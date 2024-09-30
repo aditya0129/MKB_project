@@ -182,7 +182,7 @@ const Register_User = async function (req, res) {
     const userData = await newUser.save();
 
     //const msg='<p> hii ,'+name+',please <a href="http://localhost:3001/api/mail-verification?id='+userData._id+'">verify</a>your mail.</p>';
-    const msg = `<p>Hi ${name}, please <a href="http://localhost:3001/api/mail-verification?id=${userData._id}">verify</a> your email.</p>`;
+    const msg = `<p>Hi ${name}, please <a href="http://localhost:3001/api/user-mail-verification?id=${userData._id}">verify</a> your email.</p>`;
     mailer.sendMail(email, "mail-verification", msg);
     //router.get('/api/mail-verification',mailVerification)
     //http://localhost:3001/api/mail-verification?id=668ce9c4bac40576be3d287a
@@ -845,17 +845,54 @@ const User_Home = async function (req, res) {
   }
 };
 
+// const update_Password = async function (req, res) {
+//   try {
+//     let { email } = req.body;
+//     let find_Email = await UserModel.find({ email });
+//     if (!find_Email) {
+//       return res
+//         .status(400)
+//         .json({ status: false, msg: "email doesn't exits!" });
+//     }
+//   } catch (error) {
+//     return res.status(500).json({ status: false, Msg: error.message });
+//   }
+// };
+
 const update_Password = async function (req, res) {
   try {
-    let { email } = req.body;
-    let find_Email = await UserModel.find({ email });
-    if (!find_Email) {
+    let { user_id } = req.params;
+    let { newPassword, reEnterPassword } = req.body;
+
+    // Check if the email exists in the database
+    let user = await UserModel.findOne({ _id: user_id });
+    if (!user) {
       return res
         .status(400)
-        .json({ status: false, msg: "email doesn't exits!" });
+        .json({ status: false, msg: "User doesn't exist!" });
     }
+
+    // Check if newPassword and reEnterPassword match
+    if (newPassword !== reEnterPassword) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "Passwords do not match!" });
+    }
+
+    // Hash the new password (using bcrypt for example)
+    const bcrypt = require("bcrypt");
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update the user's password in the database
+    user.password = hashedPassword;
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ status: true, msg: "Password updated successfully!" });
   } catch (error) {
-    return res.status(500).json({ status: false, Msg: error.message });
+    return res.status(500).json({ status: false, msg: error.message });
   }
 };
 
@@ -1000,6 +1037,58 @@ const sendNotification = async function (req, res) {
     return res.status(500).send({ status: false, msg: error.message });
   }
 };
+
+const updateProfile = async function (req, res) {
+  try {
+    let { userId } = req.token;
+    let findUser = await UserModel.findById({ _id: userId });
+    if (!findUser) {
+      return res.status(404).send({ status: false, msg: "User not found" });
+    }
+    let {
+      email,
+      number,
+      place,
+      category,
+      sub_category,
+      profasion,
+      description,
+      category_strength,
+      subcategory_strength,
+    } = req.body;
+    if (email) findUser.email = email;
+    if (number) findUser.number = number;
+    if (place) findUser.place = place;
+    if (category) findUser.category = category;
+    if (sub_category) findUser.sub_category = sub_category;
+    if (profasion) findUser.profasion = profasion;
+    if (description) findUser.description = description;
+    if (category_strength) findUser.category_strength = category_strength;
+    if (category_strength > 10) {
+      return res.status(404).send({
+        status: false,
+        msg: "Please enter the rating  10 or Under 10",
+      });
+    }
+    if (subcategory_strength)
+      findUser.subcategory_strength = subcategory_strength;
+    if (subcategory_strength > 10) {
+      return res.status(404).send({
+        status: false,
+        msg: "Please enter the rating  10 or Under 10",
+      });
+    }
+    if (req.file) {
+      findUser.image = "images/" + req.file.filename;
+    }
+    await findUser.save();
+    res
+      .status(200)
+      .json({ status: true, msg: "User updated successfully", data: findUser });
+  } catch (error) {
+    return res.status(500).send({ status: false, msg: error.message });
+  }
+};
 module.exports = {
   verify_otp_fp,
   send_otp_fp,
@@ -1017,4 +1106,6 @@ module.exports = {
   Update_password,
   resetSuccess,
   sendNotification,
+  update_Password,
+  updateProfile,
 };

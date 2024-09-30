@@ -1,0 +1,48 @@
+.terms-container {
+  background: linear-gradient(-135deg, pink, blue);
+  padding: 20px;
+  border-radius: 20px;
+  margin: 30px auto;
+  max-width: 900px;
+  max-height: 535px;
+  overflow: auto;
+  box-shadow: 0 0 15px rgba(79, 2, 202, 0.9);
+}
+
+.terms-content h1 {
+  text-shadow: 3px 2px 3px blue;
+  text-align: center;
+  color: white;
+}
+
+.terms-content h3 {
+  color: white;
+  text-shadow: 3px 2px 3px blue;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.terms-content p {
+  color: white;
+  line-height: 1.6;
+  margin: 10px 0;
+  text-align: justify;
+}
+
+.back-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, yellow, red);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  width: 110px;
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, red, yellow);
+  width: 50%;
+}

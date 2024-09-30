@@ -1,6 +1,8 @@
 import React from "react";
 import "./invalid-man-ki-baat_component.css";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFaceSadTear } from "@fortawesome/free-solid-svg-icons";
 
 export function InvalidManKiBaatComponent() {
   return (
@@ -8,21 +10,30 @@ export function InvalidManKiBaatComponent() {
       <div className="container">
         <div className="row">
           <div className="col">
+            <FontAwesomeIcon
+              icon={faFaceSadTear}
+              className="m-auto d-flex mt-5 text-danger"
+              style={{
+                fontSize: "130px",
+                boxShadow: "0 0 10px rgb(145, 144, 146)",
+                borderRadius: "65px",
+              }}
+            />
             <div
               className="text-white mt-5"
               style={{
                 background: "linear-gradient(-135deg,blue,pink)",
-                width: "350px",
+                width: "450px",
                 padding: "20px",
-                borderRadius: "30px",
+                borderRadius: "20px",
                 margin: "auto",
                 textAlign: "center",
                 boxShadow: "0 0 8px rgb(145, 144, 146)",
               }}
             >
-              <h3 style={{ fontFamily: "fantasy" }}>
+              <h1 style={{ fontFamily: "fantasy" }}>
                 Invalid Email / Password
-              </h3>
+              </h1>
               <div className="">
                 <Link
                   to="/register-case"

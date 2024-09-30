@@ -30,6 +30,26 @@ const advisorSchema = new mongoose.Schema(
 
     Notification: { type: String, default: "" },
 
+    About: { type: String, default: "" },
+
+    Analytical_Strength: { type: String, default: "" },
+
+    Problem_Solving_Strength: { type: String, default: "" },
+
+    Public_Speaking_Strength: { type: String, default: "" },
+
+    Adaptable_Strength: { type: String, default: "" },
+
+    Communication_Strength: { type: String, default: "" },
+
+    P_S_Strength: { type: String, default: "" },
+
+    Leadership_Experience_Strength: { type: String, default: "" },
+
+    Goal: { type: String, default: "" },
+
+    is_verified: { type: Number, default: 0 },
+
     created_at: { type: Date, default: Date.now },
 
     updated_at: { type: Date, default: Date.now },

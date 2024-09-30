@@ -1,0 +1,8 @@
+.add-amount {
+  background: linear-gradient(135deg, yellow, red);
+  border: none;
+}
+
+.add-amount:hover {
+  background: linear-gradient(135deg, red, yellow);
+}

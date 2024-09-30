@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./home-man-ki-baat_component.css";
 import axios from "axios";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +19,7 @@ import {
 
 export function HomeManKiBaatComponenet() {
   const [isOpen, setIsOpen] = useState(false);
+  const [show, setShow] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
   const [expertise, setExpertise] = useState([]);
   const [user, setUser] = useState([]);
@@ -114,10 +117,14 @@ export function HomeManKiBaatComponenet() {
       )
     : advisors;
 
-  const SignoutClick = () => {
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleLogout = () => {
     alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
+    handleClose();
   };
 
   const handleContactsClick = () => {
@@ -169,107 +176,110 @@ export function HomeManKiBaatComponenet() {
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
                 >
-                  <a className="dropdown-item" href="advisor">
+                  <a
+                    className="dropdown-item text-center border border-1"
+                    href="advisor"
+                  >
                     All Advisor
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Stress")}
                   >
                     Stress
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Anxiety")}
                   >
                     Anxiety
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Elicit")}
                   >
                     Elicit
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Job")}
                   >
                     Job
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Law")}
                   >
                     Law
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Marriage")}
                   >
                     Marriage
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Social issues")}
                   >
                     Social Issues
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Kisan")}
                   >
                     Kisan
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Property")}
                   >
                     Property
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Education")}
                   >
                     Education
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Carrer")}
                   >
                     Carrer
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Medical")}
                   >
                     Medical
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Love")}
                   >
                     Love
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Affair")}
                   >
                     Affair
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Breakup")}
                   >
                     Break Up
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Ex")}
                   >
                     Ex
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Hyper thinking")}
                   >
                     Hyper Thinking
@@ -318,7 +328,7 @@ export function HomeManKiBaatComponenet() {
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
-                  onClick={SignoutClick}
+                  onClick={handleShow}
                   style={{ color: "white", cursor: "pointer" }}
                 />
               </ul>
@@ -346,6 +356,34 @@ export function HomeManKiBaatComponenet() {
           </h3>
         </div>
       </div>
+
+      <Modal show={show} onHide={handleClose} className="custom-modal">
+        <Modal.Header closeButton className="custom-modal-header">
+          <Modal.Title className="bi bi-person-circle">
+            {" "}
+            Confirm Logout
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={handleClose}
+          >
+            {" "}
+            No
+          </Button>
+          <Button
+            className="bi bi-check-lg"
+            variant="outline-success"
+            onClick={handleLogout}
+          >
+            {" "}
+            Yes, Logout
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <div
         className="container-fluid mt-5 advisor"
@@ -419,7 +457,7 @@ export function HomeManKiBaatComponenet() {
                           width: "100px",
                           height: "45px",
                           color: "white",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
                         <FontAwesomeIcon className="me-2" icon={faPhone} />
@@ -435,7 +473,7 @@ export function HomeManKiBaatComponenet() {
                           width: "150px",
                           height: "45px",
                           color: "white",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
                         <FontAwesomeIcon className="me-2" icon={faPhone} />
@@ -538,7 +576,7 @@ export function HomeManKiBaatComponenet() {
                           width: "100px",
                           height: "45px",
                           color: "white",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
                         <FontAwesomeIcon className="me-2" icon={faPhone} />
@@ -554,7 +592,7 @@ export function HomeManKiBaatComponenet() {
                           width: "150px",
                           height: "45px",
                           color: "white",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
                         <FontAwesomeIcon className="me-2" icon={faPhone} />

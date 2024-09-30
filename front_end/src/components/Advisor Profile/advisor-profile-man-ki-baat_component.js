@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./advisor-profile-man-ki-baat_component.css";
 import axios from "axios";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,11 +27,34 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 
-export function AdvisorProfileManKiBaatComponent() {
+export function AdvisorProfileManKiBaatComponent({ advisor }) {
   const [isOpen, setIsOpen] = useState(false);
   const [advisors, setAdvisors] = useState([]);
   const [user, setUser] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0); // State to store notification count
+  const [formData, setFormData] = useState({
+    Email: advisor?.Email || "",
+    Number: advisor?.Number || "",
+    City: advisor?.City || "",
+    State: advisor?.State || "",
+    Expertise: advisor?.Expertise || "",
+    Experience: advisor?.Experience || "",
+    Language: advisor?.Language || "",
+    About: advisor?.About || "",
+    Analytical_Strength: advisor?.Analytical_Strength || "",
+    Problem_Solving_Strength: advisor?.Problem_Solving_Strength || "",
+    Public_Speaking_Strength: advisor?.Public_Speaking_Strength || "",
+    Adaptable_Strength: advisor?.Adaptable_Strength || "",
+    Communication_Strength: advisor?.Communication_Strength || "",
+    P_S_Strength: advisor?.P_S_Strength || "",
+    Leadership_Experience_Strength:
+      advisor?.Leadership_Experience_Strength || "",
+    Goal: advisor?.Goal || "",
+    Image: null,
+  });
+  // State to control the visibility of the dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [show, setShow] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
@@ -87,6 +112,153 @@ export function AdvisorProfileManKiBaatComponent() {
     fetchUser();
   }, []);
 
+  const acceptNotifications = async () => {
+    try {
+      // Retrieve the token from local storage
+      let token = localStorage.getItem("token");
+      console.log("Token from local storage:", token);
+
+      // Make a GET request to get the user's profile
+      let profileResponse = await axios.get(
+        "http://localhost:3001/get_user/profile",
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+      console.log("Profile Response:", profileResponse);
+
+      // Update the token if needed
+      if (profileResponse.data.token) {
+        token = profileResponse.data.token; // Update the token variable
+        localStorage.setItem("token", token); // Store the new token in local storage
+        console.log("Updated Token stored in local storage:", token);
+      }
+
+      // Make a POST request to send the notification
+      let notificationResponse = await axios.post(
+        "http://localhost:3001/Accept",
+        {}, // Provide a body here if needed
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+
+      console.log("Notification Response:", notificationResponse);
+
+      // Show alert on successful notification send
+      if (notificationResponse.status === 200) {
+        alert("Successfully Sent Notification To User.");
+      } else {
+        alert("Notification Was Not Sent. Please Try Again.");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("Error Sending Notification. Please Check Console For Details.");
+    }
+  };
+
+  const rejectNotifications = async () => {
+    try {
+      // Retrieve the token from local storage
+      let token = localStorage.getItem("token");
+      console.log("Token from local storage:", token);
+
+      // Make a GET request to get the user's profile
+      let profileResponse = await axios.get(
+        "http://localhost:3001/get_user/profile",
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+      console.log("Profile Response:", profileResponse);
+
+      // Update the token if needed
+      if (profileResponse.data.token) {
+        token = profileResponse.data.token; // Update the token variable
+        localStorage.setItem("token", token); // Store the new token in local storage
+        console.log("Updated Token stored in local storage:", token);
+      }
+
+      // Make a POST request to send the notification
+      let notificationResponse = await axios.post(
+        "http://localhost:3001/Reject",
+        {}, // Provide a body here if needed
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+
+      console.log("Notification Response:", notificationResponse);
+
+      // Show alert on successful notification send
+      if (notificationResponse.status === 200) {
+        alert("Successfully Sent Notification To User.");
+      } else {
+        alert("Notification Was Not Sent. Please Try Again.");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("Error Sending Notification. Please Check Console For Details.");
+    }
+  };
+
+  const busyNotifications = async () => {
+    try {
+      // Retrieve the token from local storage
+      let token = localStorage.getItem("token");
+      console.log("Token from local storage:", token);
+
+      // Make a GET request to get the user's profile
+      let profileResponse = await axios.get(
+        "http://localhost:3001/get_user/profile",
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+      console.log("Profile Response:", profileResponse);
+
+      // Update the token if needed
+      if (profileResponse.data.token) {
+        token = profileResponse.data.token; // Update the token variable
+        localStorage.setItem("token", token); // Store the new token in local storage
+        console.log("Updated Token stored in local storage:", token);
+      }
+
+      // Make a POST request to send the notification
+      let notificationResponse = await axios.post(
+        "http://localhost:3001/Busy",
+        {}, // Provide a body here if needed
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+
+      console.log("Notification Response:", notificationResponse);
+
+      // Show alert on successful notification send
+      if (notificationResponse.status === 200) {
+        alert("Successfully Sent Notification To User.");
+      } else {
+        alert("Notification Was Not Sent. Please Try Again.");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("Error Sending Notification. Please check console For Details.");
+    }
+  };
+
   // Function to handle viewing notifications
   const handleViewNotifications = () => {
     setIsDialogOpen(true);
@@ -97,46 +269,162 @@ export function AdvisorProfileManKiBaatComponent() {
     setIsOpen(!isOpen);
   };
 
-  const SignoutClick = () => {
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleLogout = () => {
     alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
+    handleClose();
   };
 
   const handleContactsClick = () => {
     navigate("/contacts");
   };
 
-  // State to control the visibility of the dialog
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  // Function to open the dialog
-  const handleOpenDialog = () => {
-    setIsDialogOpen(true);
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Function to close the dialog
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
+  // Handle file upload
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({ ...prev, Image: e.target.files[0] }));
   };
 
-  // Function to handle the Accept action
-  const handleAccept = () => {
-    console.log("Accepted");
-    handleCloseDialog(); // Close the dialog after action
+  // Check if any fields are filled
+  const isFormFilled = () => {
+    return Object.values(formData).some((value) => value && value !== ""); // Checks if any field is non-empty
   };
 
-  // Function to handle the Reject action
-  const handleReject = () => {
-    console.log("Rejected");
-    handleCloseDialog(); // Close the dialog after action
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Check if the form has any values
+    if (!isFormFilled()) {
+      alert("Please Fill Any Field For Update.");
+      return; // Stop form submission
+    }
+
+    const form = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (formData[key]) form.append(key, formData[key]);
+    });
+
+    try {
+      // Get the token from localStorage
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("No Token Found, Please Login First.");
+        return;
+      }
+
+      // Send patch request with form data and token
+      const res = await axios.patch(
+        `http://localhost:3001/AdvisorUpdateProfile`,
+        form,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "x-auth-token": token, // Ensure backend is expecting this format
+          },
+        }
+      );
+
+      // Handle response based on backend status
+      if (res.status === 200) {
+        // Success response from the server
+        alert("Profile Updated Successfully!");
+        // Reload the page after success
+        window.location.reload();
+      } else {
+        // Handle unexpected status codes
+        alert("Unexpected Response From Server. Please Try Again.");
+      }
+    } catch (error) {
+      // If the server returns an error response, display the message
+      if (error.response && error.response.data && error.response.data.msg) {
+        alert("Error Updating Profile: " + error.response.data.msg);
+      } else {
+        // Handle cases where there's no response or other unexpected errors
+        alert("An Unexpected Error Occurred While Updating The Profile.");
+      }
+    }
   };
 
-  // Function to handle the Busy action
-  const handleBusy = () => {
-    console.log("Busy");
-    handleCloseDialog(); // Close the dialog after action
-  };
+  const [numbers, setNumbers] = useState([]);
+  const [useErrors, setUseErrors] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/Advisor_All_Data")
+      .then((response) => {
+        setNumbers(response.data.Data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
+  function normalizePhoneNumber(inputNumber) {
+    const numberStr = String(inputNumber);
+
+    const strippedNumber = numberStr.replace(/[^\d]/g);
+
+    if (strippedNumber.startsWith("91")) {
+      return strippedNumber;
+    }
+
+    return "91" + strippedNumber.slice(-10);
+  }
+
+  function VerifyNumber(value) {
+    const enteredNumber = normalizePhoneNumber(value);
+
+    if (!Array.isArray(numbers)) {
+      return;
+    }
+
+    for (const user of numbers) {
+      const dbNumber = normalizePhoneNumber(user.Number);
+      if (dbNumber === enteredNumber) {
+        setUseErrors("Advisor Number Taken - Try Another");
+        return;
+      }
+    }
+    setUseErrors("");
+  }
+
+  const [email, setEmail] = useState([]);
+  const [useError, setUseError] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/Advisor_All_Data")
+      .then((response) => {
+        setEmail(response.data.Data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
+  function VerifyEmail(e) {
+    if (!Array.isArray(email)) {
+      return;
+    }
+    for (var user of email) {
+      if (user.Email === e.target.value) {
+        setUseError("Advisor Email Taken - Try Another");
+        return;
+      }
+    }
+    setUseError("");
+  }
 
   return (
     <>
@@ -179,41 +467,59 @@ export function AdvisorProfileManKiBaatComponent() {
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
                 >
-                  <a className="dropdown-item" href="advisor">
+                  <a className="dropdown-item text-center border border-1">
                     All Advisor
                   </a>
-                  <a className="dropdown-item" href="stress">
+                  <a className="dropdown-item text-center border border-1">
                     Stress
                   </a>
-                  <a className="dropdown-item" href="anxiety">
+                  <a className="dropdown-item text-center border border-1">
                     Anxiety
                   </a>
-                  <a className="dropdown-item" href="emotion">
-                    Emotion
-                  </a>
-                  <a className="dropdown-item" href="elicit">
+                  <a className="dropdown-item text-center border border-1">
                     Elicit
                   </a>
-                  <a className="dropdown-item" href="motivation">
-                    Motivation
+                  <a className="dropdown-item text-center border border-1">
+                    Job
                   </a>
-                  <a className="dropdown-item" href="law">
+                  <a className="dropdown-item text-center border border-1">
                     Law
                   </a>
-                  <a className="dropdown-item" href="love">
+                  <a className="dropdown-item text-center border border-1">
+                    Marriage
+                  </a>
+                  <a className="dropdown-item text-center border border-1">
+                    Social Issues
+                  </a>
+                  <a className="dropdown-item text-center border border-1">
+                    Kisan
+                  </a>
+                  <a className="dropdown-item text-center border border-1">
+                    Property
+                  </a>
+                  <a className="dropdown-item text-center border border-1">
+                    Education
+                  </a>
+                  <a className="dropdown-item text-center border border-1">
+                    Carrer
+                  </a>
+                  <a className="dropdown-item text-center border border-1">
+                    Medical
+                  </a>
+                  <a className="dropdown-item text-center border border-1">
                     Love
                   </a>
-                  <a className="dropdown-item" href="break-up">
+                  <a className="dropdown-item text-center border border-1">
+                    Affair
+                  </a>
+                  <a className="dropdown-item text-center border border-1">
                     Break Up
                   </a>
-                  <a className="dropdown-item" href="ex">
+                  <a className="dropdown-item text-center border border-1">
                     Ex
                   </a>
-                  <a className="dropdown-item" href="depressed">
-                    Depressed
-                  </a>
-                  <a className="dropdown-item" href="over-thinking">
-                    Over Thinking
+                  <a className="dropdown-item text-center border border-1">
+                    Hyper Thinking
                   </a>
                 </div>
                 {/* <li
@@ -296,7 +602,7 @@ export function AdvisorProfileManKiBaatComponent() {
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
-                  onClick={SignoutClick}
+                  onClick={handleShow}
                   style={{
                     color: "white",
                     cursor: "pointer",
@@ -326,6 +632,1017 @@ export function AdvisorProfileManKiBaatComponent() {
               &#10046;
             </span>
           </h3>
+        </div>
+      </div>
+
+      <div className="container text-center">
+        <button
+          type="button"
+          className="btn btn-outline-dark"
+          data-bs-toggle="modal"
+          data-bs-target="#updateProfileModal"
+        >
+          <span className="bi bi-pencil-fill fw-semibold"> Update Profile</span>
+        </button>
+      </div>
+
+      <Modal show={show} onHide={handleClose} className="custom-modal">
+        <Modal.Header closeButton className="custom-modal-header">
+          <Modal.Title className="bi bi-person-circle">
+            {" "}
+            Confirm Logout
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={handleClose}
+          >
+            {" "}
+            No
+          </Button>
+          <Button
+            className="bi bi-check-lg"
+            variant="outline-success"
+            onClick={handleLogout}
+          >
+            {" "}
+            Yes, Logout
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <div
+        className="modal fade"
+        id="updateProfileModal"
+        tabIndex="-1"
+        aria-labelledby="updateProfileModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-scrollable">
+          <div className="modal-content bg-dark text-white">
+            <div className="modal-header">
+              <h3 className="modal-title" id="updateProfileModalLabel">
+                <span className="bi bi-person-circle"> Update Profile</span>
+              </h3>
+              <button
+                type="button"
+                className="btn-close bg-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <dl>
+                <dt>Email</dt>
+                <dd>
+                  <input
+                    type="email"
+                    name="Email"
+                    value={formData.Email}
+                    onChange={handleChange}
+                    onKeyUp={VerifyEmail}
+                    className="form-control"
+                  />
+                </dd>
+                {useError && <div className="text-danger">{useError}</div>}
+
+                <dt>Number</dt>
+                <dd>
+                  <input
+                    type="text"
+                    name="Number"
+                    value={formData.Number}
+                    onChange={(e) => {
+                      handleChange(e);
+                      VerifyNumber(e.target.value);
+                    }}
+                    className="form-control"
+                  />
+                </dd>
+                {useErrors && <div className="text-danger">{useErrors}</div>}
+
+                <dt>City</dt>
+                <dd>
+                  <input
+                    type="text"
+                    name="City"
+                    value={formData.City}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </dd>
+
+                <dt>State</dt>
+                <dd>
+                  <select
+                    name="State"
+                    value={formData.State}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select State
+                    </option>
+                    <option
+                      value="Andhra Pradesh"
+                      className="bg-dark text-white"
+                    >
+                      Andhra Pradesh
+                    </option>
+                    <option
+                      value="Arunachal Pradesh"
+                      className="bg-dark text-white"
+                    >
+                      Arunachal Pradesh
+                    </option>
+                    <option value="Assam" className="bg-dark text-white">
+                      Assam
+                    </option>
+                    <option value="Bihar" className="bg-dark text-white">
+                      Bihar
+                    </option>
+                    <option value="Chhattisgarh" className="bg-dark text-white">
+                      Chhattisgarh
+                    </option>
+                    <option value="Goa" className="bg-dark text-white">
+                      Goa
+                    </option>
+                    <option value="Gujarat" className="bg-dark text-white">
+                      Gujarat
+                    </option>
+                    <option value="Haryana" className="bg-dark text-white">
+                      Haryana
+                    </option>
+                    <option
+                      value="Himachal Pradesh"
+                      className="bg-dark text-white"
+                    >
+                      Himachal Pradesh
+                    </option>
+                    <option value="Jharkhand" className="bg-dark text-white">
+                      Jharkhand
+                    </option>
+                    <option value="Karnataka" className="bg-dark text-white">
+                      Karnataka
+                    </option>
+                    <option value="Kerala" className="bg-dark text-white">
+                      Kerala
+                    </option>
+                    <option
+                      value="Madhya Pradesh"
+                      className="bg-dark text-white"
+                    >
+                      Madhya Pradesh
+                    </option>
+                    <option value="Maharashtra" className="bg-dark text-white">
+                      Maharashtra
+                    </option>
+                    <option value="Manipur" className="bg-dark text-white">
+                      Manipur
+                    </option>
+                    <option value="Meghalaya" className="bg-dark text-white">
+                      Meghalaya
+                    </option>
+                    <option value="Mizoram" className="bg-dark text-white">
+                      Mizoram
+                    </option>
+                    <option value="Nagaland" className="bg-dark text-white">
+                      Nagaland
+                    </option>
+                    <option value="Odisha" className="bg-dark text-white">
+                      Odisha
+                    </option>
+                    <option value="Punjab" className="bg-dark text-white">
+                      Punjab
+                    </option>
+                    <option value="Rajasthan" className="bg-dark text-white">
+                      Rajasthan
+                    </option>
+                    <option value="Sikkim" className="bg-dark text-white">
+                      Sikkim
+                    </option>
+                    <option value="Tamil Nadu" className="bg-dark text-white">
+                      Tamil Nadu
+                    </option>
+                    <option value="Telangana" className="bg-dark text-white">
+                      Telangana
+                    </option>
+                    <option value="Tripura" className="bg-dark text-white">
+                      Tripura
+                    </option>
+                    <option
+                      value="Uttar Pradesh"
+                      className="bg-dark text-white"
+                    >
+                      Uttar Pradesh
+                    </option>
+                    <option value="Uttarakhand" className="bg-dark text-white">
+                      Uttarakhand
+                    </option>
+                    <option value="West Bengal" className="bg-dark text-white">
+                      West Bengal
+                    </option>
+                    <option
+                      value="Andaman and Nicobar Islands"
+                      className="bg-dark text-white"
+                    >
+                      Andaman and Nicobar Islands
+                    </option>
+                    <option value="Chandigarh" className="bg-dark text-white">
+                      Chandigarh
+                    </option>
+                    <option
+                      value="Dadra and Nagar Haveli and Daman and Diu"
+                      className="bg-dark text-white"
+                    >
+                      Dadra and Nagar Haveli and Daman and Diu
+                    </option>
+                    <option value="Lakshadweep" className="bg-dark text-white">
+                      Lakshadweep
+                    </option>
+                    <option value="Delhi" className="bg-dark text-white">
+                      Delhi
+                    </option>
+                    <option value="Puducherry" className="bg-dark text-white">
+                      Puducherry
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Expertise</dt>
+                <dd>
+                  <select
+                    name="Expertise"
+                    value={formData.Expertise}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Expertise
+                    </option>
+                    <option value="Stress" className="bg-dark text-white">
+                      Stress
+                    </option>
+                    <option value="Anxiety" className="bg-dark text-white">
+                      Anxiety
+                    </option>
+                    <option value="Elicit" className="bg-dark text-white">
+                      Elicit
+                    </option>
+                    <option value="Job" className="bg-dark text-white">
+                      Job
+                    </option>
+                    <option value="Law" className="bg-dark text-white">
+                      Law
+                    </option>
+                    <option value="Marriage" className="bg-dark text-white">
+                      Marriage
+                    </option>
+                    <option
+                      value="Social Issues"
+                      className="bg-dark text-white"
+                    >
+                      Social Issues
+                    </option>
+                    <option value="Kisan" className="bg-dark text-white">
+                      Kisan
+                    </option>
+                    <option value="Property" className="bg-dark text-white">
+                      Property
+                    </option>
+                    <option value="Education" className="bg-dark text-white">
+                      Education
+                    </option>
+                    <option value="Carrer" className="bg-dark text-white">
+                      Carrer
+                    </option>
+                    <option value="Medical" className="bg-dark text-white">
+                      Medical
+                    </option>
+                    <option value="Love" className="bg-dark text-white">
+                      Love
+                    </option>
+                    <option value="Affair" className="bg-dark text-white">
+                      Affair
+                    </option>
+                    <option value="Break Up" className="bg-dark text-white">
+                      Break Up
+                    </option>
+                    <option value="Ex" className="bg-dark text-white">
+                      Ex
+                    </option>
+                    <option
+                      value="Hyper Thinking"
+                      className="bg-dark text-white"
+                    >
+                      Hyper Thinking
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Experience</dt>
+                <dd>
+                  <select
+                    name="Experience"
+                    value={formData.Experience}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Experience
+                    </option>
+                    <option value="1 Yrs" className="bg-dark text-white">
+                      1 Yrs
+                    </option>
+                    <option value="2 Yrs" className="bg-dark text-white">
+                      2 Yrs
+                    </option>
+                    <option value="3 Yrs" className="bg-dark text-white">
+                      3 Yrs
+                    </option>
+                    <option value="4 Yrs" className="bg-dark text-white">
+                      4 Yrs
+                    </option>
+                    <option value="5 Yrs" className="bg-dark text-white">
+                      5 Yrs
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Language</dt>
+                <dd>
+                  <select
+                    name="Language"
+                    value={formData.Language}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Language
+                    </option>
+                    <option value="Hindi" className="bg-dark text-white">
+                      Hindi
+                    </option>
+                    <option value="English" className="bg-dark text-white">
+                      English
+                    </option>
+                    <option value="Bengali" className="bg-dark text-white">
+                      Bengali
+                    </option>
+                    <option value="Telugu" className="bg-dark text-white">
+                      Telugu
+                    </option>
+                    <option value="Marathi" className="bg-dark text-white">
+                      Marathi
+                    </option>
+                    <option value="Tamil" className="bg-dark text-white">
+                      Tamil
+                    </option>
+                    <option value="Urdu" className="bg-dark text-white">
+                      Urdu
+                    </option>
+                    <option value="Gujarati" className="bg-dark text-white">
+                      Gujarati
+                    </option>
+                    <option value="Malayalam" className="bg-dark text-white">
+                      Malayalam
+                    </option>
+                    <option value="Kannada" className="bg-dark text-white">
+                      Kannada
+                    </option>
+                    <option value="Odia" className="bg-dark text-white">
+                      Odia
+                    </option>
+                    <option value="Punjabi" className="bg-dark text-white">
+                      Punjabi
+                    </option>
+                    <option value="Assamese" className="bg-dark text-white">
+                      Assamese
+                    </option>
+                    <option value="Maithili" className="bg-dark text-white">
+                      Maithili
+                    </option>
+                    <option
+                      value="Bhili/Bhilodi"
+                      className="bg-dark text-white"
+                    >
+                      Bhili/Bhilodi
+                    </option>
+                    <option value="Santali" className="bg-dark text-white">
+                      Santali
+                    </option>
+                    <option value="Kashmiri" className="bg-dark text-white">
+                      Kashmiri
+                    </option>
+                    <option value="Nepali" className="bg-dark text-white">
+                      Nepali
+                    </option>
+                    <option value="Gondi" className="bg-dark text-white">
+                      Gondi
+                    </option>
+                    <option value="Sindhi" className="bg-dark text-white">
+                      Sindhi
+                    </option>
+                    <option value="Konkani" className="bg-dark text-white">
+                      Konkani
+                    </option>
+                    <option value="Dogri" className="bg-dark text-white">
+                      Dogri
+                    </option>
+                    <option value="Khandeshi" className="bg-dark text-white">
+                      Khandeshi
+                    </option>
+                    <option value="Kurukh" className="bg-dark text-white">
+                      Kurukh
+                    </option>
+                    <option value="Tulu" className="bg-dark text-white">
+                      Tulu
+                    </option>
+                    <option
+                      value="Meitei (Manipuri)"
+                      className="bg-dark text-white"
+                    >
+                      Meitei (Manipuri)
+                    </option>
+                    <option value="Bodo" className="bg-dark text-white">
+                      Bodo
+                    </option>
+                    <option value="Khasi" className="bg-dark text-white">
+                      Khasi
+                    </option>
+                    <option value="Mundari" className="bg-dark text-white">
+                      Mundari
+                    </option>
+                    <option value="Ho" className="bg-dark text-white">
+                      Ho
+                    </option>
+                    <option value="Kui" className="bg-dark text-white">
+                      Kui
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>About</dt>
+                <dd>
+                  <textarea
+                    name="About"
+                    value={formData.About}
+                    onChange={handleChange}
+                    className="form-control"
+                  ></textarea>
+                </dd>
+
+                <dt>Analytical Strength</dt>
+                <dd>
+                  <select
+                    name="Analytical_Strength"
+                    value={formData.Analytical_Strength}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Analytical Strength
+                    </option>
+                    <option value="1" className="bg-dark text-white">
+                      1
+                    </option>
+                    <option value="1.5" className="bg-dark text-white">
+                      1.5
+                    </option>
+                    <option value="2" className="bg-dark text-white">
+                      2
+                    </option>
+                    <option value="2.5" className="bg-dark text-white">
+                      2.5
+                    </option>
+                    <option value="3" className="bg-dark text-white">
+                      3
+                    </option>
+                    <option value="3.5" className="bg-dark text-white">
+                      3.5
+                    </option>
+                    <option value="4" className="bg-dark text-white">
+                      4
+                    </option>
+                    <option value="4.5" className="bg-dark text-white">
+                      4.5
+                    </option>
+                    <option value="5" className="bg-dark text-white">
+                      5
+                    </option>
+                    <option value="5.5" className="bg-dark text-white">
+                      5.5
+                    </option>
+                    <option value="6" className="bg-dark text-white">
+                      6
+                    </option>
+                    <option value="6.5" className="bg-dark text-white">
+                      6.5
+                    </option>
+                    <option value="7" className="bg-dark text-white">
+                      7
+                    </option>
+                    <option value="7.5" className="bg-dark text-white">
+                      7.5
+                    </option>
+                    <option value="8" className="bg-dark text-white">
+                      8
+                    </option>
+                    <option value="8.5" className="bg-dark text-white">
+                      8.5
+                    </option>
+                    <option value="9" className="bg-dark text-white">
+                      9
+                    </option>
+                    <option value="9.5" className="bg-dark text-white">
+                      9.5
+                    </option>
+                    <option value="10" className="bg-dark text-white">
+                      10
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Problem Solving Strength</dt>
+                <dd>
+                  <select
+                    name="Problem_Solving_Strength"
+                    value={formData.Problem_Solving_Strength}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Problem Solving Strength
+                    </option>
+                    <option value="1" className="bg-dark text-white">
+                      1
+                    </option>
+                    <option value="1.5" className="bg-dark text-white">
+                      1.5
+                    </option>
+                    <option value="2" className="bg-dark text-white">
+                      2
+                    </option>
+                    <option value="2.5" className="bg-dark text-white">
+                      2.5
+                    </option>
+                    <option value="3" className="bg-dark text-white">
+                      3
+                    </option>
+                    <option value="3.5" className="bg-dark text-white">
+                      3.5
+                    </option>
+                    <option value="4" className="bg-dark text-white">
+                      4
+                    </option>
+                    <option value="4.5" className="bg-dark text-white">
+                      4.5
+                    </option>
+                    <option value="5" className="bg-dark text-white">
+                      5
+                    </option>
+                    <option value="5.5" className="bg-dark text-white">
+                      5.5
+                    </option>
+                    <option value="6" className="bg-dark text-white">
+                      6
+                    </option>
+                    <option value="6.5" className="bg-dark text-white">
+                      6.5
+                    </option>
+                    <option value="7" className="bg-dark text-white">
+                      7
+                    </option>
+                    <option value="7.5" className="bg-dark text-white">
+                      7.5
+                    </option>
+                    <option value="8" className="bg-dark text-white">
+                      8
+                    </option>
+                    <option value="8.5" className="bg-dark text-white">
+                      8.5
+                    </option>
+                    <option value="9" className="bg-dark text-white">
+                      9
+                    </option>
+                    <option value="9.5" className="bg-dark text-white">
+                      9.5
+                    </option>
+                    <option value="10" className="bg-dark text-white">
+                      10
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Public Speaking Strength</dt>
+                <dd>
+                  <select
+                    name="Public_Speaking_Strength"
+                    value={formData.Public_Speaking_Strength}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Public Speaking Strength
+                    </option>
+                    <option value="1" className="bg-dark text-white">
+                      1
+                    </option>
+                    <option value="1.5" className="bg-dark text-white">
+                      1.5
+                    </option>
+                    <option value="2" className="bg-dark text-white">
+                      2
+                    </option>
+                    <option value="2.5" className="bg-dark text-white">
+                      2.5
+                    </option>
+                    <option value="3" className="bg-dark text-white">
+                      3
+                    </option>
+                    <option value="3.5" className="bg-dark text-white">
+                      3.5
+                    </option>
+                    <option value="4" className="bg-dark text-white">
+                      4
+                    </option>
+                    <option value="4.5" className="bg-dark text-white">
+                      4.5
+                    </option>
+                    <option value="5" className="bg-dark text-white">
+                      5
+                    </option>
+                    <option value="5.5" className="bg-dark text-white">
+                      5.5
+                    </option>
+                    <option value="6" className="bg-dark text-white">
+                      6
+                    </option>
+                    <option value="6.5" className="bg-dark text-white">
+                      6.5
+                    </option>
+                    <option value="7" className="bg-dark text-white">
+                      7
+                    </option>
+                    <option value="7.5" className="bg-dark text-white">
+                      7.5
+                    </option>
+                    <option value="8" className="bg-dark text-white">
+                      8
+                    </option>
+                    <option value="8.5" className="bg-dark text-white">
+                      8.5
+                    </option>
+                    <option value="9" className="bg-dark text-white">
+                      9
+                    </option>
+                    <option value="9.5" className="bg-dark text-white">
+                      9.5
+                    </option>
+                    <option value="10" className="bg-dark text-white">
+                      10
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Adaptable Strength</dt>
+                <dd>
+                  <select
+                    name="Adaptable_Strength"
+                    value={formData.Adaptable_Strength}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Adaptable Strength
+                    </option>
+                    <option value="1" className="bg-dark text-white">
+                      1
+                    </option>
+                    <option value="1.5" className="bg-dark text-white">
+                      1.5
+                    </option>
+                    <option value="2" className="bg-dark text-white">
+                      2
+                    </option>
+                    <option value="2.5" className="bg-dark text-white">
+                      2.5
+                    </option>
+                    <option value="3" className="bg-dark text-white">
+                      3
+                    </option>
+                    <option value="3.5" className="bg-dark text-white">
+                      3.5
+                    </option>
+                    <option value="4" className="bg-dark text-white">
+                      4
+                    </option>
+                    <option value="4.5" className="bg-dark text-white">
+                      4.5
+                    </option>
+                    <option value="5" className="bg-dark text-white">
+                      5
+                    </option>
+                    <option value="5.5" className="bg-dark text-white">
+                      5.5
+                    </option>
+                    <option value="6" className="bg-dark text-white">
+                      6
+                    </option>
+                    <option value="6.5" className="bg-dark text-white">
+                      6.5
+                    </option>
+                    <option value="7" className="bg-dark text-white">
+                      7
+                    </option>
+                    <option value="7.5" className="bg-dark text-white">
+                      7.5
+                    </option>
+                    <option value="8" className="bg-dark text-white">
+                      8
+                    </option>
+                    <option value="8.5" className="bg-dark text-white">
+                      8.5
+                    </option>
+                    <option value="9" className="bg-dark text-white">
+                      9
+                    </option>
+                    <option value="9.5" className="bg-dark text-white">
+                      9.5
+                    </option>
+                    <option value="10" className="bg-dark text-white">
+                      10
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Communication Strength</dt>
+                <dd>
+                  <select
+                    name="Communication_Strength"
+                    value={formData.Communication_Strength}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Communication Strength
+                    </option>
+                    <option value="1" className="bg-dark text-white">
+                      1
+                    </option>
+                    <option value="1.5" className="bg-dark text-white">
+                      1.5
+                    </option>
+                    <option value="2" className="bg-dark text-white">
+                      2
+                    </option>
+                    <option value="2.5" className="bg-dark text-white">
+                      2.5
+                    </option>
+                    <option value="3" className="bg-dark text-white">
+                      3
+                    </option>
+                    <option value="3.5" className="bg-dark text-white">
+                      3.5
+                    </option>
+                    <option value="4" className="bg-dark text-white">
+                      4
+                    </option>
+                    <option value="4.5" className="bg-dark text-white">
+                      4.5
+                    </option>
+                    <option value="5" className="bg-dark text-white">
+                      5
+                    </option>
+                    <option value="5.5" className="bg-dark text-white">
+                      5.5
+                    </option>
+                    <option value="6" className="bg-dark text-white">
+                      6
+                    </option>
+                    <option value="6.5" className="bg-dark text-white">
+                      6.5
+                    </option>
+                    <option value="7" className="bg-dark text-white">
+                      7
+                    </option>
+                    <option value="7.5" className="bg-dark text-white">
+                      7.5
+                    </option>
+                    <option value="8" className="bg-dark text-white">
+                      8
+                    </option>
+                    <option value="8.5" className="bg-dark text-white">
+                      8.5
+                    </option>
+                    <option value="9" className="bg-dark text-white">
+                      9
+                    </option>
+                    <option value="9.5" className="bg-dark text-white">
+                      9.5
+                    </option>
+                    <option value="10" className="bg-dark text-white">
+                      10
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>P S Strength</dt>
+                <dd>
+                  <select
+                    name="P_S_Strength"
+                    value={formData.P_S_Strength}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select P S Strength
+                    </option>
+                    <option value="1" className="bg-dark text-white">
+                      1
+                    </option>
+                    <option value="1.5" className="bg-dark text-white">
+                      1.5
+                    </option>
+                    <option value="2" className="bg-dark text-white">
+                      2
+                    </option>
+                    <option value="2.5" className="bg-dark text-white">
+                      2.5
+                    </option>
+                    <option value="3" className="bg-dark text-white">
+                      3
+                    </option>
+                    <option value="3.5" className="bg-dark text-white">
+                      3.5
+                    </option>
+                    <option value="4" className="bg-dark text-white">
+                      4
+                    </option>
+                    <option value="4.5" className="bg-dark text-white">
+                      4.5
+                    </option>
+                    <option value="5" className="bg-dark text-white">
+                      5
+                    </option>
+                    <option value="5.5" className="bg-dark text-white">
+                      5.5
+                    </option>
+                    <option value="6" className="bg-dark text-white">
+                      6
+                    </option>
+                    <option value="6.5" className="bg-dark text-white">
+                      6.5
+                    </option>
+                    <option value="7" className="bg-dark text-white">
+                      7
+                    </option>
+                    <option value="7.5" className="bg-dark text-white">
+                      7.5
+                    </option>
+                    <option value="8" className="bg-dark text-white">
+                      8
+                    </option>
+                    <option value="8.5" className="bg-dark text-white">
+                      8.5
+                    </option>
+                    <option value="9" className="bg-dark text-white">
+                      9
+                    </option>
+                    <option value="9.5" className="bg-dark text-white">
+                      9.5
+                    </option>
+                    <option value="10" className="bg-dark text-white">
+                      10
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Leadership Experience Strength</dt>
+                <dd>
+                  <select
+                    name="Leadership_Experience_Strength"
+                    value={formData.Leadership_Experience_Strength}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Leadership Experience Strength
+                    </option>
+                    <option value="1" className="bg-dark text-white">
+                      1
+                    </option>
+                    <option value="1.5" className="bg-dark text-white">
+                      1.5
+                    </option>
+                    <option value="2" className="bg-dark text-white">
+                      2
+                    </option>
+                    <option value="2.5" className="bg-dark text-white">
+                      2.5
+                    </option>
+                    <option value="3" className="bg-dark text-white">
+                      3
+                    </option>
+                    <option value="3.5" className="bg-dark text-white">
+                      3.5
+                    </option>
+                    <option value="4" className="bg-dark text-white">
+                      4
+                    </option>
+                    <option value="4.5" className="bg-dark text-white">
+                      4.5
+                    </option>
+                    <option value="5" className="bg-dark text-white">
+                      5
+                    </option>
+                    <option value="5.5" className="bg-dark text-white">
+                      5.5
+                    </option>
+                    <option value="6" className="bg-dark text-white">
+                      6
+                    </option>
+                    <option value="6.5" className="bg-dark text-white">
+                      6.5
+                    </option>
+                    <option value="7" className="bg-dark text-white">
+                      7
+                    </option>
+                    <option value="7.5" className="bg-dark text-white">
+                      7.5
+                    </option>
+                    <option value="8" className="bg-dark text-white">
+                      8
+                    </option>
+                    <option value="8.5" className="bg-dark text-white">
+                      8.5
+                    </option>
+                    <option value="9" className="bg-dark text-white">
+                      9
+                    </option>
+                    <option value="9.5" className="bg-dark text-white">
+                      9.5
+                    </option>
+                    <option value="10" className="bg-dark text-white">
+                      10
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Image</dt>
+                <dd>
+                  <input
+                    type="file"
+                    name="Image"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="form-control w-50"
+                  />
+                </dd>
+
+                <dt>Goal</dt>
+                <dd>
+                  <textarea
+                    name="Goal"
+                    value={formData.Goal}
+                    onChange={handleChange}
+                    className="form-control"
+                  ></textarea>
+                </dd>
+              </dl>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-outline-success mt-3 fw-semibold"
+                onClick={handleSubmit}
+              >
+                Save changes
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-danger mt-3 fw-semibold"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -607,55 +1924,55 @@ export function AdvisorProfileManKiBaatComponent() {
           <div className="text-center">
             <h4>ABOUT</h4>
             <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-              mollitia, molestiae quas vel sint commodi repudiandae consequuntur
-              voluptatum laborum numquam blanditiis harum quisquam eius sed odit
-              fugiat iusto fuga praesentium optio, eaque rerum! Provident
-              similique accusantium nemo autem.
-            </p>
+            {advisors.map((advisor, index) => (
+              <p>{advisor.About}</p>
+            ))}
           </div>
           <div>
             <div className="container">
               <div className="row">
                 <div className="col-md-4">
                   <h4>PERSONALITY</h4>
-                  <p>
-                    Analytical{" "}
-                    <progress
-                      min="1"
-                      max="100"
-                      value="30"
-                      className="ms-2"
-                    ></progress>
-                  </p>
-                  <p>
-                    Problem Solving{" "}
-                    <progress
-                      min="1"
-                      max="100"
-                      value="50"
-                      className="ms-2"
-                    ></progress>
-                  </p>
-                  <p>
-                    Public Speaking{" "}
-                    <progress
-                      min="1"
-                      max="100"
-                      value="70"
-                      className="ms-2"
-                    ></progress>
-                  </p>
-                  <p>
-                    Adaptable{" "}
-                    <progress
-                      min="1"
-                      max="100"
-                      value="100"
-                      className="ms-2"
-                    ></progress>
-                  </p>
+                  {advisors.map((advisor, index) => (
+                    <div key={index}>
+                      <p>
+                        Analytical{" "}
+                        <progress
+                          min="1"
+                          max="10"
+                          value={advisor.Analytical_Strength}
+                          className="ms-2"
+                        ></progress>
+                      </p>
+                      <p>
+                        Problem Solving{" "}
+                        <progress
+                          min="1"
+                          max="10"
+                          value={advisor.Problem_Solving_Strength}
+                          className="ms-2"
+                        ></progress>
+                      </p>
+                      <p>
+                        Public Speaking{" "}
+                        <progress
+                          min="1"
+                          max="10"
+                          value={advisor.Public_Speaking_Strength}
+                          className="ms-2"
+                        ></progress>
+                      </p>
+                      <p>
+                        Adaptable{" "}
+                        <progress
+                          min="1"
+                          max="10"
+                          value={advisor.Adaptable_Strength}
+                          className="ms-2"
+                        ></progress>
+                      </p>
+                    </div>
+                  ))}
                 </div>
                 <div className="col-md-4 mt-5">
                   <div className="mt-5">
@@ -708,46 +2025,60 @@ export function AdvisorProfileManKiBaatComponent() {
                 </div>
                 <div className="col-md-4">
                   <h4>SKILLS</h4>
-                  <p>Communication</p>
-                  <meter
-                    min="1"
-                    max="100"
-                    value="100"
-                    low="0"
-                    high="0"
-                    className="w-75 mb-3"
-                  ></meter>
-                  <p>Problem Solving</p>
-                  <meter
-                    min="1"
-                    max="100"
-                    value="100"
-                    low="40"
-                    high="80"
-                    className="w-75 mb-3"
-                  ></meter>
-                  <p>Leadership Experience</p>
-                  <meter
-                    min="1"
-                    max="100"
-                    value="100"
-                    low="60"
-                    high="80"
-                    className="w-75 mb-3"
-                  ></meter>
+                  {advisors.map((advisor, index) => (
+                    <div key={index}>
+                      <p>Communication</p>
+                      <meter
+                        min="1"
+                        max="10"
+                        value={advisor.Communication_Strength} // Dynamic value for Communication
+                        className={`w-75 mb-3 ${
+                          advisor.Communication_Strength <= 4
+                            ? "red-meter"
+                            : advisor.Communication_Strength <= 7
+                            ? "yellow-meter"
+                            : "green-meter"
+                        }`}
+                      ></meter>
+
+                      <p>Problem Solving</p>
+                      <meter
+                        min="1"
+                        max="10"
+                        value={advisor.P_S_Strength} // Dynamic value for Problem Solving
+                        className={`w-75 mb-3 ${
+                          advisor.P_S_Strength <= 4
+                            ? "red-meter"
+                            : advisor.P_S_Strength <= 7
+                            ? "yellow-meter"
+                            : "green-meter"
+                        }`}
+                      ></meter>
+
+                      <p>Leadership Experience</p>
+                      <meter
+                        min="1"
+                        max="10"
+                        value={advisor.Leadership_Experience_Strength} // Dynamic value for Leadership
+                        className={`w-75 mb-3 ${
+                          advisor.Leadership_Experience_Strength <= 4
+                            ? "red-meter"
+                            : advisor.Leadership_Experience_Strength <= 7
+                            ? "yellow-meter"
+                            : "green-meter"
+                        }`}
+                      ></meter>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
             <div className="text-center">
               <h4>GOAL</h4>
               <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-                mollitia, molestiae quas vel sint commodi repudiandae
-                consequuntur voluptatum laborum numquam blanditiis harum
-                quisquam eius sed odit fugiat iusto fuga praesentium optio,
-                eaque rerum! Provident similique accusantium nemo autem.
-              </p>
+              {advisors.map((advisor, index) => (
+                <p>{advisor.Goal}</p>
+              ))}
               <div className="mb-4">
                 <button className="btn btn-outline-success p-1 w-25 mt-3">
                   Review
@@ -800,7 +2131,16 @@ export function AdvisorProfileManKiBaatComponent() {
         {isDialogOpen && (
           <div className="dialog-overlay">
             <div className="dialog">
-              <h3>Notification</h3>
+              <div className="dialog-header">
+                <h3 className="bi bi-bell"> Notification</h3>
+                {/* Close button */}
+                <button
+                  className="close-button"
+                  onClick={() => setIsDialogOpen(false)}
+                >
+                  &times;
+                </button>
+              </div>
 
               {/* Displaying user information */}
               {user.map((u, index) => (
@@ -810,12 +2150,13 @@ export function AdvisorProfileManKiBaatComponent() {
                     src={`http://localhost:3001/${u.image}`}
                     alt="User Profile"
                     style={{
-                      width: "50px",
-                      height: "50px",
-                      borderRadius: "100px",
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "20px",
+                      // boxShadow: "0 0 8px rgb(145, 144, 146)",
                     }}
                   />
-                  <span>{u.category}</span>
+                  <p className="mt-2">{u.category}</p>
                 </div>
               ))}
 
@@ -826,15 +2167,15 @@ export function AdvisorProfileManKiBaatComponent() {
 
               <div className="dialog-actions">
                 {/* Accept Button */}
-                <button onClick={handleAccept} className="accept-button">
+                <button onClick={acceptNotifications} className="accept-button">
                   Accept
                 </button>
                 {/* Reject Button */}
-                <button onClick={handleReject} className="reject-button">
+                <button onClick={rejectNotifications} className="reject-button">
                   Reject
                 </button>
                 {/* Busy Button */}
-                <button onClick={handleBusy} className="busy-button">
+                <button onClick={busyNotifications} className="busy-button">
                   Busy
                 </button>
               </div>

@@ -53,6 +53,18 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    category_strength: {
+      type: String,
+      default: "",
+    },
+    subcategory_strength: {
+      type: String,
+      default: "",
+    },
+    description: {
+      type: String,
+      default: "",
+    },
   },
 
   { timestamps: true }

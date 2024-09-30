@@ -554,6 +554,12 @@ export function AdvisorRegisterManKiBaatComponent() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -637,6 +643,13 @@ export function AdvisorRegisterManKiBaatComponent() {
                   } else {
                     formData.append(key, values[key]);
                   }
+                }
+                if (!isChecked) {
+                  alert(
+                    "Please Accept The Terms & Conditions Before Registering."
+                  );
+                  setSubmitting(false); // Stop submitting
+                  return; // Do not proceed if checkbox is not checked
                 }
                 axios
                   .post("http://localhost:3001/Advisor_register", formData, {
@@ -877,6 +890,7 @@ export function AdvisorRegisterManKiBaatComponent() {
                     <input
                       type="file"
                       name="Image"
+                      accept="image/*"
                       onChange={(event) => {
                         handleImageChange(event);
                         setFieldValue("Image", event.currentTarget.files[0]);
@@ -892,6 +906,22 @@ export function AdvisorRegisterManKiBaatComponent() {
                           <img src={imagePreview} alt="Image Preview" style={{width:"100%", height:"100%"}}/>
                         </div>
                       )} */}
+                    <div className="mt-3">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        style={{ cursor: "pointer" }}
+                        checked={isChecked} // Keep track of checkbox state
+                        onChange={handleCheckboxChange} // Checkbox state change
+                      />
+                      <a
+                        href="terms-and-conditions"
+                        className="text-decoration-none text-secondary ms-2"
+                        style={{ fontFamily: "fantasy" }}
+                      >
+                        Terms & Conditions
+                      </a>
+                    </div>
                   </div>
                   <button type="submit">Register</button>
                 </Form>

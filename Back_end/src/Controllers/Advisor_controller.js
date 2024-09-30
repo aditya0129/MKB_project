@@ -9,6 +9,13 @@ const {
   validateMobileNo,
 } = require("../Validation/Validate");
 const userModel = require("../models/userModel");
+const mailer = require("../Validation/mailer");
+const Advisor_Otp_Model = require("../models/Advisor_Otp_Model");
+const {
+  OneMinutExpiry,
+  ThreeMinutExpiry,
+} = require("../Validation/OtpValidate");
+const { validationResult } = require("express-validator");
 ///const { Module } = require("module");
 
 ///**********************************************---------Calculate age from birthdate----------**********************************///
@@ -174,7 +181,7 @@ const Advisor_register = async function (req, res) {
     if (Age < 18) {
       return res.status(400).send({ status: false, MSG: "you should be 18+" });
     }
-    const newUser = new Advisor_Model({
+    const newAdvisor = new Advisor_Model({
       Name,
       Number,
       Email,
@@ -189,8 +196,11 @@ const Advisor_register = async function (req, res) {
       Age,
       Image: "images/" + req.file.filename,
     });
-    await newUser.save();
-    res.status(201).json({ status: true, user: newUser });
+    const advisorData = await newAdvisor.save();
+
+    const msg = `<p>Hi ${Name}, please <a href="http://localhost:3001/api/advisor-mail-verification?id=${advisorData._id}">verify</a> your email.</p>`;
+    mailer.sendMail(Email, "mail-verification", msg);
+    res.status(201).json({ status: true, advisor: newAdvisor });
 
     // let Save_data = await Advisor_Model.create(data);
     // return res
@@ -413,6 +423,281 @@ const busyNotification = async function (req, res) {
   }
 };
 
+const AdvisorMailVerification = async (req, res) => {
+  try {
+    if (req.query.id == undefined) {
+      return req.render("404");
+    }
+
+    const advisorData = await Advisor_Model.findOne({ _id: req.query.id });
+    console.log("advisorData" + advisorData);
+    console.log("queary id" + req.query.id);
+    if (advisorData) {
+      if (advisorData.is_verified == 1) {
+        return res.render("mail-verification", {
+          message: "Your mail already verified!",
+        });
+      }
+      await Advisor_Model.findByIdAndUpdate(
+        { _id: req.query.id },
+        {
+          $set: {
+            is_verified: 1,
+          },
+        }
+      );
+      return res.render("mail-verification", {
+        message: "Mail has been verified Successfully!",
+      });
+    } else {
+      return res.render("mail-verification", { message: "Advisor not Found!" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return res.render("404");
+  }
+};
+
+const genrateOtp = async () => {
+  return Math.floor(1000 + Math.random() * 9000);
+};
+
+const advisor_send_otp_fp = async function (req, res) {
+  try {
+    // Validation and other logic...
+    const { Email } = req.body;
+    const advisorData = await Advisor_Model.findOne({ Email });
+
+    if (!advisorData) {
+      return res.status(400).json({
+        status: false,
+        MSG: "E-mail is not correct. Please try again!",
+      });
+    }
+
+    // Generate and store OTP
+    const g_otp = await genrateOtp();
+    const advisor_id = advisorData._id; // Get the advisor ID
+
+    const oldotpData = await Advisor_Otp_Model.findOne({ advisor_id });
+    if (oldotpData) {
+      const sendNextotp = await OneMinutExpiry(oldotpData.timestamps);
+      if (!sendNextotp) {
+        return res.status(400).json({
+          status: false,
+          MSG: "Please try after some time!",
+        });
+      }
+    }
+
+    await Advisor_Otp_Model.findOneAndUpdate(
+      { advisor_id },
+      { Otp: g_otp, timestamps: new Date() },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    const msg = `<p>Hi <b>${advisorData.Name}</b>,<br> <h4>${g_otp}</h4></p>`;
+    const mailerSend = await mailer.sendMail(
+      advisorData.Email,
+      "OTP verification",
+      msg
+    );
+
+    return res.status(200).json({
+      status: true,
+      advisor_id: advisorData._id, // Include advisor_id in the response
+      msg: "Verification OTP has been sent to your email address, please check!",
+    });
+  } catch (error) {
+    return res.status(500).send({ status: false, msg: error.message });
+  }
+};
+
+const advisor_verify_otp_fp = async function (req, res) {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        msg: "Errors",
+        errors: errors.array(),
+      });
+    }
+    const { advisor_id, Otp } = req.body;
+
+    const otpData = await Advisor_Otp_Model.findOne({ advisor_id, Otp });
+
+    if (!otpData) {
+      return res.status(400).json({ status: false, MSG: "wrong otp" });
+    }
+
+    const isotpExpired = await ThreeMinutExpiry(otpData.timestamps);
+    if (isotpExpired) {
+      return res.status(400).json({
+        status: false,
+        MSG: "your otp has been expired !",
+      });
+    }
+
+    await Advisor_Model.findByIdAndUpdate(
+      { _id: advisor_id },
+      {
+        $set: {
+          is_verified: 1,
+        },
+      }
+    );
+    return res.status(200).json({
+      status: true,
+      MSG: "your account verifid successfull",
+    });
+  } catch (error) {
+    return res.status(500).send({ Status: false, MSg: error.message });
+  }
+};
+
+const Advisor_Update_Password = async function (req, res) {
+  try {
+    let { advisor_id } = req.params;
+    let { newPassword, reEnterPassword } = req.body;
+
+    // Check if the email exists in the database
+    let advisor = await Advisor_Model.findOne({ _id: advisor_id });
+    if (!advisor) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "advisor doesn't exist!" });
+    }
+
+    // Check if newPassword and reEnterPassword match
+    if (newPassword !== reEnterPassword) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "Passwords do not match!" });
+    }
+
+    // Hash the new password (using bcrypt for example)
+    const bcrypt = require("bcrypt");
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update the advisor's password in the database
+    advisor.Password = hashedPassword;
+    await advisor.save();
+
+    return res
+      .status(200)
+      .json({ status: true, msg: "Password updated successfully!" });
+  } catch (error) {
+    return res.status(500).json({ status: false, msg: error.message });
+  }
+};
+
+const Advisor_Update_Profile = async function (req, res) {
+  try {
+    let { userId } = req.token;
+    let findAdvisor = await Advisor_Model.findById({ _id: userId });
+    if (!findAdvisor) {
+      return res.status(404).send({ status: false, msg: "Advisor not found" });
+    }
+    let {
+      Email,
+      Number,
+      City,
+      State,
+      Expertise,
+      Experience,
+      Language,
+      About,
+      Analytical_Strength,
+      Problem_Solving_Strength,
+      Public_Speaking_Strength,
+      Adaptable_Strength,
+      Communication_Strength,
+      P_S_Strength,
+      Leadership_Experience_Strength,
+      Goal,
+    } = req.body;
+    if (Email) findAdvisor.Email = Email;
+    if (Number) findAdvisor.Number = Number;
+    if (City) findAdvisor.City = City;
+    if (State) findAdvisor.State = State;
+    if (Expertise) findAdvisor.Expertise = Expertise;
+    if (Experience) findAdvisor.Experience = Experience;
+    if (Language) findAdvisor.Language = Language;
+    if (About) findAdvisor.About = About;
+    if (Analytical_Strength)
+      findAdvisor.Analytical_Strength = Analytical_Strength;
+    if (Analytical_Strength > 10) {
+      return res.status(404).send({
+        status: false,
+        msg: "Please enter the rating  10 or Under 10",
+      });
+    }
+    if (Problem_Solving_Strength)
+      findAdvisor.Problem_Solving_Strength = Problem_Solving_Strength;
+    if (Problem_Solving_Strength > 10) {
+      return res.status(404).send({
+        status: false,
+        msg: "Please enter the rating  10 or Under 10",
+      });
+    }
+    if (Public_Speaking_Strength)
+      findAdvisor.Public_Speaking_Strength = Public_Speaking_Strength;
+    if (Public_Speaking_Strength > 10) {
+      return res.status(404).send({
+        status: false,
+        msg: "Please enter the rating  10 or Under 10",
+      });
+    }
+    if (Adaptable_Strength) findAdvisor.Adaptable_Strength = Adaptable_Strength;
+    if (Adaptable_Strength > 10) {
+      return res.status(404).send({
+        status: false,
+        msg: "Please enter the rating  10 or Under 10",
+      });
+    }
+    if (Communication_Strength)
+      findAdvisor.Communication_Strength = Communication_Strength;
+    if (Communication_Strength > 10) {
+      return res.status(404).send({
+        status: false,
+        msg: "Please enter the rating  10 or Under 10",
+      });
+    }
+    if (P_S_Strength) findAdvisor.P_S_Strength = P_S_Strength;
+    if (P_S_Strength > 10) {
+      return res.status(404).send({
+        status: false,
+        msg: "Please enter the rating  10 or Under 10",
+      });
+    }
+    if (Leadership_Experience_Strength)
+      findAdvisor.Leadership_Experience_Strength =
+        Leadership_Experience_Strength;
+    if (Leadership_Experience_Strength > 10) {
+      return res.status(404).send({
+        status: false,
+        msg: "Please enter the rating  10 or Under 10",
+      });
+    }
+    if (Goal) findAdvisor.Goal = Goal;
+    if (req.file) {
+      findAdvisor.Image = "images/" + req.file.filename;
+    }
+    await findAdvisor.save();
+    res
+      .status(200)
+      .json({
+        status: true,
+        msg: "Advisor updated successfully",
+        data: findAdvisor,
+      });
+  } catch (error) {
+    return res.status(500).send({ status: false, msg: error.message });
+  }
+};
+
 module.exports = {
   Advisor_register,
   Advisor_Login,
@@ -422,4 +707,9 @@ module.exports = {
   acceptNotification,
   rejectNotification,
   busyNotification,
+  AdvisorMailVerification,
+  advisor_send_otp_fp,
+  advisor_verify_otp_fp,
+  Advisor_Update_Password,
+  Advisor_Update_Profile,
 };

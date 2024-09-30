@@ -63,7 +63,7 @@ export function WalletManKiBaatComponent() {
     }
 
     if (!amount) {
-      alert("Please enter an amount.");
+      alert("Please Enter An Amount.");
       return;
     }
 
@@ -126,8 +126,14 @@ export function WalletManKiBaatComponent() {
     <div className="container m-auto d-flex justify-content-center">
       <div className="row">
         <div className="col mt-5">
-          <div className="bg-dark text-white p-4 rounded-4">
-            <h4>
+          <div
+            className="text-white p-4 rounded-4"
+            style={{
+              background: "linear-gradient(-135deg, blue, pink)",
+              boxShadow: "0 0 8px rgb(145, 144, 146)",
+            }}
+          >
+            <h4 style={{ textShadow: "3px 2px 3px blue" }}>
               Cash Balance{" "}
               <span className="fs-6 ms-5">
                 Account{" "}
@@ -135,7 +141,11 @@ export function WalletManKiBaatComponent() {
               </span>
             </h4>
             {wallet.map((balance, index) => (
-              <h1 className="mt-3" key={index}>
+              <h1
+                className="mt-3"
+                key={index}
+                style={{ textShadow: "3px 2px 3px blue" }}
+              >
                 ₹ {balance.walletBalance}/-
               </h1>
             ))}
@@ -147,7 +157,7 @@ export function WalletManKiBaatComponent() {
               className="form-control mt-3 fw-semibold rounded-3"
             />
             <button
-              className="p-2 fs-5 rounded-4 bg-dark text-white mt-4 w-100"
+              className="p-2 fs-5 rounded-4 text-white mt-4 w-100 add-amount"
               onClick={checkoutHandler}
             >
               <FontAwesomeIcon icon={faCoins} className="me-2 fs-5" />

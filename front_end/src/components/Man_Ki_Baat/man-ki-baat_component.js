@@ -4,10 +4,11 @@ import axios from "axios";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
@@ -26,9 +27,8 @@ import {
   faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
-import { Button } from "bootstrap";
 
-export function ManKiBaatComponent({ data }) {
+export function ManKiBaatComponent({ data, users }) {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState([]);
   const [advisorData, setAdvisorData] = useState([]);
@@ -37,7 +37,22 @@ export function ManKiBaatComponent({ data }) {
   const [wallet, setWallet] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(""); // State for selected category
   const [showInitialData, setShowInitialData] = useState(true); // State to control visibility of initial data
+  // State to control the visibility of the dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0); // State to store notification count
+  const [formData, setFormData] = useState({
+    email: users?.email || "",
+    number: users?.number || "",
+    place: users?.place || "",
+    category: users?.category || "",
+    sub_category: users?.sub_category || "",
+    profasion: users?.profasion || "",
+    description: users?.description || "",
+    category_strength: users?.category_strength || "",
+    subcategory_strength: users?.subcategory_strength || "",
+    image: null,
+  });
+  const [show, setShow] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
@@ -154,13 +169,13 @@ export function ManKiBaatComponent({ data }) {
 
       // Show alert on successful notification send
       if (notificationResponse.status === 200) {
-        alert("Successfully sent notification to advisor.");
+        alert("Successfully Sent Notification To Advisor.");
       } else {
-        alert("Notification was not sent. Please try again.");
+        alert("Notification Was Not Sent. Please Try Again.");
       }
     } catch (error) {
       console.error("Error sending notification:", error);
-      alert("Error sending notification. Please check console for details.");
+      alert("Error Sending Notification. Please Check Console For Details.");
     }
   };
 
@@ -301,18 +316,22 @@ export function ManKiBaatComponent({ data }) {
       navigate("/register-case");
     }
   });
-  function SignoutClick() {
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleLogout = () => {
     alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
-  }
+    handleClose();
+  };
 
   function handleAdvisorClick() {
     navigate("/advisor");
   }
 
   const redirectToVideoChat = () => {
-    window.location.href = "http://localhost:3030";
+    window.location.href = "http://127.0.0.1:3030";
   };
 
   const redirectToMsgChat = () => {
@@ -349,36 +368,148 @@ export function ManKiBaatComponent({ data }) {
     setNotificationCount(0); // Reset the count when viewing notifications
   };
 
-  // State to control the visibility of the dialog
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  // Function to open the dialog
-  const handleOpenDialog = () => {
-    setIsDialogOpen(true);
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Function to close the dialog
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
+  // Handle file upload
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
   };
 
-  // Function to handle the Accept action
-  const handleAccept = () => {
-    console.log("Accepted");
-    handleCloseDialog(); // Close the dialog after action
+  // Check if any fields are filled
+  const isFormFilled = () => {
+    return Object.values(formData).some((value) => value && value !== ""); // Checks if any field is non-empty
   };
 
-  // Function to handle the Reject action
-  const handleReject = () => {
-    console.log("Rejected");
-    handleCloseDialog(); // Close the dialog after action
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Check if the form has any values
+    if (!isFormFilled()) {
+      alert("Please Fill Any Field For Update.");
+      return; // Stop form submission
+    }
+
+    const form = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (formData[key]) form.append(key, formData[key]);
+    });
+
+    try {
+      // Get the token from localStorage
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("No Token Found, Please Login First.");
+        return;
+      }
+
+      // Send patch request with form data and token
+      const res = await axios.patch(
+        `http://localhost:3001/UpdateProfile`,
+        form,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "x-auth-token": token, // Ensure backend is expecting this format
+          },
+        }
+      );
+
+      // Handle response based on backend status
+      if (res.status === 200) {
+        // Success response from the server
+        alert("Profile Updated Successfully!");
+        // Reload the page after success
+        window.location.reload();
+      } else {
+        // Handle unexpected status codes
+        alert("Unexpected Response From Server. Please Try Again.");
+      }
+    } catch (error) {
+      // If the server returns an error response, display the message
+      if (error.response && error.response.data && error.response.data.msg) {
+        alert("Error Updating Profile: " + error.response.data.msg);
+      } else {
+        // Handle cases where there's no response or other unexpected errors
+        alert("An Unexpected Error Occurred While Updating The Profile.");
+      }
+    }
   };
 
-  // Function to handle the Busy action
-  const handleBusy = () => {
-    console.log("Busy");
-    handleCloseDialog(); // Close the dialog after action
-  };
+  const [email, setEmail] = useState([]);
+  const [useError, setUseError] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/User_All_Data")
+      .then((response) => {
+        setEmail(response.data.Data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
+  function VerifyEmail(e) {
+    if (!Array.isArray(email)) {
+      return;
+    }
+    for (var user of email) {
+      if (user.email === e.target.value) {
+        setUseError("User Email Taken - Try Another");
+        return;
+      }
+    }
+    setUseError("");
+  }
+
+  const [numbers, setNumbers] = useState([]);
+  const [useErrors, setUseErrors] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/User_All_Data")
+      .then((response) => {
+        setNumbers(response.data.Data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
+  function normalizePhoneNumber(inputNumber) {
+    const numberStr = String(inputNumber);
+
+    const strippedNumber = numberStr.replace(/[^\d]/g, "");
+
+    if (strippedNumber.startsWith("91")) {
+      return strippedNumber;
+    }
+
+    return "91" + strippedNumber.slice(-10);
+  }
+
+  function VerifyNumber(value) {
+    const enteredNumber = normalizePhoneNumber(value);
+
+    if (!Array.isArray(numbers)) {
+      return;
+    }
+
+    for (const user of numbers) {
+      const dbNumber = normalizePhoneNumber(user.number);
+      if (dbNumber === enteredNumber) {
+        setUseErrors("User Number Taken - Try Another");
+        return;
+      }
+    }
+    setUseErrors("");
+  }
 
   return (
     <>
@@ -422,113 +553,116 @@ export function ManKiBaatComponent({ data }) {
                   aria-labelledby="dropdownMenuButton"
                   style={{ cursor: "pointer" }}
                 >
-                  <a className="dropdown-item" onClick={handleAdvisorClick}>
+                  <a
+                    className="dropdown-item text-center border border-1"
+                    onClick={handleAdvisorClick}
+                  >
                     All Advisor
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Stress")}
                   >
                     Stress
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Anxiety")}
                   >
                     Anxiety
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Elicit")}
                   >
                     Elicit
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Job")}
                   >
                     Job
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Law")}
                   >
                     Law
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Marriage")}
                   >
                     Marriage
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Social issues")}
                   >
                     Social Issues
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Kisan")}
                   >
                     Kisan
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Property")}
                   >
                     Property
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Education")}
                   >
                     Education
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Carrer")}
                   >
                     Carrer
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Medical")}
                   >
                     Medical
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Love")}
                   >
                     Love
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Affair")}
                   >
                     Affair
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Breakup")}
                   >
                     Break Up
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Ex")}
                   >
                     Ex
                   </a>
                   <a
-                    className="dropdown-item"
+                    className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Hyper thinking")}
                   >
                     Hyper Thinking
                   </a>
                 </div>
-                <li
+                {/* <li
                   onClick={handleViewNotifications}
                   className="ms-3"
                   style={{
@@ -544,6 +678,40 @@ export function ManKiBaatComponent({ data }) {
                     style={{ color: "white" }}
                     className="ms-2"
                   />
+                </li> */}
+                <li
+                  onClick={handleViewNotifications}
+                  className="open-dialog-button ms-3"
+                  style={{
+                    display: "inline-block",
+                    padding: "15px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Notification
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    className="ms-2"
+                    style={{ color: "white" }}
+                  />
+                  {/* Display the notification count */}
+                  {notificationCount > 0 && (
+                    <span
+                      className="notification-count"
+                      style={{
+                        position: "absolute",
+                        top: "5px",
+                        right: "5px",
+                        backgroundColor: "red",
+                        color: "white",
+                        borderRadius: "50%",
+                        padding: "2px 6px",
+                        fontSize: "12px",
+                      }}
+                    >
+                      {notificationCount}
+                    </span>
+                  )}
                 </li>
                 <li
                   className="ms-3"
@@ -574,7 +742,7 @@ export function ManKiBaatComponent({ data }) {
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
-                  onClick={SignoutClick}
+                  onClick={handleShow}
                   style={{ color: "white", cursor: "pointer" }}
                 />
               </ul>
@@ -612,6 +780,437 @@ export function ManKiBaatComponent({ data }) {
         </div>
       </div>
 
+      <Modal show={show} onHide={handleClose} className="custom-modal">
+        <Modal.Header closeButton className="custom-modal-header">
+          <Modal.Title className="bi bi-person-circle">
+            {" "}
+            Confirm Logout
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={handleClose}
+          >
+            {" "}
+            No
+          </Button>
+          <Button
+            className="bi bi-check-lg"
+            variant="outline-success"
+            onClick={handleLogout}
+          >
+            {" "}
+            Yes, Logout
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <div className="container text-center">
+        <button
+          type="button"
+          className="btn btn-outline-dark"
+          data-bs-toggle="modal"
+          data-bs-target="#updateProfileModal"
+        >
+          <span className="bi bi-pencil-fill fw-semibold"> Update Profile</span>
+        </button>
+      </div>
+
+      <div
+        className="modal fade"
+        id="updateProfileModal"
+        tabIndex="-1"
+        aria-labelledby="updateProfileModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-scrollable">
+          <div className="modal-content bg-dark text-white">
+            <div className="modal-header">
+              <h3 className="modal-title" id="updateProfileModalLabel">
+                <span className="bi bi-person-circle"> Update Profile</span>
+              </h3>
+              <button
+                type="button"
+                className="btn-close bg-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <dl>
+                <dt>Email</dt>
+                <dd>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onKeyUp={VerifyEmail}
+                    className="form-control"
+                  />
+                </dd>
+                {useError && <div className="text-danger">{useError}</div>}
+
+                <dt>Number</dt>
+                <dd>
+                  <input
+                    type="text"
+                    name="number"
+                    value={formData.number}
+                    onChange={(e) => {
+                      handleChange(e);
+                      VerifyNumber(e.target.value);
+                    }}
+                    className="form-control"
+                  />
+                </dd>
+                {useErrors && <div className="text-danger">{useErrors}</div>}
+
+                <dt>Place</dt>
+                <dd>
+                  <input
+                    type="text"
+                    name="place"
+                    value={formData.place}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </dd>
+
+                <dt>Category</dt>
+                <dd>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Category
+                    </option>
+                    <option value="Stress" className="bg-dark text-white">
+                      Stress
+                    </option>
+                    <option value="Anxiety" className="bg-dark text-white">
+                      Anxiety
+                    </option>
+                    <option value="Elicit" className="bg-dark text-white">
+                      Elicit
+                    </option>
+                    <option value="Job" className="bg-dark text-white">
+                      Job
+                    </option>
+                    <option value="Law" className="bg-dark text-white">
+                      Law
+                    </option>
+                    <option value="Marriage" className="bg-dark text-white">
+                      Marriage
+                    </option>
+                    <option
+                      value="Social Issues"
+                      className="bg-dark text-white"
+                    >
+                      Social Issues
+                    </option>
+                    <option value="Kisan" className="bg-dark text-white">
+                      Kisan
+                    </option>
+                    <option value="Property" className="bg-dark text-white">
+                      Property
+                    </option>
+                    <option value="Education" className="bg-dark text-white">
+                      Education
+                    </option>
+                    <option value="Carrer" className="bg-dark text-white">
+                      Carrer
+                    </option>
+                    <option value="Medical" className="bg-dark text-white">
+                      Medical
+                    </option>
+                    <option value="Love" className="bg-dark text-white">
+                      Love
+                    </option>
+                    <option value="Affair" className="bg-dark text-white">
+                      Affair
+                    </option>
+                    <option value="Break Up" className="bg-dark text-white">
+                      Break Up
+                    </option>
+                    <option value="Ex" className="bg-dark text-white">
+                      Ex
+                    </option>
+                    <option
+                      value="Hyper Thinking"
+                      className="bg-dark text-white"
+                    >
+                      Hyper Thinking
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Subcategory</dt>
+                <dd>
+                  <select
+                    name="sub_category"
+                    value={formData.sub_category}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Subcategory
+                    </option>
+                    <option value="Stress" className="bg-dark text-white">
+                      Stress
+                    </option>
+                    <option value="Anxiety" className="bg-dark text-white">
+                      Anxiety
+                    </option>
+                    <option value="Elicit" className="bg-dark text-white">
+                      Elicit
+                    </option>
+                    <option value="Job" className="bg-dark text-white">
+                      Job
+                    </option>
+                    <option value="Law" className="bg-dark text-white">
+                      Law
+                    </option>
+                    <option value="Marriage" className="bg-dark text-white">
+                      Marriage
+                    </option>
+                    <option
+                      value="Social Issues"
+                      className="bg-dark text-white"
+                    >
+                      Social Issues
+                    </option>
+                    <option value="Kisan" className="bg-dark text-white">
+                      Kisan
+                    </option>
+                    <option value="Property" className="bg-dark text-white">
+                      Property
+                    </option>
+                    <option value="Education" className="bg-dark text-white">
+                      Education
+                    </option>
+                    <option value="Carrer" className="bg-dark text-white">
+                      Carrer
+                    </option>
+                    <option value="Medical" className="bg-dark text-white">
+                      Medical
+                    </option>
+                    <option value="Love" className="bg-dark text-white">
+                      Love
+                    </option>
+                    <option value="Affair" className="bg-dark text-white">
+                      Affair
+                    </option>
+                    <option value="Break Up" className="bg-dark text-white">
+                      Break Up
+                    </option>
+                    <option value="Ex" className="bg-dark text-white">
+                      Ex
+                    </option>
+                    <option
+                      value="Hyper Thinking"
+                      className="bg-dark text-white"
+                    >
+                      Hyper Thinking
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Category Strength</dt>
+                <dd>
+                  <select
+                    name="category_strength"
+                    value={formData.category_strength}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Category Strength
+                    </option>
+                    <option value="1" className="bg-dark text-white">
+                      1
+                    </option>
+                    <option value="1.5" className="bg-dark text-white">
+                      1.5
+                    </option>
+                    <option value="2" className="bg-dark text-white">
+                      2
+                    </option>
+                    <option value="2.5" className="bg-dark text-white">
+                      2.5
+                    </option>
+                    <option value="3" className="bg-dark text-white">
+                      3
+                    </option>
+                    <option value="3.5" className="bg-dark text-white">
+                      3.5
+                    </option>
+                    <option value="4" className="bg-dark text-white">
+                      4
+                    </option>
+                    <option value="4.5" className="bg-dark text-white">
+                      4.5
+                    </option>
+                    <option value="5" className="bg-dark text-white">
+                      5
+                    </option>
+                    <option value="5.5" className="bg-dark text-white">
+                      5.5
+                    </option>
+                    <option value="6" className="bg-dark text-white">
+                      6
+                    </option>
+                    <option value="6.5" className="bg-dark text-white">
+                      6.5
+                    </option>
+                    <option value="7" className="bg-dark text-white">
+                      7
+                    </option>
+                    <option value="7.5" className="bg-dark text-white">
+                      7.5
+                    </option>
+                    <option value="8" className="bg-dark text-white">
+                      8
+                    </option>
+                    <option value="8.5" className="bg-dark text-white">
+                      8.5
+                    </option>
+                    <option value="9" className="bg-dark text-white">
+                      9
+                    </option>
+                    <option value="9.5" className="bg-dark text-white">
+                      9.5
+                    </option>
+                    <option value="10" className="bg-dark text-white">
+                      10
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Subcategory Strength</dt>
+                <dd>
+                  <select
+                    name="subcategory_strength"
+                    value={formData.subcategory_strength}
+                    onChange={handleChange}
+                    className="form-control w-50"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="" className="bg-dark text-white">
+                      Select Subcategory Strength
+                    </option>
+                    <option value="1" className="bg-dark text-white">
+                      1
+                    </option>
+                    <option value="1.5" className="bg-dark text-white">
+                      1.5
+                    </option>
+                    <option value="2" className="bg-dark text-white">
+                      2
+                    </option>
+                    <option value="2.5" className="bg-dark text-white">
+                      2.5
+                    </option>
+                    <option value="3" className="bg-dark text-white">
+                      3
+                    </option>
+                    <option value="3.5" className="bg-dark text-white">
+                      3.5
+                    </option>
+                    <option value="4" className="bg-dark text-white">
+                      4
+                    </option>
+                    <option value="4.5" className="bg-dark text-white">
+                      4.5
+                    </option>
+                    <option value="5" className="bg-dark text-white">
+                      5
+                    </option>
+                    <option value="5.5" className="bg-dark text-white">
+                      5.5
+                    </option>
+                    <option value="6" className="bg-dark text-white">
+                      6
+                    </option>
+                    <option value="6.5" className="bg-dark text-white">
+                      6.5
+                    </option>
+                    <option value="7" className="bg-dark text-white">
+                      7
+                    </option>
+                    <option value="7.5" className="bg-dark text-white">
+                      7.5
+                    </option>
+                    <option value="8" className="bg-dark text-white">
+                      8
+                    </option>
+                    <option value="8.5" className="bg-dark text-white">
+                      8.5
+                    </option>
+                    <option value="9" className="bg-dark text-white">
+                      9
+                    </option>
+                    <option value="9.5" className="bg-dark text-white">
+                      9.5
+                    </option>
+                    <option value="10" className="bg-dark text-white">
+                      10
+                    </option>
+                  </select>
+                </dd>
+
+                <dt>Image</dt>
+                <dd>
+                  <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="form-control w-50"
+                  />
+                </dd>
+
+                <dt>Description</dt>
+                <dd>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="form-control"
+                  ></textarea>
+                </dd>
+              </dl>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-outline-success mt-3 fw-semibold"
+                onClick={handleSubmit}
+              >
+                Save changes
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-danger mt-3 fw-semibold"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="container">
         <div className="row">
           <div className="col-md-4 mt-5">
@@ -644,22 +1243,39 @@ export function ManKiBaatComponent({ data }) {
                     {u.place}
                   </span>
                 </h1>
-                <h5 style={{ color: "blue" }}>{u.profasion}</h5>
-                <p style={{ color: "grey", fontSize: "1.1rem" }}>
-                  {u.category}
+                <h5>
+                  Profession:-{" "}
+                  <span style={{ color: "blue" }}>{u.profasion}</span>
+                </h5>
+                <p className="fw-semibold" style={{ fontSize: "1.1rem" }}>
+                  Category:-{" "}
+                  <span style={{ color: "grey", fontSize: "1.1rem" }}>
+                    {u.category}
+                  </span>
                 </p>
               </div>
             ))}
             <p className="fw-bold">
-              8.6{" "}
-              <meter
-                min="1"
-                max="100"
-                value="100"
-                low="0"
-                high="0"
-                className="w-50"
-              ></meter>
+              {user.map((u, index) => (
+                <div key={index}>
+                  <span>{u.category_strength}</span>
+                  <meter
+                    min="1"
+                    max="10"
+                    value={u.category_strength}
+                    low="5" // Set threshold for yellow range (5-7)
+                    high="8" // Set threshold for red range (8-10)
+                    optimum="4" // Optimum level considered as 4 (green range)
+                    className={`w-50 ms-2 ${
+                      u.category_strength <= 4
+                        ? "green-meter"
+                        : u.category_strength <= 7
+                        ? "yellow-meter"
+                        : "red-meter"
+                    }`}
+                  ></meter>
+                </div>
+              ))}
             </p>
             <button
               className=""
@@ -671,7 +1287,7 @@ export function ManKiBaatComponent({ data }) {
                 width: "70px",
                 height: "40px",
                 color: "white",
-                boxShadow: "0 0 3px rgb(81, 80, 82)",
+                // boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
               onClick={redirectToMsgChat}
             >
@@ -688,7 +1304,7 @@ export function ManKiBaatComponent({ data }) {
                 width: "70px",
                 height: "40px",
                 color: "white",
-                boxShadow: "0 0 3px rgb(81, 80, 82)",
+                // boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
             >
               <FontAwesomeIcon className="me-2" icon={faPhoneVolume} />
@@ -704,7 +1320,7 @@ export function ManKiBaatComponent({ data }) {
                 width: "70px",
                 height: "40px",
                 color: "white",
-                boxShadow: "0 0 3px rgb(81, 80, 82)",
+                // boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
               onClick={redirectToVideoChat}
             >
@@ -837,7 +1453,7 @@ export function ManKiBaatComponent({ data }) {
                           height: "40px",
                           color: "white",
                           margin: "0 5px",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
                         <FontAwesomeIcon className="me-2" icon={faMessage} />
@@ -853,7 +1469,7 @@ export function ManKiBaatComponent({ data }) {
                           height: "40px",
                           color: "white",
                           margin: "0 5px",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
                         <FontAwesomeIcon
@@ -872,7 +1488,7 @@ export function ManKiBaatComponent({ data }) {
                           height: "40px",
                           color: "white",
                           margin: "0 5px",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
                         <FontAwesomeIcon className="me-2" icon={faVideo} />
@@ -945,7 +1561,7 @@ export function ManKiBaatComponent({ data }) {
                           height: "40px",
                           color: "white",
                           margin: "0 5px",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
                         <FontAwesomeIcon className="me-2" icon={faMessage} />
@@ -961,7 +1577,7 @@ export function ManKiBaatComponent({ data }) {
                           height: "40px",
                           color: "white",
                           margin: "0 5px",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                       >
                         <FontAwesomeIcon
@@ -980,7 +1596,7 @@ export function ManKiBaatComponent({ data }) {
                           height: "40px",
                           color: "white",
                           margin: "0 5px",
-                          boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
                         onClick={sendNotifications}
                       >
@@ -1007,13 +1623,9 @@ export function ManKiBaatComponent({ data }) {
             <div className="text-center p-2">
               <h3>DESCRIPTION</h3>
               <hr className="w-25 d-flex m-auto mb-4"></hr>
-              <p style={{ textAlign: "justify" }}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-                mollitia, molestiae quas vel sint commodi repudiandae
-                consequuntur voluptatum laborum numquam blanditiis harum
-                quisquam eius sed odit fugiat iusto fuga praesentium optio,
-                eaque rerum! Provident similique accusantium nemo autem.
-              </p>
+              {user.map((u, index) => (
+                <p style={{ textAlign: "justify" }}>{u.description}</p>
+              ))}
             </div>
           </div>
         </div>
@@ -1024,42 +1636,94 @@ export function ManKiBaatComponent({ data }) {
           <div className="col-md-6 mt-5 mb-5">
             <h3>
               Category{" "}
-              <button type="button" className="btn btn-outline-warning ms-4">
-                Primary
-              </button>
+              {user.map((u, index) => (
+                <button
+                  key={index} // Add unique key for each button in map
+                  className={`btn mt-3 ms-4 w-25 fw-semibold ${
+                    u.category_strength <= 4
+                      ? "btn-outline-success"
+                      : u.category_strength <= 7
+                      ? "btn-outline-warning"
+                      : "btn-outline-danger"
+                  }`}
+                >
+                  {u.category_strength <= 4
+                    ? "Primary"
+                    : u.category_strength <= 7
+                    ? "Secondary"
+                    : "Danger"}
+                </button>
+              ))}
             </h3>
             {user.map((u, index) => (
               <div>
                 <p className="text-primary">{u.category}</p>
                 <p className="fw-bold">
-                  5{" "}
-                  <meter
-                    min="1"
-                    max="100"
-                    value="100"
-                    low="40"
-                    high="80"
-                    className="w-50"
-                  ></meter>
+                  {user.map((u, index) => (
+                    <div key={index}>
+                      <span>{u.category_strength}</span>
+                      <meter
+                        min="1"
+                        max="10"
+                        value={u.category_strength}
+                        low="5" // Set threshold for yellow range (5-7)
+                        high="8" // Set threshold for red range (8-10)
+                        optimum="4" // Optimum level considered as 4 (green range)
+                        className={`w-50 ms-2 ${
+                          u.category_strength <= 4
+                            ? "green-meter"
+                            : u.category_strength <= 7
+                            ? "yellow-meter"
+                            : "red-meter"
+                        }`}
+                      ></meter>
+                    </div>
+                  ))}
                 </p>
                 <hr className="w-75"></hr>
                 <h3>
                   Sub-Category{" "}
-                  <button type="button" className="btn btn-outline-danger ms-4">
-                    Secondary
-                  </button>
+                  {user.map((u, index) => (
+                    <button
+                      key={index} // Add unique key for each button in map
+                      className={`btn mt-3 ms-4 w-25 fw-semibold ${
+                        u.subcategory_strength <= 4
+                          ? "btn-outline-success"
+                          : u.subcategory_strength <= 7
+                          ? "btn-outline-warning"
+                          : "btn-outline-danger"
+                      }`}
+                    >
+                      {u.subcategory_strength <= 4
+                        ? "Primary"
+                        : u.subcategory_strength <= 7
+                        ? "Secondary"
+                        : "Danger"}
+                    </button>
+                  ))}
                 </h3>
                 <p className="text-primary">{u.sub_category}</p>
                 <p className="fw-bold">
-                  3.5{" "}
-                  <meter
-                    min="1"
-                    max="100"
-                    value="100"
-                    low="60"
-                    high="80"
-                    className="w-50"
-                  ></meter>
+                  {user.map((u, index) => (
+                    <div key={index}>
+                      <span>{u.subcategory_strength}</span>
+                      <meter
+                        min="1"
+                        max="10"
+                        value={u.subcategory_strength}
+                        low="5" // Set threshold for yellow range (5-7)
+                        high="8" // Set threshold for red range (8-10)
+                        optimum="4" // Optimum level considered as 4 (green range)
+                        className={`w-50 ms-2 ${
+                          u.subcategory_strength <= 4
+                            ? "green-meter"
+                            : u.subcategory_strength <= 7
+                            ? "yellow-meter"
+                            : "red-meter"
+                        }`}
+                      ></meter>
+                    </div>
+                  ))}
                 </p>
               </div>
             ))}
@@ -1116,15 +1780,24 @@ export function ManKiBaatComponent({ data }) {
         {isDialogOpen && (
           <div className="dialog-overlay">
             <div className="dialog">
-              <h3>Notification</h3>
+              <div className="dialog-header">
+                <h3 className="bi bi-bell"> Notification</h3>
+                {/* Close button */}
+                <button
+                  className="close-button"
+                  onClick={() => setIsDialogOpen(false)}
+                >
+                  &times;
+                </button>
+              </div>
 
               {/* Displaying advisor information */}
-              {user.map((u, index) => (
+              {advisor.map((advisor, index) => (
                 <div key={index} className="user-info">
                   <img
                     className="mt-2 p-1"
-                    src={`http://localhost:3001/${u.image}`}
-                    alt="User Profile"
+                    src={`http://localhost:3001/${advisor.Image}`}
+                    alt="Advisor Profile"
                     style={{
                       width: "100px",
                       height: "100px",
@@ -1132,22 +1805,20 @@ export function ManKiBaatComponent({ data }) {
                       boxShadow: "0 0 8px rgb(145, 144, 146)",
                     }}
                   />
-                  <p className="fw-semibold mt-2">Expertise:- {u.category}</p>
+                  <p className="fw-semibold mt-2">
+                    Expertise:- {advisor.Expertise}
+                  </p>
                 </div>
               ))}
 
-              {/* Advisor Notifications */}
-              {advisors.map((advisor, index) => (
-                <p key={index}>{advisor.Notification}</p>
+              {/* User Notifications */}
+              {user.map((u, index) => (
+                <p key={index}>{u.notification}</p>
               ))}
-
-              <p className="fw-semibold">I am available now...</p>
 
               <div className="dialog-actions">
                 {/* Accept Button */}
-                <button onClick={handleAccept} className="accept-button">
-                  Enter the room
-                </button>
+                <button className="accept-button">Enter the room</button>
               </div>
             </div>
           </div>

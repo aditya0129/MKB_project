@@ -7,9 +7,6 @@
   width: 100px;
   font-family: "fantasy";
   box-shadow: 0 0 8px rgb(145, 144, 146);
-  margin: auto;
-  display: flex;
-  justify-content: center;
 }
 
 .verify:hover {

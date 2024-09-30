@@ -1,0 +1,8 @@
+.custom-modal .modal-content {
+  background-color: black;
+  color: white;
+}
+
+.custom-modal-header .btn-close {
+  filter: invert(1); /* Makes the close button white */
+}

@@ -109,7 +109,7 @@ export function AdvisorLoginManKiBaatComponent() {
                       <ErrorMessage name="Password" />
                     </div>
                     <div className="links">
-                      <a href="forget-password">Forgot Password?</a>
+                      <a href="advisor-forget-password">Forgot Password?</a>
                       <a href="advisor-register" onClick={SignupClick}>
                         Signup
                       </a>

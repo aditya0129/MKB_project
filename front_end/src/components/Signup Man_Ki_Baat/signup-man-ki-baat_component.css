@@ -20,7 +20,7 @@
 .boxing {
   position: relative;
   width: 380px;
-  height: 1590px;
+  height: 1620px;
   background: #1c1c1c;
   border-radius: 8px;
   overflow: hidden;
@@ -33,7 +33,7 @@
   top: -50%;
   left: -50%;
   width: 380px;
-  height: 1590px;
+  height: 1620px;
   transform-origin: bottom right;
   background: linear-gradient(0deg, transparent, #45f3ff, #45f3ff);
   animation: animate 6s linear infinite;
@@ -46,7 +46,7 @@
   top: -50%;
   left: -50%;
   width: 380px;
-  height: 1590px;
+  height: 1620px;
   transform-origin: bottom right;
   background: linear-gradient(0deg, transparent, #dd033a, #dd033a);
   animation: animate 6s linear infinite;

@@ -450,6 +450,12 @@ export function SignupManKiBaatComponent() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -522,6 +528,13 @@ export function SignupManKiBaatComponent() {
                     } else {
                       formData.append(key, values[key]);
                     }
+                  }
+                  if (!isChecked) {
+                    alert(
+                      "Please Accept The Terms & Conditions Before Registering."
+                    );
+                    setSubmitting(false); // Stop submitting
+                    return; // Do not proceed if checkbox is not checked
                   }
                   axios
                     .post("http://localhost:3001/Register", formData, {
@@ -755,6 +768,7 @@ export function SignupManKiBaatComponent() {
                       <input
                         type="file"
                         name="image"
+                        accept="image/*"
                         onChange={(event) => {
                           handleImageChange(event);
                           setFieldValue("image", event.currentTarget.files[0]);
@@ -781,6 +795,22 @@ export function SignupManKiBaatComponent() {
                           />
                         </div>
                       )} */}
+                      <div className="mt-3">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          style={{ cursor: "pointer" }}
+                          checked={isChecked} // Keep track of checkbox state
+                          onChange={handleCheckboxChange} // Checkbox state change
+                        />
+                        <a
+                          href="terms-and-conditions"
+                          className="text-decoration-none text-secondary ms-2"
+                          style={{ fontFamily: "fantasy" }}
+                        >
+                          Terms & Conditions
+                        </a>
+                      </div>
                     </div>
                     <button type="submit">Register</button>
                   </Form>

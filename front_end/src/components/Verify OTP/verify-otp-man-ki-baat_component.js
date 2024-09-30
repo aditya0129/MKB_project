@@ -41,7 +41,7 @@ export function VerifyOTPManKiBaatComponent() {
 
       setMessage(response.data.MSG);
       if (response.data.status) {
-        alert("OTP verified successfully!");
+        alert("OTP Verified Successfully!");
         navigate("/set-password");
       } else {
         alert(response.data.MSG);

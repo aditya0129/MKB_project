@@ -1,6 +1,8 @@
 import React from "react";
 import "./contacts-man-ki-baat_component.css";
 import axios from "axios";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -23,6 +25,7 @@ import {
 export function ContactsManKiBaat() {
   const [isOpen, setIsOpen] = useState(false);
   const [contact, setContact] = useState([]);
+  const [show, setShow] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
   const navigate = useNavigate();
 
@@ -59,11 +62,15 @@ export function ContactsManKiBaat() {
     }
   });
 
-  function SignoutClick() {
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleLogout = () => {
     alert("Logout Successfully...");
     removeCookie("token");
     navigate("/register-case");
-  }
+    handleClose();
+  };
 
   const handleUserProfileClick = () => {
     navigate("/user-profile");
@@ -110,7 +117,7 @@ export function ContactsManKiBaat() {
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
                 >
-                  <a className="dropdown-item" href="advisor">
+                  <a className="dropdown-item border border-1" href="advisor">
                     All Advisor
                     <FontAwesomeIcon icon={faUsers} className="ms-4" />
                   </a>
@@ -157,7 +164,7 @@ export function ContactsManKiBaat() {
                 <FontAwesomeIcon
                   className="ms-4"
                   icon={faPowerOff}
-                  onClick={SignoutClick}
+                  onClick={handleShow}
                   style={{ color: "white", cursor: "pointer" }}
                 />
               </ul>
@@ -195,6 +202,34 @@ export function ContactsManKiBaat() {
           </div>
         </div>
       </div>
+
+      <Modal show={show} onHide={handleClose} className="custom-modal">
+        <Modal.Header closeButton className="custom-modal-header">
+          <Modal.Title className="bi bi-person-circle">
+            {" "}
+            Confirm Logout
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={handleClose}
+          >
+            {" "}
+            No
+          </Button>
+          <Button
+            className="bi bi-check-lg"
+            variant="outline-success"
+            onClick={handleLogout}
+          >
+            {" "}
+            Yes, Logout
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <div className="container">
         <div className="row">

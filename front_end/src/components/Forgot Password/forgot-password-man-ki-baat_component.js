@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./forget-password-man-ki-baat_component.css";
+import "./forgot-password-man-ki-baat_component.css";
 
 export function ForgetPasswordMankiBaatComponent() {
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ export function ForgetPasswordMankiBaatComponent() {
         } else {
           setOtpSent(true);
           alert(
-            "Verification OTP has been sent to your E-mail address, please check!"
+            "Verification OTP Has Been Sent To Your E-mail Address, Please Check!"
           );
           navigate("/verify-otp");
         }

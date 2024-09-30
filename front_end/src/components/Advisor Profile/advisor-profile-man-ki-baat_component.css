@@ -25,9 +25,10 @@
 
 /* Dialog box styling */
 .dialog {
-  background-color: white;
+  background-color: black;
+  color: white;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 300px;
   text-align: center;
@@ -39,6 +40,24 @@
 
 .dialog-actions {
   margin-top: 20px;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 45px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #ff0000;
 }
 
 /* Styling for Accept, Reject, and Busy Buttons */
@@ -90,4 +109,13 @@
   border-radius: 50%;
   padding: 5px 8px;
   font-size: 12px;
+}
+
+.custom-modal .modal-content {
+  background-color: black;
+  color: white;
+}
+
+.custom-modal-header .btn-close {
+  filter: invert(1);
 }

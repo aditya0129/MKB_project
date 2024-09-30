@@ -4,6 +4,8 @@ import "./index.css";
 // import App from './App';
 import reportWebVitals from "./reportWebVitals";
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "../node_modules/bootstrap/dist/js/bootstrap.bundle";
 import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ManKiBaatComponent } from "./components/Man_Ki_Baat/man-ki-baat_component";
@@ -22,6 +24,10 @@ import { SetPasswordManKiBaatComponent } from "./components/Set Password/set-pas
 import { HomeManKiBaatComponenet } from "./components/Home Man_Ki_Baat/home-man-ki-baat_component";
 import { WalletManKiBaatComponent } from "./components/Wallet Man_Ki_Baat/wallet-man-ki-baat_component";
 import { PaymentSuccess } from "./components/Payment/PaymentSuccess";
+import TermsAndConditions from "./components/Terms And Conditions/TermsAndConditions";
+import { AdvisorForgetPasswordMankiBaatComponent } from "./components/Advisor Forgot Password/advisor-forgot-password-man-ki-baat_component";
+import { AdvisorVerifyOTPManKiBaatComponent } from "./components/Advisor Verify OTP/advisor-verify-otp-man-ki-baat_component";
+import { AdvisorSetPasswordManKiBaatComponent } from "./components/Advisor Set Password/advisor-set-password-man-ki-baat_component";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -62,6 +68,19 @@ root.render(
         />
         <Route path="wallet" element={<WalletManKiBaatComponent />} />
         <Route path="/paymentsuccess" element={<PaymentSuccess />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route
+          path="advisor-forget-password"
+          element={<AdvisorForgetPasswordMankiBaatComponent />}
+        />
+        <Route
+          path="advisor-verify-otp"
+          element={<AdvisorVerifyOTPManKiBaatComponent />}
+        />
+        <Route
+          path="advisor-set-password"
+          element={<AdvisorSetPasswordManKiBaatComponent />}
+        />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

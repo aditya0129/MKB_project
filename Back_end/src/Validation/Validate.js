@@ -56,6 +56,17 @@ const verifymailvalidator = [
   check("otp", "otp is required ").not().isEmpty(),
 ];
 
+const advisorotpmailvalidator = [
+  check("Email", "please include valid email")
+    .isEmail()
+    .normalizeEmail({ gmail_remove_dots: true }),
+];
+
+const advisorverifymailvalidator = [
+  check("advisor_id", "advisorId is required").not().isEmpty(),
+  check("Otp", "otp is required ").not().isEmpty(),
+];
+
 module.exports = {
   validateEmail,
   validateName,
@@ -65,4 +76,6 @@ module.exports = {
   OtpVerifing,
   otpmailvalidator,
   verifymailvalidator,
+  advisorotpmailvalidator,
+  advisorverifymailvalidator,
 };
