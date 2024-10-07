@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
@@ -130,54 +131,116 @@ export function ManKiBaatComponent({ data, users }) {
     fetchWallet();
   }, []);
 
+  const [showModal, setShowModal] = useState(false); // Controls modal visibility
+  const [advisorDatas, setAdvisorDatas] = useState([]); // Holds advisor data
+  const [selectedAdvisorId, setSelectedAdvisorId] = useState(""); // Selected advisorId
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredAdvisorData, setFilteredAdvisorData] = useState([]);
+
+  // Function to fetch advisors and store their data
+  const fetchAdvisors = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/Advisor_All_Data"
+      );
+      const advisors = response.data.Data;
+
+      if (advisors.length > 0) {
+        // Store advisor data with id and name
+        const advisorList = advisors.map((advisor) => ({
+          id: advisor.advisorId,
+          name: advisor.Name, // Assuming Name field exists
+        }));
+        setAdvisorDatas(advisorList);
+      } else {
+        alert("No Advisors Found.");
+      }
+    } catch (error) {
+      console.error("Error fetching advisors:", error);
+      alert("Error Fetching Advisors.");
+    }
+  };
+
+  // Function to open the modal and fetch advisors
+  const handleOpenModal = () => {
+    setShowModal(true);
+    fetchAdvisors(); // Fetch advisors when the modal is opened
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  // Function to send notifications
+  // const sendNotifications = async () => {
+  //   try {
+  //     if (!selectedAdvisorId) {
+  //       alert("Please Select An Advisor Before Sending A Notification.");
+  //       return;
+  //     }
+
+  //     const response = await axios.post(
+  //       `http://localhost:3001/Notification/${selectedAdvisorId}`
+  //     );
+  //     if (response.status === 200) {
+  //       alert("Notification Sent Successfully.");
+  //       setSearchTerm("");
+  //       setSelectedAdvisorId("");
+  //       window.location.reload();
+  //     } else {
+  //       alert("Failed To Send Notification.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending notification:", error);
+  //     alert("Error Sending Notification.");
+  //   }
+  // };
   const sendNotifications = async () => {
     try {
-      // Retrieve the token from local storage
-      let token = localStorage.getItem("token");
-      console.log("Token from local storage:", token);
-
-      // Make a GET request to get the advisor's profile
-      let profileResponse = await axios.get(
-        "http://localhost:3001/get_Advisor/profile",
-        {
-          headers: {
-            "x-auth-token": token,
-          },
-        }
-      );
-      console.log("Profile Response:", profileResponse);
-
-      // Update the token if needed
-      if (profileResponse.data.token) {
-        token = profileResponse.data.token; // Update the token variable
-        localStorage.setItem("token", token); // Store the new token in local storage
-        console.log("Updated Token stored in local storage:", token);
+      if (!selectedAdvisorId) {
+        alert("Please Select An Advisor Before Sending A Notification.");
+        return;
       }
 
-      // Make a POST request to send the notification
-      let notificationResponse = await axios.post(
-        "http://localhost:3001/Notification",
-        {}, // Provide a body here if needed
+      const token = localStorage.getItem("token"); // Ensure the token is stored in localStorage
+
+      if (!token) {
+        alert("Please Login To Send A Notification.");
+        return;
+      }
+
+      const response = await axios.post(
+        `http://localhost:3001/Notification/${selectedAdvisorId}`,
+        {},
         {
           headers: {
-            "x-auth-token": token,
+            "x-auth-token": token, // Send token in request headers for authentication
           },
         }
       );
 
-      console.log("Notification Response:", notificationResponse);
-
-      // Show alert on successful notification send
-      if (notificationResponse.status === 200) {
-        alert("Successfully Sent Notification To Advisor.");
+      if (response.status === 200) {
+        alert("Notification Sent Successfully.");
+        setSearchTerm(""); // Clear search term after success
+        setSelectedAdvisorId(""); // Clear selected advisor after success
+        window.location.reload(); // Reload the page if necessary
       } else {
-        alert("Notification Was Not Sent. Please Try Again.");
+        alert("Failed To Send Notification.");
       }
     } catch (error) {
       console.error("Error sending notification:", error);
-      alert("Error Sending Notification. Please Check Console For Details.");
+      alert("Error Sending Notification.");
     }
   };
+
+  useEffect(() => {
+    // Filter advisors based on search term
+    const filtered = advisorDatas.filter((advisor) =>
+      advisor.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredAdvisorData(filtered);
+  }, [searchTerm, advisorDatas]);
 
   // Define arrow components before using them in settings
   const SampleNextArrow = (props) => {
@@ -780,6 +843,78 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       </div>
 
+      <Modal
+        show={showModal}
+        onHide={handleCloseModal}
+        dialogClassName="modal-dialog modal-dialog-scrollable"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-person-circle">
+            {" "}
+            Select Advisor
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="advisorSearch">
+            <Form.Label>Search Advisor</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Type to search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="text-white custom-placeholder"
+              style={{ backgroundColor: "black" }}
+            />
+          </Form.Group>
+          <Form.Group controlId="advisorSelectDropdown">
+            <Form.Label>Select Advisor</Form.Label>
+            <Form.Control
+              as="select"
+              value={selectedAdvisorId}
+              onChange={(e) => setSelectedAdvisorId(e.target.value)}
+              className="text-white"
+              style={{ backgroundColor: "black" }}
+            >
+              <option
+                value=""
+                className="text-white"
+                style={{ backgroundColor: "black" }}
+              >
+                -- Select Advisor --
+              </option>
+              {filteredAdvisorData.map((advisor) => (
+                <option
+                  className="text-white"
+                  key={advisor.id}
+                  value={advisor.id}
+                  style={{ backgroundColor: "black" }}
+                >
+                  {advisor.name} (ID: {advisor.id})
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={handleCloseModal}
+          >
+            {" "}
+            Close
+          </Button>
+          <Button
+            className="bi bi-bell-fill"
+            variant="outline-success"
+            onClick={sendNotifications}
+          >
+            {" "}
+            Send Notification
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title className="bi bi-person-circle">
@@ -815,7 +950,7 @@ export function ManKiBaatComponent({ data, users }) {
           data-bs-toggle="modal"
           data-bs-target="#updateProfileModal"
         >
-          <span className="bi bi-pencil-fill fw-semibold"> Update Profile</span>
+          <span className="bi bi-pencil-fill"> Update Profile</span>
         </button>
       </div>
 
@@ -827,14 +962,14 @@ export function ManKiBaatComponent({ data, users }) {
         aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-scrollable">
-          <div className="modal-content bg-dark text-white">
+          <div className="modal-content">
             <div className="modal-header">
               <h3 className="modal-title" id="updateProfileModalLabel">
                 <span className="bi bi-person-circle"> Update Profile</span>
               </h3>
               <button
                 type="button"
-                className="btn-close bg-white"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
@@ -889,63 +1024,129 @@ export function ManKiBaatComponent({ data, users }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Category
                     </option>
-                    <option value="Stress" className="bg-dark text-white">
+                    <option
+                      value="Stress"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Stress
                     </option>
-                    <option value="Anxiety" className="bg-dark text-white">
+                    <option
+                      value="Anxiety"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Anxiety
                     </option>
-                    <option value="Elicit" className="bg-dark text-white">
+                    <option
+                      value="Elicit"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Elicit
                     </option>
-                    <option value="Job" className="bg-dark text-white">
+                    <option
+                      value="Job"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Job
                     </option>
-                    <option value="Law" className="bg-dark text-white">
+                    <option
+                      value="Law"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Law
                     </option>
-                    <option value="Marriage" className="bg-dark text-white">
+                    <option
+                      value="Marriage"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Marriage
                     </option>
                     <option
                       value="Social Issues"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Social Issues
                     </option>
-                    <option value="Kisan" className="bg-dark text-white">
+                    <option
+                      value="Kisan"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Kisan
                     </option>
-                    <option value="Property" className="bg-dark text-white">
+                    <option
+                      value="Property"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Property
                     </option>
-                    <option value="Education" className="bg-dark text-white">
+                    <option
+                      value="Education"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Education
                     </option>
-                    <option value="Carrer" className="bg-dark text-white">
+                    <option
+                      value="Carrer"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Carrer
                     </option>
-                    <option value="Medical" className="bg-dark text-white">
+                    <option
+                      value="Medical"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Medical
                     </option>
-                    <option value="Love" className="bg-dark text-white">
+                    <option
+                      value="Love"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Love
                     </option>
-                    <option value="Affair" className="bg-dark text-white">
+                    <option
+                      value="Affair"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Affair
                     </option>
-                    <option value="Break Up" className="bg-dark text-white">
+                    <option
+                      value="Break Up"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Break Up
                     </option>
-                    <option value="Ex" className="bg-dark text-white">
+                    <option
+                      value="Ex"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Ex
                     </option>
                     <option
                       value="Hyper Thinking"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Hyper Thinking
                     </option>
@@ -961,63 +1162,129 @@ export function ManKiBaatComponent({ data, users }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Subcategory
                     </option>
-                    <option value="Stress" className="bg-dark text-white">
+                    <option
+                      value="Stress"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Stress
                     </option>
-                    <option value="Anxiety" className="bg-dark text-white">
+                    <option
+                      value="Anxiety"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Anxiety
                     </option>
-                    <option value="Elicit" className="bg-dark text-white">
+                    <option
+                      value="Elicit"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Elicit
                     </option>
-                    <option value="Job" className="bg-dark text-white">
+                    <option
+                      value="Job"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Job
                     </option>
-                    <option value="Law" className="bg-dark text-white">
+                    <option
+                      value="Law"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Law
                     </option>
-                    <option value="Marriage" className="bg-dark text-white">
+                    <option
+                      value="Marriage"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Marriage
                     </option>
                     <option
                       value="Social Issues"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Social Issues
                     </option>
-                    <option value="Kisan" className="bg-dark text-white">
+                    <option
+                      value="Kisan"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Kisan
                     </option>
-                    <option value="Property" className="bg-dark text-white">
+                    <option
+                      value="Property"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Property
                     </option>
-                    <option value="Education" className="bg-dark text-white">
+                    <option
+                      value="Education"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Education
                     </option>
-                    <option value="Carrer" className="bg-dark text-white">
+                    <option
+                      value="Carrer"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Carrer
                     </option>
-                    <option value="Medical" className="bg-dark text-white">
+                    <option
+                      value="Medical"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Medical
                     </option>
-                    <option value="Love" className="bg-dark text-white">
+                    <option
+                      value="Love"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Love
                     </option>
-                    <option value="Affair" className="bg-dark text-white">
+                    <option
+                      value="Affair"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Affair
                     </option>
-                    <option value="Break Up" className="bg-dark text-white">
+                    <option
+                      value="Break Up"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Break Up
                     </option>
-                    <option value="Ex" className="bg-dark text-white">
+                    <option
+                      value="Ex"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Ex
                     </option>
                     <option
                       value="Hyper Thinking"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Hyper Thinking
                     </option>
@@ -1033,64 +1300,144 @@ export function ManKiBaatComponent({ data, users }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Category Strength
                     </option>
-                    <option value="1" className="bg-dark text-white">
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1
                     </option>
-                    <option value="1.5" className="bg-dark text-white">
+                    <option
+                      value="1.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1.5
                     </option>
-                    <option value="2" className="bg-dark text-white">
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2
                     </option>
-                    <option value="2.5" className="bg-dark text-white">
+                    <option
+                      value="2.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2.5
                     </option>
-                    <option value="3" className="bg-dark text-white">
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3
                     </option>
-                    <option value="3.5" className="bg-dark text-white">
+                    <option
+                      value="3.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3.5
                     </option>
-                    <option value="4" className="bg-dark text-white">
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4
                     </option>
-                    <option value="4.5" className="bg-dark text-white">
+                    <option
+                      value="4.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4.5
                     </option>
-                    <option value="5" className="bg-dark text-white">
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5
                     </option>
-                    <option value="5.5" className="bg-dark text-white">
+                    <option
+                      value="5.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5.5
                     </option>
-                    <option value="6" className="bg-dark text-white">
+                    <option
+                      value="6"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6
                     </option>
-                    <option value="6.5" className="bg-dark text-white">
+                    <option
+                      value="6.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6.5
                     </option>
-                    <option value="7" className="bg-dark text-white">
+                    <option
+                      value="7"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7
                     </option>
-                    <option value="7.5" className="bg-dark text-white">
+                    <option
+                      value="7.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7.5
                     </option>
-                    <option value="8" className="bg-dark text-white">
+                    <option
+                      value="8"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8
                     </option>
-                    <option value="8.5" className="bg-dark text-white">
+                    <option
+                      value="8.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8.5
                     </option>
-                    <option value="9" className="bg-dark text-white">
+                    <option
+                      value="9"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9
                     </option>
-                    <option value="9.5" className="bg-dark text-white">
+                    <option
+                      value="9.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9.5
                     </option>
-                    <option value="10" className="bg-dark text-white">
+                    <option
+                      value="10"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       10
                     </option>
                   </select>
@@ -1105,64 +1452,144 @@ export function ManKiBaatComponent({ data, users }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Subcategory Strength
                     </option>
-                    <option value="1" className="bg-dark text-white">
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1
                     </option>
-                    <option value="1.5" className="bg-dark text-white">
+                    <option
+                      value="1.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1.5
                     </option>
-                    <option value="2" className="bg-dark text-white">
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2
                     </option>
-                    <option value="2.5" className="bg-dark text-white">
+                    <option
+                      value="2.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2.5
                     </option>
-                    <option value="3" className="bg-dark text-white">
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3
                     </option>
-                    <option value="3.5" className="bg-dark text-white">
+                    <option
+                      value="3.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3.5
                     </option>
-                    <option value="4" className="bg-dark text-white">
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4
                     </option>
-                    <option value="4.5" className="bg-dark text-white">
+                    <option
+                      value="4.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4.5
                     </option>
-                    <option value="5" className="bg-dark text-white">
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5
                     </option>
-                    <option value="5.5" className="bg-dark text-white">
+                    <option
+                      value="5.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5.5
                     </option>
-                    <option value="6" className="bg-dark text-white">
+                    <option
+                      value="6"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6
                     </option>
-                    <option value="6.5" className="bg-dark text-white">
+                    <option
+                      value="6.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6.5
                     </option>
-                    <option value="7" className="bg-dark text-white">
+                    <option
+                      value="7"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7
                     </option>
-                    <option value="7.5" className="bg-dark text-white">
+                    <option
+                      value="7.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7.5
                     </option>
-                    <option value="8" className="bg-dark text-white">
+                    <option
+                      value="8"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8
                     </option>
-                    <option value="8.5" className="bg-dark text-white">
+                    <option
+                      value="8.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8.5
                     </option>
-                    <option value="9" className="bg-dark text-white">
+                    <option
+                      value="9"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9
                     </option>
-                    <option value="9.5" className="bg-dark text-white">
+                    <option
+                      value="9.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9.5
                     </option>
-                    <option value="10" className="bg-dark text-white">
+                    <option
+                      value="10"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       10
                     </option>
                   </select>
@@ -1193,14 +1620,14 @@ export function ManKiBaatComponent({ data, users }) {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-outline-success mt-3 fw-semibold"
+                className="btn btn-outline-success mt-3"
                 onClick={handleSubmit}
               >
                 Save changes
               </button>
               <button
                 type="button"
-                className="btn btn-outline-danger mt-3 fw-semibold"
+                className="btn btn-outline-danger mt-3"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               >
@@ -1490,6 +1917,7 @@ export function ManKiBaatComponent({ data, users }) {
                           margin: "0 5px",
                           // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
+                        onClick={handleOpenModal}
                       >
                         <FontAwesomeIcon className="me-2" icon={faVideo} />
                         Call
@@ -1598,7 +2026,7 @@ export function ManKiBaatComponent({ data, users }) {
                           margin: "0 5px",
                           // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
-                        onClick={sendNotifications}
+                        onClick={handleOpenModal}
                       >
                         <FontAwesomeIcon className="me-2" icon={faVideo} />
                         Call
@@ -1639,7 +2067,7 @@ export function ManKiBaatComponent({ data, users }) {
               {user.map((u, index) => (
                 <button
                   key={index} // Add unique key for each button in map
-                  className={`btn mt-3 ms-4 w-25 fw-semibold ${
+                  className={`btn mt-3 ms-4 w-25 ${
                     u.category_strength <= 4
                       ? "btn-outline-success"
                       : u.category_strength <= 7
@@ -1686,7 +2114,7 @@ export function ManKiBaatComponent({ data, users }) {
                   {user.map((u, index) => (
                     <button
                       key={index} // Add unique key for each button in map
-                      className={`btn mt-3 ms-4 w-25 fw-semibold ${
+                      className={`btn mt-3 ms-4 w-25 ${
                         u.subcategory_strength <= 4
                           ? "btn-outline-success"
                           : u.subcategory_strength <= 7

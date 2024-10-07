@@ -102,3 +102,17 @@ meter::-moz-meter-bar {
 .custom-modal-header .btn-close {
   filter: invert(1); /* Makes the close button white */
 }
+
+.modal-content {
+  background-color: black;
+  color: white;
+}
+
+.btn-close {
+  background-color: white;
+}
+
+.custom-placeholder::placeholder {
+  color: white; /* Set placeholder text color to white */
+  opacity: 1; /* Ensure the placeholder is fully opaque */
+}

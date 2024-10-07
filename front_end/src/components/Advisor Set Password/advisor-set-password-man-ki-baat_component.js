@@ -34,7 +34,7 @@ export function AdvisorSetPasswordManKiBaatComponent() {
     }
 
     try {
-      // Retrieve user_id from localStorage
+      // Retrieve advisor_id from localStorage
       const advisorId = localStorage.getItem("advisor_id");
       if (!advisorId) {
         setMessage("Advisor ID is missing. Please log in again.");
@@ -43,7 +43,7 @@ export function AdvisorSetPasswordManKiBaatComponent() {
 
       // Send a POST request to update the password
       const response = await axios.post(
-        `http://localhost:3001/AdvisorUpdatePassword/${advisorId}`, // Pass user_id in the URL params
+        `http://localhost:3001/AdvisorUpdatePassword/${advisorId}`, // Pass advisor_id in the URL params
         {
           newPassword: Password, // Send new password
           reEnterPassword: rePassword, // Send re-entered password
@@ -54,7 +54,7 @@ export function AdvisorSetPasswordManKiBaatComponent() {
       setMessage(response.data.msg); // Set the message from the backend response
       if (response.data.status) {
         alert("Password Updated Successfully!");
-        navigate("/login"); // Redirect to login page after successful password update
+        navigate("/advisor-login"); // Redirect to advisor-login page after successful password update
       } else {
         alert(response.data.msg);
       }

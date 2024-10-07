@@ -308,7 +308,13 @@ const get_Advisor = async function (req, res) {
 const Get_All_Advisor = async function (req, res) {
   try {
     const Advisor = await Advisor_Model.find();
-    return res.status(200).send({ status: true, Data: Advisor });
+    const advisorData = Advisor.map((advisor) => {
+      return {
+        ...advisor._doc, // Spread existing advisor data
+        advisorId: advisor._id, // Include the advisor's _id explicitly as advisorId
+      };
+    });
+    return res.status(200).send({ status: true, Data: advisorData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -686,13 +692,11 @@ const Advisor_Update_Profile = async function (req, res) {
       findAdvisor.Image = "images/" + req.file.filename;
     }
     await findAdvisor.save();
-    res
-      .status(200)
-      .json({
-        status: true,
-        msg: "Advisor updated successfully",
-        data: findAdvisor,
-      });
+    res.status(200).json({
+      status: true,
+      msg: "Advisor updated successfully",
+      data: findAdvisor,
+    });
   } catch (error) {
     return res.status(500).send({ status: false, msg: error.message });
   }

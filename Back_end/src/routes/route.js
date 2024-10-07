@@ -86,7 +86,7 @@ const uplode = multer({ storage: storage, fileFilter: fileFilter });
 // User_APIS
 router.post("/Register", uplode.single("image"), Register_User);
 router.post("/Login", Login_user);
-router.post("/Notification", isAuthenticated, sendNotification);
+router.post("/Notification/:advisorId", isAuthenticated, sendNotification);
 router.get("/User_Home/Advisor_detail", isAuthenticated, User_Home);
 router.get("/get_user/profile", isAuthenticated, get_Users);
 router.put("/user/:userId/profile", Update_User);

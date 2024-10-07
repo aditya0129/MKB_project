@@ -119,3 +119,12 @@
 .custom-modal-header .btn-close {
   filter: invert(1);
 }
+
+.modal-content {
+  background-color: black;
+  color: white;
+}
+
+.btn-close {
+  background-color: white;
+}

@@ -635,17 +635,6 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </div>
       </div>
 
-      <div className="container text-center">
-        <button
-          type="button"
-          className="btn btn-outline-dark"
-          data-bs-toggle="modal"
-          data-bs-target="#updateProfileModal"
-        >
-          <span className="bi bi-pencil-fill fw-semibold"> Update Profile</span>
-        </button>
-      </div>
-
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title className="bi bi-person-circle">
@@ -674,6 +663,17 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </Modal.Footer>
       </Modal>
 
+      <div className="container text-center">
+        <button
+          type="button"
+          className="btn btn-outline-dark"
+          data-bs-toggle="modal"
+          data-bs-target="#updateProfileModal"
+        >
+          <span className="bi bi-pencil-fill"> Update Profile</span>
+        </button>
+      </div>
+
       <div
         className="modal fade"
         id="updateProfileModal"
@@ -682,14 +682,14 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-scrollable">
-          <div className="modal-content bg-dark text-white">
+          <div className="modal-content">
             <div className="modal-header">
               <h3 className="modal-title" id="updateProfileModalLabel">
                 <span className="bi bi-person-circle"> Update Profile</span>
               </h3>
               <button
                 type="button"
-                className="btn-close bg-white"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
@@ -744,130 +744,249 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select State
                     </option>
                     <option
                       value="Andhra Pradesh"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Andhra Pradesh
                     </option>
                     <option
                       value="Arunachal Pradesh"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Arunachal Pradesh
                     </option>
-                    <option value="Assam" className="bg-dark text-white">
+                    <option
+                      value="Assam"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Assam
                     </option>
-                    <option value="Bihar" className="bg-dark text-white">
+                    <option
+                      value="Bihar"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Bihar
                     </option>
-                    <option value="Chhattisgarh" className="bg-dark text-white">
+                    <option
+                      value="Chhattisgarh"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Chhattisgarh
                     </option>
-                    <option value="Goa" className="bg-dark text-white">
+                    <option
+                      value="Goa"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Goa
                     </option>
-                    <option value="Gujarat" className="bg-dark text-white">
+                    <option
+                      value="Gujarat"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Gujarat
                     </option>
-                    <option value="Haryana" className="bg-dark text-white">
+                    <option
+                      value="Haryana"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Haryana
                     </option>
                     <option
                       value="Himachal Pradesh"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Himachal Pradesh
                     </option>
-                    <option value="Jharkhand" className="bg-dark text-white">
+                    <option
+                      value="Jharkhand"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Jharkhand
                     </option>
-                    <option value="Karnataka" className="bg-dark text-white">
+                    <option
+                      value="Karnataka"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Karnataka
                     </option>
-                    <option value="Kerala" className="bg-dark text-white">
+                    <option
+                      value="Kerala"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Kerala
                     </option>
                     <option
                       value="Madhya Pradesh"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Madhya Pradesh
                     </option>
-                    <option value="Maharashtra" className="bg-dark text-white">
+                    <option
+                      value="Maharashtra"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Maharashtra
                     </option>
-                    <option value="Manipur" className="bg-dark text-white">
+                    <option
+                      value="Manipur"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Manipur
                     </option>
-                    <option value="Meghalaya" className="bg-dark text-white">
+                    <option
+                      value="Meghalaya"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Meghalaya
                     </option>
-                    <option value="Mizoram" className="bg-dark text-white">
+                    <option
+                      value="Mizoram"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Mizoram
                     </option>
-                    <option value="Nagaland" className="bg-dark text-white">
+                    <option
+                      value="Nagaland"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Nagaland
                     </option>
-                    <option value="Odisha" className="bg-dark text-white">
+                    <option
+                      value="Odisha"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Odisha
                     </option>
-                    <option value="Punjab" className="bg-dark text-white">
+                    <option
+                      value="Punjab"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Punjab
                     </option>
-                    <option value="Rajasthan" className="bg-dark text-white">
+                    <option
+                      value="Rajasthan"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Rajasthan
                     </option>
-                    <option value="Sikkim" className="bg-dark text-white">
+                    <option
+                      value="Sikkim"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Sikkim
                     </option>
-                    <option value="Tamil Nadu" className="bg-dark text-white">
+                    <option
+                      value="Tamil Nadu"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Tamil Nadu
                     </option>
-                    <option value="Telangana" className="bg-dark text-white">
+                    <option
+                      value="Telangana"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Telangana
                     </option>
-                    <option value="Tripura" className="bg-dark text-white">
+                    <option
+                      value="Tripura"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Tripura
                     </option>
                     <option
                       value="Uttar Pradesh"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Uttar Pradesh
                     </option>
-                    <option value="Uttarakhand" className="bg-dark text-white">
+                    <option
+                      value="Uttarakhand"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Uttarakhand
                     </option>
-                    <option value="West Bengal" className="bg-dark text-white">
+                    <option
+                      value="West Bengal"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       West Bengal
                     </option>
                     <option
                       value="Andaman and Nicobar Islands"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Andaman and Nicobar Islands
                     </option>
-                    <option value="Chandigarh" className="bg-dark text-white">
+                    <option
+                      value="Chandigarh"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Chandigarh
                     </option>
                     <option
                       value="Dadra and Nagar Haveli and Daman and Diu"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Dadra and Nagar Haveli and Daman and Diu
                     </option>
-                    <option value="Lakshadweep" className="bg-dark text-white">
+                    <option
+                      value="Lakshadweep"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Lakshadweep
                     </option>
-                    <option value="Delhi" className="bg-dark text-white">
+                    <option
+                      value="Delhi"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Delhi
                     </option>
-                    <option value="Puducherry" className="bg-dark text-white">
+                    <option
+                      value="Puducherry"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Puducherry
                     </option>
                   </select>
@@ -882,63 +1001,129 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Expertise
                     </option>
-                    <option value="Stress" className="bg-dark text-white">
+                    <option
+                      value="Stress"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Stress
                     </option>
-                    <option value="Anxiety" className="bg-dark text-white">
+                    <option
+                      value="Anxiety"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Anxiety
                     </option>
-                    <option value="Elicit" className="bg-dark text-white">
+                    <option
+                      value="Elicit"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Elicit
                     </option>
-                    <option value="Job" className="bg-dark text-white">
+                    <option
+                      value="Job"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Job
                     </option>
-                    <option value="Law" className="bg-dark text-white">
+                    <option
+                      value="Law"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Law
                     </option>
-                    <option value="Marriage" className="bg-dark text-white">
+                    <option
+                      value="Marriage"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Marriage
                     </option>
                     <option
                       value="Social Issues"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Social Issues
                     </option>
-                    <option value="Kisan" className="bg-dark text-white">
+                    <option
+                      value="Kisan"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Kisan
                     </option>
-                    <option value="Property" className="bg-dark text-white">
+                    <option
+                      value="Property"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Property
                     </option>
-                    <option value="Education" className="bg-dark text-white">
+                    <option
+                      value="Education"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Education
                     </option>
-                    <option value="Carrer" className="bg-dark text-white">
+                    <option
+                      value="Carrer"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Carrer
                     </option>
-                    <option value="Medical" className="bg-dark text-white">
+                    <option
+                      value="Medical"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Medical
                     </option>
-                    <option value="Love" className="bg-dark text-white">
+                    <option
+                      value="Love"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Love
                     </option>
-                    <option value="Affair" className="bg-dark text-white">
+                    <option
+                      value="Affair"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Affair
                     </option>
-                    <option value="Break Up" className="bg-dark text-white">
+                    <option
+                      value="Break Up"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Break Up
                     </option>
-                    <option value="Ex" className="bg-dark text-white">
+                    <option
+                      value="Ex"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Ex
                     </option>
                     <option
                       value="Hyper Thinking"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Hyper Thinking
                     </option>
@@ -954,22 +1139,46 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Experience
                     </option>
-                    <option value="1 Yrs" className="bg-dark text-white">
+                    <option
+                      value="1 Yrs"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1 Yrs
                     </option>
-                    <option value="2 Yrs" className="bg-dark text-white">
+                    <option
+                      value="2 Yrs"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2 Yrs
                     </option>
-                    <option value="3 Yrs" className="bg-dark text-white">
+                    <option
+                      value="3 Yrs"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3 Yrs
                     </option>
-                    <option value="4 Yrs" className="bg-dark text-white">
+                    <option
+                      value="4 Yrs"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4 Yrs
                     </option>
-                    <option value="5 Yrs" className="bg-dark text-white">
+                    <option
+                      value="5 Yrs"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5 Yrs
                     </option>
                   </select>
@@ -984,106 +1193,228 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Language
                     </option>
-                    <option value="Hindi" className="bg-dark text-white">
+                    <option
+                      value="Hindi"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Hindi
                     </option>
-                    <option value="English" className="bg-dark text-white">
+                    <option
+                      value="English"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       English
                     </option>
-                    <option value="Bengali" className="bg-dark text-white">
+                    <option
+                      value="Bengali"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Bengali
                     </option>
-                    <option value="Telugu" className="bg-dark text-white">
+                    <option
+                      value="Telugu"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Telugu
                     </option>
-                    <option value="Marathi" className="bg-dark text-white">
+                    <option
+                      value="Marathi"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Marathi
                     </option>
-                    <option value="Tamil" className="bg-dark text-white">
+                    <option
+                      value="Tamil"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Tamil
                     </option>
-                    <option value="Urdu" className="bg-dark text-white">
+                    <option
+                      value="Urdu"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Urdu
                     </option>
-                    <option value="Gujarati" className="bg-dark text-white">
+                    <option
+                      value="Gujarati"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Gujarati
                     </option>
-                    <option value="Malayalam" className="bg-dark text-white">
+                    <option
+                      value="Malayalam"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Malayalam
                     </option>
-                    <option value="Kannada" className="bg-dark text-white">
+                    <option
+                      value="Kannada"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Kannada
                     </option>
-                    <option value="Odia" className="bg-dark text-white">
+                    <option
+                      value="Odia"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Odia
                     </option>
-                    <option value="Punjabi" className="bg-dark text-white">
+                    <option
+                      value="Punjabi"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Punjabi
                     </option>
-                    <option value="Assamese" className="bg-dark text-white">
+                    <option
+                      value="Assamese"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Assamese
                     </option>
-                    <option value="Maithili" className="bg-dark text-white">
+                    <option
+                      value="Maithili"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Maithili
                     </option>
                     <option
                       value="Bhili/Bhilodi"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Bhili/Bhilodi
                     </option>
-                    <option value="Santali" className="bg-dark text-white">
+                    <option
+                      value="Santali"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Santali
                     </option>
-                    <option value="Kashmiri" className="bg-dark text-white">
+                    <option
+                      value="Kashmiri"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Kashmiri
                     </option>
-                    <option value="Nepali" className="bg-dark text-white">
+                    <option
+                      value="Nepali"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Nepali
                     </option>
-                    <option value="Gondi" className="bg-dark text-white">
+                    <option
+                      value="Gondi"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Gondi
                     </option>
-                    <option value="Sindhi" className="bg-dark text-white">
+                    <option
+                      value="Sindhi"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Sindhi
                     </option>
-                    <option value="Konkani" className="bg-dark text-white">
+                    <option
+                      value="Konkani"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Konkani
                     </option>
-                    <option value="Dogri" className="bg-dark text-white">
+                    <option
+                      value="Dogri"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Dogri
                     </option>
-                    <option value="Khandeshi" className="bg-dark text-white">
+                    <option
+                      value="Khandeshi"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Khandeshi
                     </option>
-                    <option value="Kurukh" className="bg-dark text-white">
+                    <option
+                      value="Kurukh"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Kurukh
                     </option>
-                    <option value="Tulu" className="bg-dark text-white">
+                    <option
+                      value="Tulu"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Tulu
                     </option>
                     <option
                       value="Meitei (Manipuri)"
-                      className="bg-dark text-white"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
                     >
                       Meitei (Manipuri)
                     </option>
-                    <option value="Bodo" className="bg-dark text-white">
+                    <option
+                      value="Bodo"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Bodo
                     </option>
-                    <option value="Khasi" className="bg-dark text-white">
+                    <option
+                      value="Khasi"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Khasi
                     </option>
-                    <option value="Mundari" className="bg-dark text-white">
+                    <option
+                      value="Mundari"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Mundari
                     </option>
-                    <option value="Ho" className="bg-dark text-white">
+                    <option
+                      value="Ho"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Ho
                     </option>
-                    <option value="Kui" className="bg-dark text-white">
+                    <option
+                      value="Kui"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Kui
                     </option>
                   </select>
@@ -1108,64 +1439,144 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Analytical Strength
                     </option>
-                    <option value="1" className="bg-dark text-white">
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1
                     </option>
-                    <option value="1.5" className="bg-dark text-white">
+                    <option
+                      value="1.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1.5
                     </option>
-                    <option value="2" className="bg-dark text-white">
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2
                     </option>
-                    <option value="2.5" className="bg-dark text-white">
+                    <option
+                      value="2.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2.5
                     </option>
-                    <option value="3" className="bg-dark text-white">
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3
                     </option>
-                    <option value="3.5" className="bg-dark text-white">
+                    <option
+                      value="3.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3.5
                     </option>
-                    <option value="4" className="bg-dark text-white">
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4
                     </option>
-                    <option value="4.5" className="bg-dark text-white">
+                    <option
+                      value="4.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4.5
                     </option>
-                    <option value="5" className="bg-dark text-white">
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5
                     </option>
-                    <option value="5.5" className="bg-dark text-white">
+                    <option
+                      value="5.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5.5
                     </option>
-                    <option value="6" className="bg-dark text-white">
+                    <option
+                      value="6"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6
                     </option>
-                    <option value="6.5" className="bg-dark text-white">
+                    <option
+                      value="6.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6.5
                     </option>
-                    <option value="7" className="bg-dark text-white">
+                    <option
+                      value="7"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7
                     </option>
-                    <option value="7.5" className="bg-dark text-white">
+                    <option
+                      value="7.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7.5
                     </option>
-                    <option value="8" className="bg-dark text-white">
+                    <option
+                      value="8"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8
                     </option>
-                    <option value="8.5" className="bg-dark text-white">
+                    <option
+                      value="8.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8.5
                     </option>
-                    <option value="9" className="bg-dark text-white">
+                    <option
+                      value="9"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9
                     </option>
-                    <option value="9.5" className="bg-dark text-white">
+                    <option
+                      value="9.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9.5
                     </option>
-                    <option value="10" className="bg-dark text-white">
+                    <option
+                      value="10"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       10
                     </option>
                   </select>
@@ -1180,64 +1591,144 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Problem Solving Strength
                     </option>
-                    <option value="1" className="bg-dark text-white">
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1
                     </option>
-                    <option value="1.5" className="bg-dark text-white">
+                    <option
+                      value="1.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1.5
                     </option>
-                    <option value="2" className="bg-dark text-white">
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2
                     </option>
-                    <option value="2.5" className="bg-dark text-white">
+                    <option
+                      value="2.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2.5
                     </option>
-                    <option value="3" className="bg-dark text-white">
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3
                     </option>
-                    <option value="3.5" className="bg-dark text-white">
+                    <option
+                      value="3.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3.5
                     </option>
-                    <option value="4" className="bg-dark text-white">
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4
                     </option>
-                    <option value="4.5" className="bg-dark text-white">
+                    <option
+                      value="4.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4.5
                     </option>
-                    <option value="5" className="bg-dark text-white">
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5
                     </option>
-                    <option value="5.5" className="bg-dark text-white">
+                    <option
+                      value="5.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5.5
                     </option>
-                    <option value="6" className="bg-dark text-white">
+                    <option
+                      value="6"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6
                     </option>
-                    <option value="6.5" className="bg-dark text-white">
+                    <option
+                      value="6.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6.5
                     </option>
-                    <option value="7" className="bg-dark text-white">
+                    <option
+                      value="7"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7
                     </option>
-                    <option value="7.5" className="bg-dark text-white">
+                    <option
+                      value="7.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7.5
                     </option>
-                    <option value="8" className="bg-dark text-white">
+                    <option
+                      value="8"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8
                     </option>
-                    <option value="8.5" className="bg-dark text-white">
+                    <option
+                      value="8.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8.5
                     </option>
-                    <option value="9" className="bg-dark text-white">
+                    <option
+                      value="9"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9
                     </option>
-                    <option value="9.5" className="bg-dark text-white">
+                    <option
+                      value="9.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9.5
                     </option>
-                    <option value="10" className="bg-dark text-white">
+                    <option
+                      value="10"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       10
                     </option>
                   </select>
@@ -1252,64 +1743,144 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Public Speaking Strength
                     </option>
-                    <option value="1" className="bg-dark text-white">
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1
                     </option>
-                    <option value="1.5" className="bg-dark text-white">
+                    <option
+                      value="1.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1.5
                     </option>
-                    <option value="2" className="bg-dark text-white">
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2
                     </option>
-                    <option value="2.5" className="bg-dark text-white">
+                    <option
+                      value="2.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2.5
                     </option>
-                    <option value="3" className="bg-dark text-white">
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3
                     </option>
-                    <option value="3.5" className="bg-dark text-white">
+                    <option
+                      value="3.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3.5
                     </option>
-                    <option value="4" className="bg-dark text-white">
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4
                     </option>
-                    <option value="4.5" className="bg-dark text-white">
+                    <option
+                      value="4.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4.5
                     </option>
-                    <option value="5" className="bg-dark text-white">
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5
                     </option>
-                    <option value="5.5" className="bg-dark text-white">
+                    <option
+                      value="5.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5.5
                     </option>
-                    <option value="6" className="bg-dark text-white">
+                    <option
+                      value="6"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6
                     </option>
-                    <option value="6.5" className="bg-dark text-white">
+                    <option
+                      value="6.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6.5
                     </option>
-                    <option value="7" className="bg-dark text-white">
+                    <option
+                      value="7"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7
                     </option>
-                    <option value="7.5" className="bg-dark text-white">
+                    <option
+                      value="7.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7.5
                     </option>
-                    <option value="8" className="bg-dark text-white">
+                    <option
+                      value="8"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8
                     </option>
-                    <option value="8.5" className="bg-dark text-white">
+                    <option
+                      value="8.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8.5
                     </option>
-                    <option value="9" className="bg-dark text-white">
+                    <option
+                      value="9"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9
                     </option>
-                    <option value="9.5" className="bg-dark text-white">
+                    <option
+                      value="9.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9.5
                     </option>
-                    <option value="10" className="bg-dark text-white">
+                    <option
+                      value="10"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       10
                     </option>
                   </select>
@@ -1324,64 +1895,144 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Adaptable Strength
                     </option>
-                    <option value="1" className="bg-dark text-white">
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1
                     </option>
-                    <option value="1.5" className="bg-dark text-white">
+                    <option
+                      value="1.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1.5
                     </option>
-                    <option value="2" className="bg-dark text-white">
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2
                     </option>
-                    <option value="2.5" className="bg-dark text-white">
+                    <option
+                      value="2.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2.5
                     </option>
-                    <option value="3" className="bg-dark text-white">
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3
                     </option>
-                    <option value="3.5" className="bg-dark text-white">
+                    <option
+                      value="3.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3.5
                     </option>
-                    <option value="4" className="bg-dark text-white">
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4
                     </option>
-                    <option value="4.5" className="bg-dark text-white">
+                    <option
+                      value="4.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4.5
                     </option>
-                    <option value="5" className="bg-dark text-white">
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5
                     </option>
-                    <option value="5.5" className="bg-dark text-white">
+                    <option
+                      value="5.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5.5
                     </option>
-                    <option value="6" className="bg-dark text-white">
+                    <option
+                      value="6"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6
                     </option>
-                    <option value="6.5" className="bg-dark text-white">
+                    <option
+                      value="6.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6.5
                     </option>
-                    <option value="7" className="bg-dark text-white">
+                    <option
+                      value="7"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7
                     </option>
-                    <option value="7.5" className="bg-dark text-white">
+                    <option
+                      value="7.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7.5
                     </option>
-                    <option value="8" className="bg-dark text-white">
+                    <option
+                      value="8"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8
                     </option>
-                    <option value="8.5" className="bg-dark text-white">
+                    <option
+                      value="8.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8.5
                     </option>
-                    <option value="9" className="bg-dark text-white">
+                    <option
+                      value="9"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9
                     </option>
-                    <option value="9.5" className="bg-dark text-white">
+                    <option
+                      value="9.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9.5
                     </option>
-                    <option value="10" className="bg-dark text-white">
+                    <option
+                      value="10"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       10
                     </option>
                   </select>
@@ -1396,64 +2047,144 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Communication Strength
                     </option>
-                    <option value="1" className="bg-dark text-white">
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1
                     </option>
-                    <option value="1.5" className="bg-dark text-white">
+                    <option
+                      value="1.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1.5
                     </option>
-                    <option value="2" className="bg-dark text-white">
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2
                     </option>
-                    <option value="2.5" className="bg-dark text-white">
+                    <option
+                      value="2.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2.5
                     </option>
-                    <option value="3" className="bg-dark text-white">
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3
                     </option>
-                    <option value="3.5" className="bg-dark text-white">
+                    <option
+                      value="3.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3.5
                     </option>
-                    <option value="4" className="bg-dark text-white">
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4
                     </option>
-                    <option value="4.5" className="bg-dark text-white">
+                    <option
+                      value="4.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4.5
                     </option>
-                    <option value="5" className="bg-dark text-white">
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5
                     </option>
-                    <option value="5.5" className="bg-dark text-white">
+                    <option
+                      value="5.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5.5
                     </option>
-                    <option value="6" className="bg-dark text-white">
+                    <option
+                      value="6"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6
                     </option>
-                    <option value="6.5" className="bg-dark text-white">
+                    <option
+                      value="6.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6.5
                     </option>
-                    <option value="7" className="bg-dark text-white">
+                    <option
+                      value="7"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7
                     </option>
-                    <option value="7.5" className="bg-dark text-white">
+                    <option
+                      value="7.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7.5
                     </option>
-                    <option value="8" className="bg-dark text-white">
+                    <option
+                      value="8"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8
                     </option>
-                    <option value="8.5" className="bg-dark text-white">
+                    <option
+                      value="8.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8.5
                     </option>
-                    <option value="9" className="bg-dark text-white">
+                    <option
+                      value="9"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9
                     </option>
-                    <option value="9.5" className="bg-dark text-white">
+                    <option
+                      value="9.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9.5
                     </option>
-                    <option value="10" className="bg-dark text-white">
+                    <option
+                      value="10"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       10
                     </option>
                   </select>
@@ -1468,64 +2199,144 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select P S Strength
                     </option>
-                    <option value="1" className="bg-dark text-white">
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1
                     </option>
-                    <option value="1.5" className="bg-dark text-white">
+                    <option
+                      value="1.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1.5
                     </option>
-                    <option value="2" className="bg-dark text-white">
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2
                     </option>
-                    <option value="2.5" className="bg-dark text-white">
+                    <option
+                      value="2.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2.5
                     </option>
-                    <option value="3" className="bg-dark text-white">
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3
                     </option>
-                    <option value="3.5" className="bg-dark text-white">
+                    <option
+                      value="3.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3.5
                     </option>
-                    <option value="4" className="bg-dark text-white">
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4
                     </option>
-                    <option value="4.5" className="bg-dark text-white">
+                    <option
+                      value="4.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4.5
                     </option>
-                    <option value="5" className="bg-dark text-white">
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5
                     </option>
-                    <option value="5.5" className="bg-dark text-white">
+                    <option
+                      value="5.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5.5
                     </option>
-                    <option value="6" className="bg-dark text-white">
+                    <option
+                      value="6"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6
                     </option>
-                    <option value="6.5" className="bg-dark text-white">
+                    <option
+                      value="6.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6.5
                     </option>
-                    <option value="7" className="bg-dark text-white">
+                    <option
+                      value="7"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7
                     </option>
-                    <option value="7.5" className="bg-dark text-white">
+                    <option
+                      value="7.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7.5
                     </option>
-                    <option value="8" className="bg-dark text-white">
+                    <option
+                      value="8"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8
                     </option>
-                    <option value="8.5" className="bg-dark text-white">
+                    <option
+                      value="8.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8.5
                     </option>
-                    <option value="9" className="bg-dark text-white">
+                    <option
+                      value="9"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9
                     </option>
-                    <option value="9.5" className="bg-dark text-white">
+                    <option
+                      value="9.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9.5
                     </option>
-                    <option value="10" className="bg-dark text-white">
+                    <option
+                      value="10"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       10
                     </option>
                   </select>
@@ -1540,64 +2351,144 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="form-control w-50"
                     style={{ cursor: "pointer" }}
                   >
-                    <option value="" className="bg-dark text-white">
+                    <option
+                      value=""
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       Select Leadership Experience Strength
                     </option>
-                    <option value="1" className="bg-dark text-white">
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1
                     </option>
-                    <option value="1.5" className="bg-dark text-white">
+                    <option
+                      value="1.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       1.5
                     </option>
-                    <option value="2" className="bg-dark text-white">
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2
                     </option>
-                    <option value="2.5" className="bg-dark text-white">
+                    <option
+                      value="2.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       2.5
                     </option>
-                    <option value="3" className="bg-dark text-white">
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3
                     </option>
-                    <option value="3.5" className="bg-dark text-white">
+                    <option
+                      value="3.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       3.5
                     </option>
-                    <option value="4" className="bg-dark text-white">
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4
                     </option>
-                    <option value="4.5" className="bg-dark text-white">
+                    <option
+                      value="4.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       4.5
                     </option>
-                    <option value="5" className="bg-dark text-white">
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5
                     </option>
-                    <option value="5.5" className="bg-dark text-white">
+                    <option
+                      value="5.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       5.5
                     </option>
-                    <option value="6" className="bg-dark text-white">
+                    <option
+                      value="6"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6
                     </option>
-                    <option value="6.5" className="bg-dark text-white">
+                    <option
+                      value="6.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       6.5
                     </option>
-                    <option value="7" className="bg-dark text-white">
+                    <option
+                      value="7"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7
                     </option>
-                    <option value="7.5" className="bg-dark text-white">
+                    <option
+                      value="7.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       7.5
                     </option>
-                    <option value="8" className="bg-dark text-white">
+                    <option
+                      value="8"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8
                     </option>
-                    <option value="8.5" className="bg-dark text-white">
+                    <option
+                      value="8.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       8.5
                     </option>
-                    <option value="9" className="bg-dark text-white">
+                    <option
+                      value="9"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9
                     </option>
-                    <option value="9.5" className="bg-dark text-white">
+                    <option
+                      value="9.5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       9.5
                     </option>
-                    <option value="10" className="bg-dark text-white">
+                    <option
+                      value="10"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
                       10
                     </option>
                   </select>
@@ -1628,14 +2519,14 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-outline-success mt-3 fw-semibold"
+                className="btn btn-outline-success mt-3"
                 onClick={handleSubmit}
               >
                 Save changes
               </button>
               <button
                 type="button"
-                className="btn btn-outline-danger mt-3 fw-semibold"
+                className="btn btn-outline-danger mt-3"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               >

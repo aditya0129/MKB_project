@@ -58,7 +58,7 @@ export function WalletManKiBaatComponent() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("You are not logged in. Please log in to proceed.");
+      alert("You Are Not Logged In. Please Log In To Proceed.");
       return;
     }
 
