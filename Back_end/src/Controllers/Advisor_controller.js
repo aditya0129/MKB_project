@@ -372,19 +372,59 @@ const Edit_Advisor_Profile = async function (req, res) {
   }
 };
 
+// const acceptNotification = async function (req, res) {
+//   try {
+//     const { userId } = req.token;
+//     let findUser = await userModel.findById({ _id: userId });
+//     if (!findUser) {
+//       return res.status(404).send({ status: false, msg: "User not found" });
+//     }
+//     findUser.notification = "I am available now...";
+//     await findUser.save();
+//     return res.status(200).send({
+//       status: true,
+//       msg: "Notification updated successfully",
+//       User: findUser,
+//     });
+//   } catch (error) {
+//     return res.status(500).send({ status: false, msg: error.message });
+//   }
+// };
 const acceptNotification = async function (req, res) {
   try {
-    const { userId } = req.token;
-    let findUser = await userModel.findById({ _id: userId });
+    let { user_Id } = req.params;
+    let { userId } = req.token;
+    let findUser = await UserModel.findById(user_Id);
     if (!findUser) {
       return res.status(404).send({ status: false, msg: "User not found" });
     }
-    findUser.notification = "I am available now...";
+    let findAdvisor = await Advisor_Model.findById(userId);
+    if (!findAdvisor) {
+      return res.status(404).send({ status: false, msg: "Advisor not found" });
+    }
+    findUser.notification = `I am available now...`;
+    findUser.advisorDetails = {
+      advisorId: findAdvisor._id,
+      Name: findAdvisor.Name,
+      Image: findAdvisor.Image,
+      Expertise: findAdvisor.Expertise,
+    };
     await findUser.save();
     return res.status(200).send({
       status: true,
-      msg: "Notification updated successfully",
-      User: findUser,
+      msg: "Notification updated successfully and advisor details saved",
+      user: {
+        id: findUser._id,
+        name: findUser.name,
+        notification: findUser.notification,
+        advisorDetails: findUser.advisorDetails,
+      },
+      advisor: {
+        id: findAdvisor._id,
+        name: findAdvisor.Name,
+        image: findAdvisor.Image,
+        expertise: findAdvisor.Expertise,
+      },
     });
   } catch (error) {
     return res.status(500).send({ status: false, msg: error.message });

@@ -672,8 +672,14 @@ const verify_otp_fp = async function (req, res) {
 
 const Get_All_User = async function (req, res) {
   try {
-    const user = await UserModel.find();
-    return res.status(200).send({ status: true, Data: user });
+    const User = await UserModel.find();
+    const userData = User.map((user) => {
+      return {
+        ...user._doc, // Spread existing user data
+        userId: user._id, // Include the user's _id explicitly as userId
+      };
+    });
+    return res.status(200).send({ status: true, Data: userData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -1037,6 +1043,39 @@ const resetSuccess = async function (req, res) {
 //     return res.status(500).send({ status: false, msg: error.message });
 //   }
 // };
+// const sendNotification = async function (req, res) {
+//   try {
+//     let { advisorId } = req.params;
+//     let { userId } = req.token;
+//     let findAdvisor = await Advisor_Model.findById(advisorId);
+//     if (!findAdvisor) {
+//       return res.status(404).send({ status: false, msg: "Advisor not found" });
+//     }
+//     let findUser = await UserModel.findById(userId);
+//     if (!findUser) {
+//       return res.status(404).send({ status: false, msg: "User not found" });
+//     }
+//     findAdvisor.Notification = `Are you available now?`;
+//     await findAdvisor.save();
+//     return res.status(200).send({
+//       status: true,
+//       msg: "Notification updated successfully",
+//       advisor: {
+//         id: findAdvisor._id,
+//         name: findAdvisor.Name,
+//         notification: findAdvisor.Notification,
+//       },
+//       user: {
+//         id: findUser._id,
+//         name: findUser.name,
+//         image: findUser.image,
+//         category: findUser.category,
+//       },
+//     });
+//   } catch (error) {
+//     return res.status(500).send({ status: false, msg: error.message });
+//   }
+// };
 const sendNotification = async function (req, res) {
   try {
     let { advisorId } = req.params;
@@ -1050,20 +1089,29 @@ const sendNotification = async function (req, res) {
       return res.status(404).send({ status: false, msg: "User not found" });
     }
     findAdvisor.Notification = `Are you available now?`;
+    findAdvisor.userDetails = {
+      userId: findUser._id,
+      name: findUser.name,
+      image: findUser.image,
+      category: findUser.category,
+      sub_category: findUser.sub_category,
+    };
     await findAdvisor.save();
     return res.status(200).send({
       status: true,
-      msg: "Notification updated successfully",
+      msg: "Notification updated successfully and user details saved",
       advisor: {
         id: findAdvisor._id,
         name: findAdvisor.Name,
         notification: findAdvisor.Notification,
+        userDetails: findAdvisor.userDetails,
       },
       user: {
         id: findUser._id,
         name: findUser.name,
         image: findUser.image,
         category: findUser.category,
+        sub_category: findUser.sub_category,
       },
     });
   } catch (error) {

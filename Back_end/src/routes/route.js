@@ -135,7 +135,7 @@ router.post("/VerifyOtp", VerifyOtp);
 ///Advisor Apis
 router.post("/Advisor_register", uplode.single("Image"), Advisor_register);
 router.post("/Advisor_login", Advisor_Login);
-router.post("/Accept", isAuthenticated, acceptNotification);
+router.post("/Accept/:user_Id", isAuthenticated, acceptNotification);
 router.post("/Reject", isAuthenticated, rejectNotification);
 router.post("/Busy", isAuthenticated, busyNotification);
 //router.get( "/user/:userId/profile", get_Advisor );

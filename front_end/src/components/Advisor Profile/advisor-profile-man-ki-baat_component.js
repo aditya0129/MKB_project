@@ -3034,20 +3034,28 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
 
               {/* Displaying user information */}
-              {user.map((u, index) => (
+              {advisors.map((advisor, index) => (
                 <div key={index} className="user-info">
                   <img
-                    className="mt-2"
-                    src={`http://localhost:3001/${u.image}`}
-                    alt="User Profile"
+                    className="mb-3"
+                    src={`http://localhost:3001/${advisor.userDetails.image}`}
+                    alt={advisor.userDetails.name}
                     style={{
                       width: "100px",
                       height: "100px",
-                      borderRadius: "20px",
-                      // boxShadow: "0 0 8px rgb(145, 144, 146)",
+                      borderRadius: "10px",
                     }}
                   />
-                  <p className="mt-2">{u.category}</p>
+                  <p>
+                    <strong>Name:-</strong> {advisor.userDetails.name}
+                  </p>
+                  <p>
+                    <strong>Category:-</strong> {advisor.userDetails.category}
+                  </p>
+                  <p>
+                    <strong>Sub-Category:-</strong>{" "}
+                    {advisor.userDetails.sub_category}
+                  </p>
                 </div>
               ))}
 

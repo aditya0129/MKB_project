@@ -30,6 +30,14 @@ const advisorSchema = new mongoose.Schema(
 
     Notification: { type: String, default: "" },
 
+    userDetails: {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: "UserData" },
+      name: { type: String },
+      image: { type: String },
+      category: { type: String },
+      sub_category: { type: String },
+    },
+
     About: { type: String, default: "" },
 
     Analytical_Strength: { type: String, default: "" },
