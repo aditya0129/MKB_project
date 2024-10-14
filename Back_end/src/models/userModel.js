@@ -68,6 +68,7 @@ const UserSchema = new mongoose.Schema(
     advisorDetails: {
       advisorId: { type: mongoose.Schema.Types.ObjectId, ref: "Advisor" },
       Name: { type: String },
+      Gender: { type: String },
       Image: { type: String },
       Expertise: { type: String },
       Experience: { type: String },

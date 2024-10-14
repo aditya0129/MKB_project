@@ -34,6 +34,7 @@ const advisorSchema = new mongoose.Schema(
       userId: { type: mongoose.Schema.Types.ObjectId, ref: "UserData" },
       name: { type: String },
       image: { type: String },
+      gender: { type: String },
       category: { type: String },
       sub_category: { type: String },
     },

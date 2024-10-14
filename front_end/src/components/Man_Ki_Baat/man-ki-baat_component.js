@@ -172,30 +172,6 @@ export function ManKiBaatComponent({ data, users }) {
     setShowModal(false);
   };
 
-  // Function to send notifications
-  // const sendNotifications = async () => {
-  //   try {
-  //     if (!selectedAdvisorId) {
-  //       alert("Please Select An Advisor Before Sending A Notification.");
-  //       return;
-  //     }
-
-  //     const response = await axios.post(
-  //       `http://localhost:3001/Notification/${selectedAdvisorId}`
-  //     );
-  //     if (response.status === 200) {
-  //       alert("Notification Sent Successfully.");
-  //       setSearchTerm("");
-  //       setSelectedAdvisorId("");
-  //       window.location.reload();
-  //     } else {
-  //       alert("Failed To Send Notification.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error sending notification:", error);
-  //     alert("Error Sending Notification.");
-  //   }
-  // };
   const sendNotifications = async () => {
     try {
       if (!selectedAdvisorId) {
@@ -349,6 +325,8 @@ export function ManKiBaatComponent({ data, users }) {
         );
         console.log("Response:", response);
         setAdvisor(response.data.data);
+        // Set the notification count to the number of advisors fetched
+        setNotificationCount(response.data.data.length);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
       }
@@ -950,7 +928,7 @@ export function ManKiBaatComponent({ data, users }) {
           data-bs-toggle="modal"
           data-bs-target="#updateProfileModal"
         >
-          <span className="bi bi-pencil-fill"> Update Profile</span>
+          <span className="bi bi-pencil-square"> Update-Profile</span>
         </button>
       </div>
 
@@ -1620,17 +1598,19 @@ export function ManKiBaatComponent({ data, users }) {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-outline-success mt-3"
+                className="bi bi-check-lg btn btn-outline-success mt-3"
                 onClick={handleSubmit}
               >
+                {" "}
                 Save changes
               </button>
               <button
                 type="button"
-                className="btn btn-outline-danger mt-3"
+                className="bi bi-x-lg btn btn-outline-danger mt-3"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               >
+                {" "}
                 Cancel
               </button>
             </div>
@@ -2220,21 +2200,29 @@ export function ManKiBaatComponent({ data, users }) {
               </div>
 
               {/* Displaying advisor information */}
-              {advisor.map((advisor, index) => (
+              {user.map((u, index) => (
                 <div key={index} className="user-info">
                   <img
-                    className="mt-2 p-1"
-                    src={`http://localhost:3001/${advisor.Image}`}
-                    alt="Advisor Profile"
+                    className="mb-3"
+                    src={`http://localhost:3001/${u.advisorDetails.Image}`}
+                    alt={u.advisorDetails.Name}
                     style={{
                       width: "100px",
                       height: "100px",
-                      borderRadius: "20px",
-                      boxShadow: "0 0 8px rgb(145, 144, 146)",
+                      borderRadius: "10px",
                     }}
                   />
-                  <p className="fw-semibold mt-2">
-                    Expertise:- {advisor.Expertise}
+                  <p>
+                    <strong>Name:-</strong> {u.advisorDetails.Name}
+                  </p>
+                  <p>
+                    <strong>Gender:-</strong> {u.advisorDetails.Gender}
+                  </p>
+                  <p>
+                    <strong>Expertise:-</strong> {u.advisorDetails.Expertise}
+                  </p>
+                  <p>
+                    <strong>Experience:-</strong> {u.advisorDetails.Experience}
                   </p>
                 </div>
               ))}
@@ -2246,7 +2234,7 @@ export function ManKiBaatComponent({ data, users }) {
 
               <div className="dialog-actions">
                 {/* Accept Button */}
-                <button className="accept-button">Enter the room</button>
+                <button className="accept-button">Enter The Room</button>
               </div>
             </div>
           </div>

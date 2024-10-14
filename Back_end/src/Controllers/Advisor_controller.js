@@ -394,7 +394,7 @@ const acceptNotification = async function (req, res) {
   try {
     let { user_Id } = req.params;
     let { userId } = req.token;
-    let findUser = await UserModel.findById(user_Id);
+    let findUser = await userModel.findById(user_Id);
     if (!findUser) {
       return res.status(404).send({ status: false, msg: "User not found" });
     }
@@ -402,12 +402,14 @@ const acceptNotification = async function (req, res) {
     if (!findAdvisor) {
       return res.status(404).send({ status: false, msg: "Advisor not found" });
     }
-    findUser.notification = `I am available now...`;
+    findUser.notification = `I Am Available Now...`;
     findUser.advisorDetails = {
       advisorId: findAdvisor._id,
       Name: findAdvisor.Name,
+      Gender: findAdvisor.Gender,
       Image: findAdvisor.Image,
       Expertise: findAdvisor.Expertise,
+      Experience: findAdvisor.Experience,
     };
     await findUser.save();
     return res.status(200).send({
@@ -422,8 +424,10 @@ const acceptNotification = async function (req, res) {
       advisor: {
         id: findAdvisor._id,
         name: findAdvisor.Name,
+        gender: findAdvisor.Gender,
         image: findAdvisor.Image,
         expertise: findAdvisor.Expertise,
+        experience: findAdvisor.Experience,
       },
     });
   } catch (error) {

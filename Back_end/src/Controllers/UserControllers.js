@@ -1088,10 +1088,11 @@ const sendNotification = async function (req, res) {
     if (!findUser) {
       return res.status(404).send({ status: false, msg: "User not found" });
     }
-    findAdvisor.Notification = `Are you available now?`;
+    findAdvisor.Notification = `Are You Available Now?`;
     findAdvisor.userDetails = {
       userId: findUser._id,
       name: findUser.name,
+      gender: findUser.gender,
       image: findUser.image,
       category: findUser.category,
       sub_category: findUser.sub_category,
@@ -1109,6 +1110,7 @@ const sendNotification = async function (req, res) {
       user: {
         id: findUser._id,
         name: findUser.name,
+        gender: findUser.gender,
         image: findUser.image,
         category: findUser.category,
         sub_category: findUser.sub_category,

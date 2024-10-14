@@ -3,6 +3,7 @@ import "./advisor-profile-man-ki-baat_component.css";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -112,54 +113,90 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
     fetchUser();
   }, []);
 
+  const [showModal, setShowModal] = useState(false); // Controls modal visibility
+  const [userDatas, setUserDatas] = useState([]); // Holds advisor data
+  const [selectedUserId, setSelectedUserId] = useState(""); // Selected advisorId
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredUserData, setFilteredUserData] = useState([]);
+
+  // Function to fetch advisors and store their data
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/User_All_Data");
+      const users = response.data.Data;
+
+      if (users.length > 0) {
+        // Store advisor data with id and name
+        const userList = users.map((user) => ({
+          id: user.userId,
+          name: user.name, // Assuming name field exists
+        }));
+        setUserDatas(userList);
+      } else {
+        alert("No Users Found.");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      alert("Error Fetching Users.");
+    }
+  };
+
+  // Function to open the modal and fetch advisors
+  const handleOpenModal = () => {
+    setShowModal(true);
+    fetchUsers(); // Fetch users when the modal is opened
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   const acceptNotifications = async () => {
     try {
-      // Retrieve the token from local storage
-      let token = localStorage.getItem("token");
-      console.log("Token from local storage:", token);
-
-      // Make a GET request to get the user's profile
-      let profileResponse = await axios.get(
-        "http://localhost:3001/get_user/profile",
-        {
-          headers: {
-            "x-auth-token": token,
-          },
-        }
-      );
-      console.log("Profile Response:", profileResponse);
-
-      // Update the token if needed
-      if (profileResponse.data.token) {
-        token = profileResponse.data.token; // Update the token variable
-        localStorage.setItem("token", token); // Store the new token in local storage
-        console.log("Updated Token stored in local storage:", token);
+      if (!selectedUserId) {
+        alert("Please Select An User Before Sending A Notification.");
+        return;
       }
 
-      // Make a POST request to send the notification
-      let notificationResponse = await axios.post(
-        "http://localhost:3001/Accept",
-        {}, // Provide a body here if needed
+      const token = localStorage.getItem("token"); // Ensure the token is stored in localStorage
+
+      if (!token) {
+        alert("Please Login To Send A Notification.");
+        return;
+      }
+
+      const response = await axios.post(
+        `http://localhost:3001/Accept/${selectedUserId}`,
+        {},
         {
           headers: {
-            "x-auth-token": token,
+            "x-auth-token": token, // Send token in request headers for authentication
           },
         }
       );
 
-      console.log("Notification Response:", notificationResponse);
-
-      // Show alert on successful notification send
-      if (notificationResponse.status === 200) {
-        alert("Successfully Sent Notification To User.");
+      if (response.status === 200) {
+        alert("Notification Sent Successfully.");
+        setSearchTerm(""); // Clear search term after success
+        setSelectedUserId(""); // Clear selected user after success
+        window.location.reload(); // Reload the page if necessary
       } else {
-        alert("Notification Was Not Sent. Please Try Again.");
+        alert("Failed To Send Notification.");
       }
     } catch (error) {
       console.error("Error sending notification:", error);
-      alert("Error Sending Notification. Please Check Console For Details.");
+      alert("Error Sending Notification.");
     }
   };
+
+  useEffect(() => {
+    // Filter advisors based on search term
+    const filtered = userDatas.filter((user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredUserData(filtered);
+  }, [searchTerm, userDatas]);
 
   const rejectNotifications = async () => {
     try {
@@ -635,6 +672,78 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </div>
       </div>
 
+      <Modal
+        show={showModal}
+        onHide={handleCloseModal}
+        dialogClassName="modal-dialog modal-dialog-scrollable"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-person-circle">
+            {" "}
+            Select User
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="advisorSearch">
+            <Form.Label>Search User</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Type to search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="text-white custom-placeholder"
+              style={{ backgroundColor: "black" }}
+            />
+          </Form.Group>
+          <Form.Group controlId="advisorSelectDropdown">
+            <Form.Label>Select User</Form.Label>
+            <Form.Control
+              as="select"
+              value={selectedUserId}
+              onChange={(e) => setSelectedUserId(e.target.value)}
+              className="text-white"
+              style={{ backgroundColor: "black" }}
+            >
+              <option
+                value=""
+                className="text-white"
+                style={{ backgroundColor: "black" }}
+              >
+                -- Select User --
+              </option>
+              {filteredUserData.map((user) => (
+                <option
+                  className="text-white"
+                  key={user.id}
+                  value={user.id}
+                  style={{ backgroundColor: "black" }}
+                >
+                  {user.name} (ID: {user.id})
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={handleCloseModal}
+          >
+            {" "}
+            Close
+          </Button>
+          <Button
+            className="bi bi-bell-fill"
+            variant="outline-success"
+            onClick={acceptNotifications}
+          >
+            {" "}
+            Send Notification
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title className="bi bi-person-circle">
@@ -670,7 +779,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           data-bs-toggle="modal"
           data-bs-target="#updateProfileModal"
         >
-          <span className="bi bi-pencil-fill"> Update Profile</span>
+          <span className="bi bi-pencil-square"> Update-Profile</span>
         </button>
       </div>
 
@@ -2519,17 +2628,19 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-outline-success mt-3"
+                className="bi bi-check-lg btn btn-outline-success mt-3"
                 onClick={handleSubmit}
               >
+                {" "}
                 Save changes
               </button>
               <button
                 type="button"
-                className="btn btn-outline-danger mt-3"
+                className="bi bi-x-lg btn btn-outline-danger mt-3"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               >
+                {" "}
                 Cancel
               </button>
             </div>
@@ -3050,6 +3161,9 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     <strong>Name:-</strong> {advisor.userDetails.name}
                   </p>
                   <p>
+                    <strong>Gender:-</strong> {advisor.userDetails.gender}
+                  </p>
+                  <p>
                     <strong>Category:-</strong> {advisor.userDetails.category}
                   </p>
                   <p>
@@ -3066,7 +3180,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
 
               <div className="dialog-actions">
                 {/* Accept Button */}
-                <button onClick={acceptNotifications} className="accept-button">
+                <button onClick={handleOpenModal} className="accept-button">
                   Accept
                 </button>
                 {/* Reject Button */}
