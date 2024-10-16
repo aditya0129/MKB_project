@@ -283,54 +283,90 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
     SetFilteredUserData(filtered);
   }, [SearchTerm, UserDatas]);
 
+  const [ShowModals, SetShowModals] = useState(false); // Controls modal visibility
+  const [UserData, SetUserData] = useState([]); // Holds advisor data
+  const [SelectedUserIds, SetSelectedUserIds] = useState(""); // Selected advisorId
+  const [SearchTerms, SetSearchTerms] = useState("");
+  const [FilteredUserDatas, SetFilteredUserDatas] = useState([]);
+
+  // Function to fetch advisors and store their data
+  const FetchUser = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/User_All_Data");
+      const users = response.data.Data;
+
+      if (users.length > 0) {
+        // Store advisor data with id and name
+        const userList = users.map((user) => ({
+          id: user.userId,
+          name: user.name, // Assuming name field exists
+        }));
+        SetUserData(userList);
+      } else {
+        alert("No Users Found.");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      alert("Error Fetching Users.");
+    }
+  };
+
+  // Function to open the modal and fetch advisors
+  const HandleOpenModals = () => {
+    SetShowModals(true);
+    FetchUser(); // Fetch users when the modal is opened
+  };
+
+  // Function to close the modal
+  const HandleCloseModals = () => {
+    SetShowModals(false);
+  };
+
   const busyNotifications = async () => {
     try {
-      // Retrieve the token from local storage
-      let token = localStorage.getItem("token");
-      console.log("Token from local storage:", token);
-
-      // Make a GET request to get the user's profile
-      let profileResponse = await axios.get(
-        "http://localhost:3001/get_user/profile",
-        {
-          headers: {
-            "x-auth-token": token,
-          },
-        }
-      );
-      console.log("Profile Response:", profileResponse);
-
-      // Update the token if needed
-      if (profileResponse.data.token) {
-        token = profileResponse.data.token; // Update the token variable
-        localStorage.setItem("token", token); // Store the new token in local storage
-        console.log("Updated Token stored in local storage:", token);
+      if (!SelectedUserIds) {
+        alert("Please Select An User Before Sending A Notification.");
+        return;
       }
 
-      // Make a POST request to send the notification
-      let notificationResponse = await axios.post(
-        "http://localhost:3001/Busy",
-        {}, // Provide a body here if needed
+      const token = localStorage.getItem("token"); // Ensure the token is stored in localStorage
+
+      if (!token) {
+        alert("Please Login To Send A Notification.");
+        return;
+      }
+
+      const response = await axios.post(
+        `http://localhost:3001/Busy/${SelectedUserIds}`,
+        {},
         {
           headers: {
-            "x-auth-token": token,
+            "x-auth-token": token, // Send token in request headers for authentication
           },
         }
       );
 
-      console.log("Notification Response:", notificationResponse);
-
-      // Show alert on successful notification send
-      if (notificationResponse.status === 200) {
-        alert("Successfully Sent Notification To User.");
+      if (response.status === 200) {
+        alert("Notification Sent Successfully.");
+        SetSearchTerms(""); // Clear search term after success
+        SetSelectedUserIds(""); // Clear selected user after success
+        window.location.reload(); // Reload the page if necessary
       } else {
-        alert("Notification Was Not Sent. Please Try Again.");
+        alert("Failed To Send Notification.");
       }
     } catch (error) {
       console.error("Error sending notification:", error);
-      alert("Error Sending Notification. Please check console For Details.");
+      alert("Error Sending Notification.");
     }
   };
+
+  useEffect(() => {
+    // Filter advisors based on search term
+    const filtered = UserData.filter((user) =>
+      user.name.toLowerCase().includes(SearchTerms.toLowerCase())
+    );
+    SetFilteredUserDatas(filtered);
+  }, [SearchTerms, UserData]);
 
   // Function to handle viewing notifications
   const handleViewNotifications = () => {
@@ -845,6 +881,78 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             className="bi bi-bell-fill"
             variant="outline-success"
             onClick={rejectNotifications}
+          >
+            {" "}
+            Send Notification
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={ShowModals}
+        onHide={HandleCloseModals}
+        dialogClassName="modal-dialog modal-dialog-scrollable"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-person-circle">
+            {" "}
+            Select User
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="advisorSearch">
+            <Form.Label>Search User</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Type to search..."
+              value={SearchTerms}
+              onChange={(e) => SetSearchTerms(e.target.value)}
+              className="text-white custom-placeholder"
+              style={{ backgroundColor: "black" }}
+            />
+          </Form.Group>
+          <Form.Group controlId="advisorSelectDropdown">
+            <Form.Label>Select User</Form.Label>
+            <Form.Control
+              as="select"
+              value={SelectedUserIds}
+              onChange={(e) => SetSelectedUserIds(e.target.value)}
+              className="text-white"
+              style={{ backgroundColor: "black" }}
+            >
+              <option
+                value=""
+                className="text-white"
+                style={{ backgroundColor: "black" }}
+              >
+                -- Select User --
+              </option>
+              {FilteredUserDatas.map((user) => (
+                <option
+                  className="text-white"
+                  key={user.id}
+                  value={user.id}
+                  style={{ backgroundColor: "black" }}
+                >
+                  {user.name} (ID: {user.id})
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={HandleCloseModals}
+          >
+            {" "}
+            Close
+          </Button>
+          <Button
+            className="bi bi-bell-fill"
+            variant="outline-success"
+            onClick={busyNotifications}
           >
             {" "}
             Send Notification
@@ -3296,7 +3404,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   Reject
                 </button>
                 {/* Busy Button */}
-                <button onClick={busyNotifications} className="busy-button">
+                <button onClick={HandleOpenModals} className="busy-button">
                   Busy
                 </button>
               </div>
