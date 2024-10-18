@@ -7,6 +7,8 @@ import "slick-carousel/slick/slick-theme.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import io from "socket.io-client";
+import Peer from "peerjs";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
@@ -217,6 +219,17 @@ export function ManKiBaatComponent({ data, users }) {
     );
     setFilteredAdvisorData(filtered);
   }, [searchTerm, advisorDatas]);
+
+  const [link, setLink] = useState("http://127.0.0.1:3030/");
+  const [ShowModal, SetShowModal] = useState(false);
+
+  const HandleModalOpen = () => {
+    SetShowModal(true);
+  };
+
+  const HandleModalClose = () => {
+    SetShowModal(false);
+  };
 
   // Define arrow components before using them in settings
   const SampleNextArrow = (props) => {
@@ -893,6 +906,34 @@ export function ManKiBaatComponent({ data, users }) {
         </Modal.Footer>
       </Modal>
 
+      <div>
+        <Modal show={ShowModal} onHide={HandleModalClose}>
+          <Modal.Header closeButton>
+            <Modal.Title className="bi bi-link-45deg"> Room Link</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>
+              Your Room Link is:{" "}
+              <a href={link} target="_blank" rel="noopener noreferrer">
+                {link}
+              </a>
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              className="bi bi-x-lg"
+              variant="outline-danger"
+              onClick={HandleModalClose}
+            >
+              {" "}
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <div id="video-grid" style={{ display: "flex" }}></div>
+      </div>
+
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title className="bi bi-person-circle">
@@ -928,7 +969,7 @@ export function ManKiBaatComponent({ data, users }) {
           data-bs-toggle="modal"
           data-bs-target="#updateProfileModal"
         >
-          <span className="bi bi-pencil-square"> Update-Profile</span>
+          <span className="bi bi-pencil-square"> Update Profile</span>
         </button>
       </div>
 
@@ -2229,12 +2270,24 @@ export function ManKiBaatComponent({ data, users }) {
 
               {/* User Notifications */}
               {user.map((u, index) => (
-                <p key={index}>{u.notification}</p>
+                <p key={index} className="bi bi-chat-quote-fill">
+                  {" "}
+                  {u.notification}
+                </p>
               ))}
 
               <div className="dialog-actions">
-                {/* Accept Button */}
-                <button className="accept-button">Enter The Room</button>
+                <button
+                  className="reject-button bi bi-link"
+                  onClick={HandleModalOpen}
+                >
+                  {" "}
+                  Get Link
+                </button>
+                <button className="accept-button bi bi-send-check-fill">
+                  {" "}
+                  Send Link
+                </button>
               </div>
             </div>
           </div>

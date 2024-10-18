@@ -3310,40 +3310,6 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </div>
       </div>
 
-      {/* <div className="notification-page">
-        {isDialogOpen && (
-          <div className="dialog-overlay">
-            <div className="dialog">
-              <h3>Notification</h3>
-              {user.map((u, index) => (
-                <img
-                  key={index}
-                  src={`http://localhost:3001/${u.image}`}
-                  alt=""
-                />
-              ))}
-
-              {advisors.map((advisor, index) => (
-                <p key={index}>{advisor.Notification}</p>
-              ))}
-              <div className="dialog-actions">
-                <button onClick={handleAccept} className="accept-button">
-                  Accept
-                </button>
-
-                <button onClick={handleReject} className="reject-button">
-                  Reject
-                </button>
-
-                <button onClick={handleBusy} className="busy-button">
-                  Busy
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div> */}
-
       <div className="notification-page">
         {/* Dialog for notification */}
         {isDialogOpen && (
@@ -3391,8 +3357,18 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
 
               {/* Advisor Notifications */}
               {advisors.map((advisor, index) => (
-                <p key={index}>{advisor.Notification}</p>
+                <p key={index} className="bi bi-chat-quote-fill">
+                  {" "}
+                  {advisor.Notification}
+                </p>
               ))}
+
+              <div>
+                <button className="btn btn-outline-info bi bi-link">
+                  {" "}
+                  Join Link
+                </button>
+              </div>
 
               <div className="dialog-actions">
                 {/* Accept Button */}
