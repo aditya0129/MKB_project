@@ -13,6 +13,7 @@ const {
   User_Home,
   forget_password,
   sendNotification,
+  sendLink,
   update_Password,
   updateProfile,
 } = require("../Controllers/UserControllers");
@@ -87,6 +88,7 @@ const uplode = multer({ storage: storage, fileFilter: fileFilter });
 router.post("/Register", uplode.single("image"), Register_User);
 router.post("/Login", Login_user);
 router.post("/Notification/:advisorId", isAuthenticated, sendNotification);
+router.post("/sendLink/:advisorId", isAuthenticated, sendLink);
 router.get("/User_Home/Advisor_detail", isAuthenticated, User_Home);
 router.get("/get_user/profile", isAuthenticated, get_Users);
 router.put("/user/:userId/profile", Update_User);

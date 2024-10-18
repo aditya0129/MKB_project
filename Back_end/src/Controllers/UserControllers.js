@@ -86,7 +86,6 @@ const Register_User = async function (req, res) {
         msg: "email is already registered   please use another email",
       });
     }
-    // console.log(checkEmail);
 
     if (!password)
       return res
@@ -266,7 +265,6 @@ const Login_user = async function (req, res) {
         .send({ status: false, MSG: "Please provide valid email" });
     }
     let verifyUser = await UserModel.findOne({ email: email });
-    console.log(verifyUser._id);
     if (!verifyUser) {
       return res.status(400).send({
         status: false,
@@ -314,7 +312,7 @@ const get_Users = async function (req, res) {
     //let userId = req.params.userId;
 
     let userId = req.token.userId;
-    console.log(userId);
+
     if (!isValidObjectId(userId))
       return res
         .status(400)
@@ -528,9 +526,9 @@ const Update_User = async function (req, res) {
 // Send email
 // transporter.sendMail(mailOptions, (error, info) => {
 //   if (error) {
-//     return console.log(error);
+//     return
 //   }
-//   console.log('Message sent: %s', info.messageId);
+//
 // });
 
 //////////////////////////////////////////////////////////////send_otp////////////////////////////////////////////////
@@ -701,7 +699,7 @@ const Get_All_User = async function (req, res) {
 //     }
 
 //   }catch (error) {
-//     console.log(error.message)
+//
 //     return res.render('404')
 //   }
 
@@ -714,8 +712,6 @@ const mailVerification = async (req, res) => {
     }
 
     const userData = await UserModel.findOne({ _id: req.query.id });
-    console.log("userData" + userData);
-    console.log("queary id" + req.query.id);
     if (userData) {
       if (userData.is_verified == 1) {
         return res.render("mail-verification", {
@@ -737,7 +733,6 @@ const mailVerification = async (req, res) => {
       return res.render("mail-verification", { message: "User not Found!" });
     }
   } catch (error) {
-    console.log(error.message);
     return res.render("404");
   }
 };
@@ -777,7 +772,6 @@ const resetPassword = async (req, res) => {
 
     jwt.verify(token, "forget-password", async function (err, decoded) {
       if (err) {
-        console.log(err.message);
         return res.status(401).send({ status: false, message: err.message });
       } else {
         req.token = decoded;
@@ -794,7 +788,6 @@ const resetPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 8);
 
     UserModel({ email }).password = hashedPassword;
-    console.log({ password: UserModel.password });
     return res.status(200).send({
       status: true,
       msg: "password updated successfully",
@@ -966,12 +959,10 @@ const forget_password = async function (req, res) {
 const reset_password = async function (req, res) {
   try {
     if (req.query.token == undefined) {
-      console.log("something");
       return res.render("404");
     }
     const resetData = await passwordModel.findOne({ token: req.query.token });
     if (!resetData) {
-      console.log("here");
       return res.render("404");
     }
     return res.render("reset-Password", { resetData });
@@ -1121,6 +1112,60 @@ const sendNotification = async function (req, res) {
   }
 };
 
+const sendLink = async function (req, res) {
+  try {
+    let { advisorId } = req.params;
+    let { userId } = req.token;
+    let { roomId } = req.body;
+
+    if (!roomId)
+      return res
+        .status(404)
+        .send({ status: false, Msg: "please provide roomId" });
+
+    let findAdvisor = await Advisor_Model.findById(advisorId);
+    if (!findAdvisor) {
+      return res.status(404).send({ status: false, msg: "Advisor not found" });
+    }
+    let findUser = await UserModel.findById(userId);
+    if (!findUser) {
+      return res.status(404).send({ status: false, msg: "User not found" });
+    }
+
+    findAdvisor.Notification = roomId;
+
+    findAdvisor.userDetails = {
+      userId: findUser._id,
+      name: findUser.name,
+      gender: findUser.gender,
+      image: findUser.image,
+      category: findUser.category,
+      sub_category: findUser.sub_category,
+    };
+    await findAdvisor.save();
+    return res.status(200).send({
+      status: true,
+      msg: "Notification updated successfully and user details saved",
+      advisor: {
+        id: findAdvisor._id,
+        name: findAdvisor.Name,
+        notification: findAdvisor.Notification,
+        userDetails: findAdvisor.userDetails,
+      },
+      user: {
+        id: findUser._id,
+        name: findUser.name,
+        gender: findUser.gender,
+        image: findUser.image,
+        category: findUser.category,
+        sub_category: findUser.sub_category,
+      },
+    });
+  } catch (error) {
+    return res.status(500).send({ status: false, msg: error.message });
+  }
+};
+
 const updateProfile = async function (req, res) {
   try {
     let { userId } = req.token;
@@ -1172,6 +1217,7 @@ const updateProfile = async function (req, res) {
     return res.status(500).send({ status: false, msg: error.message });
   }
 };
+
 module.exports = {
   verify_otp_fp,
   send_otp_fp,
@@ -1191,4 +1237,5 @@ module.exports = {
   sendNotification,
   update_Password,
   updateProfile,
+  sendLink,
 };
