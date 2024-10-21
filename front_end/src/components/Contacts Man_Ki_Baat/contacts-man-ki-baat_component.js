@@ -9,17 +9,11 @@ import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
-  faStar,
   faPhone,
-  faComment,
-  faVideo,
-  faMinus,
-  faPlus,
-  faAnglesRight,
   faPowerOff,
   faMapMarkerAlt,
   faUserTie,
-  faUsers,
+  faCircleUp,
 } from "@fortawesome/free-solid-svg-icons";
 
 export function ContactsManKiBaat() {
@@ -76,6 +70,44 @@ export function ContactsManKiBaat() {
     navigate("/user-profile");
   };
 
+  function handleAdvisorClick() {
+    navigate("/advisor");
+  }
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [isClicked, setIsClicked] = useState(false); // Track if button is clicked
+
+  // Show or hide the button based on scroll position
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // Scroll to the top of the page when the button is clicked
+  const scrollToTop = () => {
+    setIsClicked(true); // Trigger the click animation
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Smooth scroll effect
+    });
+
+    // Remove the click animation class after some time (e.g., 1s)
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 1000); // Matches the duration of the animation
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", toggleVisibility);
+    };
+  }, []);
+
   return (
     <>
       <div id="header">
@@ -117,10 +149,12 @@ export function ContactsManKiBaat() {
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
                 >
-                  <a className="dropdown-item border border-1" href="advisor">
+                  <li
+                    className="dropdown-item text-center border border-1"
+                    onClick={handleAdvisorClick}
+                  >
                     All Advisor
-                    <FontAwesomeIcon icon={faUsers} className="ms-4" />
-                  </a>
+                  </li>
                 </div>
                 <li
                   className="ms-4"
@@ -230,6 +264,15 @@ export function ContactsManKiBaat() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {isVisible && (
+        <div
+          className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
+          onClick={scrollToTop}
+        >
+          <FontAwesomeIcon className="arrow-icon fs-2" icon={faCircleUp} />
+        </div>
+      )}
 
       <div className="container">
         <div className="row">
@@ -352,6 +395,7 @@ export function ContactsManKiBaat() {
                 <p>
                   &copy;{" "}
                   <a
+                    href="https://blinkrandomtechnologies.com"
                     class="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
@@ -359,6 +403,7 @@ export function ContactsManKiBaat() {
                   </a>
                   . All Rights Reserved. Designed by{" "}
                   <a
+                    href="https://blinkrandomtechnologies.com"
                     class="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >

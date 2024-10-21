@@ -15,6 +15,7 @@ import {
   faVideo,
   faMinus,
   faPlus,
+  faCircleUp,
 } from "@fortawesome/free-solid-svg-icons";
 
 export function HomeManKiBaatComponenet() {
@@ -135,6 +136,44 @@ export function HomeManKiBaatComponenet() {
     navigate("/user-profile");
   };
 
+  function handleAdvisorClick() {
+    navigate("/advisor");
+  }
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [isClicked, setIsClicked] = useState(false); // Track if button is clicked
+
+  // Show or hide the button based on scroll position
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // Scroll to the top of the page when the button is clicked
+  const scrollToTop = () => {
+    setIsClicked(true); // Trigger the click animation
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Smooth scroll effect
+    });
+
+    // Remove the click animation class after some time (e.g., 1s)
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 1000); // Matches the duration of the animation
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", toggleVisibility);
+    };
+  }, []);
+
   return (
     <>
       <div id="header">
@@ -176,114 +215,114 @@ export function HomeManKiBaatComponenet() {
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
                 >
-                  <a
+                  <li
                     className="dropdown-item text-center border border-1"
-                    href="advisor"
+                    onClick={handleAdvisorClick}
                   >
                     All Advisor
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Stress")}
                   >
                     Stress
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Anxiety")}
                   >
                     Anxiety
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Elicit")}
                   >
                     Elicit
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Job")}
                   >
                     Job
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Law")}
                   >
                     Law
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Marriage")}
                   >
                     Marriage
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Social issues")}
                   >
                     Social Issues
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Kisan")}
                   >
                     Kisan
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Property")}
                   >
                     Property
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Education")}
                   >
                     Education
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Carrer")}
                   >
                     Carrer
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Medical")}
                   >
                     Medical
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Love")}
                   >
                     Love
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Affair")}
                   >
                     Affair
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Breakup")}
                   >
                     Break Up
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Ex")}
                   >
                     Ex
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Hyper thinking")}
                   >
                     Hyper Thinking
-                  </a>
+                  </li>
                 </div>
                 <li
                   className="ms-4"
@@ -384,6 +423,15 @@ export function HomeManKiBaatComponenet() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {isVisible && (
+        <div
+          className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
+          onClick={scrollToTop}
+        >
+          <FontAwesomeIcon className="arrow-icon fs-2" icon={faCircleUp} />
+        </div>
+      )}
 
       <div
         className="container-fluid mt-5 advisor"
@@ -648,6 +696,7 @@ export function HomeManKiBaatComponenet() {
                 <p>
                   &copy;{" "}
                   <a
+                    href="https://blinkrandomtechnologies.com"
                     class="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
@@ -655,6 +704,7 @@ export function HomeManKiBaatComponenet() {
                   </a>
                   . All Rights Reserved. Designed by{" "}
                   <a
+                    href="https://blinkrandomtechnologies.com"
                     class="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >

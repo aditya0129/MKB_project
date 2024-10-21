@@ -9,14 +9,12 @@ import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
-  faStar,
   faPhone,
   faPowerOff,
   faUserTie,
   faBrain,
   faFilePrescription,
   faCalendarDays,
-  faCreditCard,
   faCity,
   faBuildingWheat,
   faLanguage,
@@ -25,6 +23,7 @@ import {
   faPhoneVolume,
   faMessage,
   faBell,
+  faCircleUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 
@@ -65,11 +64,14 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
     }
   }, [cookies, navigate]);
 
+  const [ShowSModalS, SetShowSModals] = useState(false); // Corrected state and setter
+
   useEffect(() => {
     async function fetchAdvisor() {
       try {
         const token = localStorage.getItem("token");
         console.log("Token:", token);
+
         const response = await axios.get(
           `http://localhost:3001/get_Advisor/profile`,
           {
@@ -85,8 +87,16 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       }
     }
 
-    fetchAdvisor();
+    fetchAdvisor(); // Fetch advisor data when component mounts
   }, []);
+
+  const HandleModalsOpen = () => {
+    SetShowSModals(true); // Corrected function call
+  };
+
+  const HandleModalsClose = () => {
+    SetShowSModals(false); // Close modal
+  };
 
   useEffect(() => {
     async function fetchUser() {
@@ -535,6 +545,40 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
     setUseError("");
   }
 
+  const [isVisible, setIsVisible] = useState(false);
+  const [isClicked, setIsClicked] = useState(false); // Track if button is clicked
+
+  // Show or hide the button based on scroll position
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // Scroll to the top of the page when the button is clicked
+  const scrollToTop = () => {
+    setIsClicked(true); // Trigger the click animation
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Smooth scroll effect
+    });
+
+    // Remove the click animation class after some time (e.g., 1s)
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 1000); // Matches the duration of the animation
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", toggleVisibility);
+    };
+  }, []);
+
   return (
     <>
       <div id="header">
@@ -576,60 +620,60 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
                 >
-                  <a className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1">
                     All Advisor
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Stress
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Anxiety
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Elicit
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Job
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Law
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Marriage
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Social Issues
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Kisan
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Property
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Education
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Carrer
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Medical
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Love
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Affair
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Break Up
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Ex
-                  </a>
-                  <a className="dropdown-item text-center border border-1">
+                  </li>
+                  <li className="dropdown-item text-center border border-1">
                     Hyper Thinking
-                  </a>
+                  </li>
                 </div>
                 {/* <li
                   onClick={handleOpenDialog}
@@ -790,7 +834,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   value={user.id}
                   style={{ backgroundColor: "black" }}
                 >
-                  {user.name} (ID: {user.id})
+                  {user.name}
                 </option>
               ))}
             </Form.Control>
@@ -862,7 +906,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   value={user.id}
                   style={{ backgroundColor: "black" }}
                 >
-                  {user.name} (ID: {user.id})
+                  {user.name}
                 </option>
               ))}
             </Form.Control>
@@ -934,7 +978,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   value={user.id}
                   style={{ backgroundColor: "black" }}
                 >
-                  {user.name} (ID: {user.id})
+                  {user.name}
                 </option>
               ))}
             </Form.Control>
@@ -956,6 +1000,39 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           >
             {" "}
             Send Notification
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={ShowSModalS} onHide={HandleModalsClose}>
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-link-45deg"> Meet Link</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Your Meet Link is:{" "}
+            {advisors.map((advisor, index) => (
+              <span key={index}>
+                <a
+                  href={advisor.Notification}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {advisor.Notification}
+                </a>
+                <br />
+              </span>
+            ))}
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={HandleModalsClose}
+          >
+            {" "}
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>
@@ -2864,6 +2941,15 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </div>
       </div>
 
+      {isVisible && (
+        <div
+          className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
+          onClick={scrollToTop}
+        >
+          <FontAwesomeIcon className="arrow-icon fs-2" icon={faCircleUp} />
+        </div>
+      )}
+
       <div
         className="container mt-5 mb-5"
         style={{
@@ -3363,11 +3449,27 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 </p>
               ))}
 
-              <div>
-                <button className="btn btn-outline-info bi bi-link">
+              {/* <div>
+                <button
+                  className="btn btn-outline-info bi bi-link"
+                  onClick={HandleModalsOpen}
+                >
                   {" "}
                   Join Link
                 </button>
+              </div> */}
+              <div>
+                {advisors.some((advisor) =>
+                  advisor.Notification?.startsWith("http")
+                ) && (
+                  <button
+                    className="btn btn-outline-info bi bi-link"
+                    onClick={HandleModalsOpen}
+                  >
+                    {" "}
+                    Join Link
+                  </button>
+                )}
               </div>
 
               <div className="dialog-actions">
@@ -3405,6 +3507,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 <p>
                   &copy;{" "}
                   <a
+                    href="https://blinkrandomtechnologies.com"
                     class="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
@@ -3412,6 +3515,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </a>
                   . All Rights Reserved. Designed by{" "}
                   <a
+                    href="https://blinkrandomtechnologies.com"
                     class="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >

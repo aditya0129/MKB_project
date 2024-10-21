@@ -7,19 +7,15 @@ import "slick-carousel/slick/slick-theme.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import io from "socket.io-client";
-import Peer from "peerjs";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEnvelope,
   faLocationDot,
   faStar,
   faMessage,
   faEye,
-  faUser,
   faPhoneVolume,
   faVideo,
   faWallet,
@@ -28,6 +24,7 @@ import {
   faChevronLeft,
   faUserTie,
   faBell,
+  faCircleUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 
@@ -220,6 +217,100 @@ export function ManKiBaatComponent({ data, users }) {
     setFilteredAdvisorData(filtered);
   }, [searchTerm, advisorDatas]);
 
+  const [ShowModals, SetShowModals] = useState(false); // Controls modal visibility
+  const [AdvisorDatas, SetAdvisorDatas] = useState([]); // Holds advisor data
+  const [SelectedAdvisorId, SetSelectedAdvisorId] = useState(""); // Selected advisorId
+  const [SearchTerm, SetSearchTerm] = useState("");
+  const [FilteredAdvisorData, SetFilteredAdvisorData] = useState([]);
+  const [roomId, setRoomId] = useState(""); // Holds the roomId
+
+  // Function to fetch advisors and store their data
+  const FetchAdvisors = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/Advisor_All_Data"
+      );
+      const advisors = response.data.Data;
+
+      if (advisors.length > 0) {
+        // Store advisor data with id and name
+        const advisorList = advisors.map((advisor) => ({
+          id: advisor.advisorId,
+          name: advisor.Name, // Assuming Name field exists
+        }));
+        SetAdvisorDatas(advisorList);
+      } else {
+        alert("No Advisors Found.");
+      }
+    } catch (error) {
+      console.error("Error fetching advisors:", error);
+      alert("Error Fetching Advisors.");
+    }
+  };
+
+  // Function to open the modal and fetch advisors
+  const HandleOpenModal = () => {
+    SetShowModals(true);
+    FetchAdvisors(); // Fetch advisors when the modal is opened
+  };
+
+  // Function to close the modal
+  const HandleCloseModal = () => {
+    SetShowModals(false);
+  };
+
+  // Function to send notifications
+  const sendLink = async () => {
+    try {
+      if (!SelectedAdvisorId) {
+        alert("Please Select An Advisor Before Sending A Notification.");
+        return;
+      }
+
+      if (!roomId) {
+        alert("Room ID Is Missing. Please Try Again.");
+        return;
+      }
+
+      const token = localStorage.getItem("token"); // Ensure the token is stored in localStorage
+
+      if (!token) {
+        alert("Please Login To Send A Notification.");
+        return;
+      }
+
+      const response = await axios.post(
+        `http://localhost:3001/sendLink/${SelectedAdvisorId}`,
+        { roomId }, // Send roomId in the request body
+        {
+          headers: {
+            "x-auth-token": token, // Send token in request headers for authentication
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert("Notification Sent Successfully.");
+        SetSearchTerm(""); // Clear search term after success
+        SetSelectedAdvisorId(""); // Clear selected advisor after success
+        window.location.reload(); // Reload the page if necessary
+      } else {
+        alert("Failed To Send Notification.");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("Error Sending Notification.");
+    }
+  };
+
+  useEffect(() => {
+    // Filter advisors based on search term
+    const filtered = AdvisorDatas.filter((advisor) =>
+      advisor.name.toLowerCase().includes(SearchTerm.toLowerCase())
+    );
+    SetFilteredAdvisorData(filtered);
+  }, [SearchTerm, AdvisorDatas]);
+
   const [link, setLink] = useState("http://127.0.0.1:3030/");
   const [ShowModal, SetShowModal] = useState(false);
 
@@ -257,7 +348,7 @@ export function ManKiBaatComponent({ data, users }) {
       >
         <FontAwesomeIcon
           icon={faChevronRight}
-          style={{ fontSize: "25px", color: "cyan" }}
+          style={{ fontSize: "30px", color: "cyan" }}
         />
       </div>
     );
@@ -288,7 +379,7 @@ export function ManKiBaatComponent({ data, users }) {
       >
         <FontAwesomeIcon
           icon={faChevronLeft}
-          style={{ fontSize: "25px", color: "blue" }}
+          style={{ fontSize: "30px", color: "blue" }}
         />
       </div>
     );
@@ -384,29 +475,25 @@ export function ManKiBaatComponent({ data, users }) {
     navigate("/advisor");
   }
 
-  const redirectToVideoChat = () => {
-    window.location.href = "http://127.0.0.1:3030";
-  };
-
   const redirectToMsgChat = () => {
     window.location.href = "http://localhost:3002";
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState(data);
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [filteredData, setFilteredData] = useState(data);
 
-  const handleSearchInputChange = (event) => {
-    const value = event.target.value;
-    setSearchQuery(value);
-    filterData(value);
-  };
+  // const handleSearchInputChange = (event) => {
+  //   const value = event.target.value;
+  //   setSearchQuery(value);
+  //   filterData(value);
+  // };
 
-  const filterData = (query) => {
-    const filtered = data.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredData(filtered);
-  };
+  // const filterData = (query) => {
+  //   const filtered = data.filter((item) =>
+  //     item.name.toLowerCase().includes(query.toLowerCase())
+  //   );
+  //   setFilteredData(filtered);
+  // };
 
   function handleContactsClick() {
     navigate("/contacts");
@@ -565,6 +652,40 @@ export function ManKiBaatComponent({ data, users }) {
     setUseErrors("");
   }
 
+  const [isVisible, setIsVisible] = useState(false);
+  const [isClicked, setIsClicked] = useState(false); // Track if button is clicked
+
+  // Show or hide the button based on scroll position
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // Scroll to the top of the page when the button is clicked
+  const scrollToTop = () => {
+    setIsClicked(true); // Trigger the click animation
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Smooth scroll effect
+    });
+
+    // Remove the click animation class after some time (e.g., 1s)
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 1000); // Matches the duration of the animation
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", toggleVisibility);
+    };
+  }, []);
+
   return (
     <>
       <div id="header">
@@ -573,7 +694,7 @@ export function ManKiBaatComponent({ data, users }) {
             <div className="col-md-6 form-group mt-2 d-flex">
               <h1 style={{ fontFamily: "French Script MT" }}>MKB</h1>
               <input
-                type="search"
+                type="text"
                 className="form-control ms-5"
                 placeholder="Search"
                 style={{ width: "200px", height: "50px" }}
@@ -607,114 +728,114 @@ export function ManKiBaatComponent({ data, users }) {
                   aria-labelledby="dropdownMenuButton"
                   style={{ cursor: "pointer" }}
                 >
-                  <a
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={handleAdvisorClick}
                   >
                     All Advisor
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Stress")}
                   >
                     Stress
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Anxiety")}
                   >
                     Anxiety
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Elicit")}
                   >
                     Elicit
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Job")}
                   >
                     Job
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Law")}
                   >
                     Law
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Marriage")}
                   >
                     Marriage
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Social issues")}
                   >
                     Social Issues
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Kisan")}
                   >
                     Kisan
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Property")}
                   >
                     Property
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Education")}
                   >
                     Education
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Carrer")}
                   >
                     Carrer
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Medical")}
                   >
                     Medical
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Love")}
                   >
                     Love
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Affair")}
                   >
                     Affair
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Breakup")}
                   >
                     Break Up
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Ex")}
                   >
                     Ex
-                  </a>
-                  <a
+                  </li>
+                  <li
                     className="dropdown-item text-center border border-1"
                     onClick={() => handleCategorySelect("Hyper thinking")}
                   >
                     Hyper Thinking
-                  </a>
+                  </li>
                 </div>
                 {/* <li
                   onClick={handleViewNotifications}
@@ -880,7 +1001,7 @@ export function ManKiBaatComponent({ data, users }) {
                   value={advisor.id}
                   style={{ backgroundColor: "black" }}
                 >
-                  {advisor.name} (ID: {advisor.id})
+                  {advisor.name}
                 </option>
               ))}
             </Form.Control>
@@ -906,33 +1027,117 @@ export function ManKiBaatComponent({ data, users }) {
         </Modal.Footer>
       </Modal>
 
-      <div>
-        <Modal show={ShowModal} onHide={HandleModalClose}>
-          <Modal.Header closeButton>
-            <Modal.Title className="bi bi-link-45deg"> Room Link</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p>
-              Your Room Link is:{" "}
-              <a href={link} target="_blank" rel="noopener noreferrer">
-                {link}
-              </a>
-            </p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              className="bi bi-x-lg"
-              variant="outline-danger"
-              onClick={HandleModalClose}
-            >
-              {" "}
-              Cancel
-            </Button>
-          </Modal.Footer>
-        </Modal>
+      <Modal show={ShowModal} onHide={HandleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-link-45deg"> Room Link</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Your Room Link is:{" "}
+            <a href={link} target="_blank" rel="noopener noreferrer">
+              {link}
+            </a>
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={HandleModalClose}
+          >
+            {" "}
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
-        <div id="video-grid" style={{ display: "flex" }}></div>
-      </div>
+      <Modal
+        show={ShowModals}
+        onHide={HandleCloseModal}
+        dialogClassName="modal-dialog modal-dialog-scrollable"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-link-45deg">
+            {" "}
+            Select Advisor & Paste Room ID
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Room ID Input */}
+          <Form.Group className="mb-3" controlId="roomIdInput">
+            <Form.Label>Paste Room ID</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Paste Room ID"
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value)}
+              className="text-white custom-placeholder"
+              style={{ backgroundColor: "black" }}
+            />
+          </Form.Group>
+
+          {/* Search for Advisor */}
+          <Form.Group className="mb-3" controlId="advisorSearch">
+            <Form.Label>Search Advisor</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Type to search..."
+              value={SearchTerm}
+              onChange={(e) => SetSearchTerm(e.target.value)}
+              className="text-white custom-placeholder"
+              style={{ backgroundColor: "black" }}
+            />
+          </Form.Group>
+
+          {/* Advisor Selection */}
+          <Form.Group controlId="advisorSelectDropdown">
+            <Form.Label>Select Advisor</Form.Label>
+            <Form.Control
+              as="select"
+              value={SelectedAdvisorId}
+              onChange={(e) => SetSelectedAdvisorId(e.target.value)}
+              className="text-white"
+              style={{ backgroundColor: "black" }}
+            >
+              <option
+                value=""
+                className="text-white"
+                style={{ backgroundColor: "black" }}
+              >
+                -- Select Advisor --
+              </option>
+              {FilteredAdvisorData.map((advisor) => (
+                <option
+                  className="text-white"
+                  key={advisor.id}
+                  value={advisor.id}
+                  style={{ backgroundColor: "black" }}
+                >
+                  {advisor.name}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={HandleCloseModal}
+          >
+            {" "}
+            Close
+          </Button>
+          <Button
+            className="bi bi-bell-fill"
+            variant="outline-success"
+            onClick={sendLink}
+          >
+            {" "}
+            Send Notification
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
@@ -1659,6 +1864,15 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       </div>
 
+      {isVisible && (
+        <div
+          className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
+          onClick={scrollToTop}
+        >
+          <FontAwesomeIcon className="arrow-icon fs-2" icon={faCircleUp} />
+        </div>
+      )}
+
       <div className="container">
         <div className="row">
           <div className="col-md-4 mt-5">
@@ -1770,7 +1984,6 @@ export function ManKiBaatComponent({ data, users }) {
                 color: "white",
                 // boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
-              onClick={redirectToVideoChat}
             >
               <FontAwesomeIcon className="me-2" icon={faVideo} />
               Call
@@ -2277,17 +2490,26 @@ export function ManKiBaatComponent({ data, users }) {
               ))}
 
               <div className="dialog-actions">
-                <button
-                  className="reject-button bi bi-link"
-                  onClick={HandleModalOpen}
-                >
-                  {" "}
-                  Get Link
-                </button>
-                <button className="accept-button bi bi-send-check-fill">
-                  {" "}
-                  Send Link
-                </button>
+                {user.some(
+                  (u) => u.notification === "I Am Available Now..."
+                ) && (
+                  <>
+                    <button
+                      className="reject-button bi bi-link"
+                      onClick={HandleModalOpen}
+                    >
+                      {" "}
+                      Get Link
+                    </button>
+                    <button
+                      className="accept-button bi bi-send-check-fill"
+                      onClick={HandleOpenModal}
+                    >
+                      {" "}
+                      Send Link
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -2310,6 +2532,7 @@ export function ManKiBaatComponent({ data, users }) {
                 <p>
                   &copy;{" "}
                   <a
+                    href="https://blinkrandomtechnologies.com"
                     class="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
@@ -2317,6 +2540,7 @@ export function ManKiBaatComponent({ data, users }) {
                   </a>
                   . All Rights Reserved. Designed by{" "}
                   <a
+                    href="https://blinkrandomtechnologies.com"
                     class="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
