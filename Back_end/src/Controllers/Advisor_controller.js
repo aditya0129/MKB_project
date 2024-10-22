@@ -236,7 +236,7 @@ const Advisor_Login = async function (req, res) {
         .send({ status: false, MSG: "Please provide valid email" });
     }
     let verifyUser = await Advisor_Model.findOne({ Email: Email });
-    console.log(verifyUser._id);
+
     if (!verifyUser) {
       return res.status(400).send({
         status: false,
@@ -284,14 +284,14 @@ const get_Advisor = async function (req, res) {
     //let userId = req.params.userId;
 
     let userId = req.token.userId;
-    console.log(userId);
+
     if (!isValidObjectId(userId))
       return res
         .status(400)
         .send({ status: false, message: "User is invalid" });
 
     let getData = await Advisor_Model.find({ _id: userId });
-    console.log(getData);
+
     if (!getData)
       return res.status(404).send({ status: false, message: "user not found" });
 
@@ -513,8 +513,7 @@ const AdvisorMailVerification = async (req, res) => {
     }
 
     const advisorData = await Advisor_Model.findOne({ _id: req.query.id });
-    console.log("advisorData" + advisorData);
-    console.log("queary id" + req.query.id);
+
     if (advisorData) {
       if (advisorData.is_verified == 1) {
         return res.render("mail-verification", {
@@ -536,7 +535,6 @@ const AdvisorMailVerification = async (req, res) => {
       return res.render("mail-verification", { message: "Advisor not Found!" });
     }
   } catch (error) {
-    console.log(error.message);
     return res.render("404");
   }
 };
