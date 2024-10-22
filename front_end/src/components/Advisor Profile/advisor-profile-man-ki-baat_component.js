@@ -30,8 +30,6 @@ import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 export function AdvisorProfileManKiBaatComponent({ advisor }) {
   const [isOpen, setIsOpen] = useState(false);
   const [advisors, setAdvisors] = useState([]);
-  const [user, setUser] = useState([]);
-  const [notificationCount, setNotificationCount] = useState(0); // State to store notification count
   const [formData, setFormData] = useState({
     Email: advisor?.Email || "",
     Number: advisor?.Number || "",
@@ -55,7 +53,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
   // State to control the visibility of the dialog
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [show, setShow] = useState(false);
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [cookies, removeCookie] = useCookies();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -97,31 +95,6 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
   const HandleModalsClose = () => {
     SetShowSModals(false); // Close modal
   };
-
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const token = localStorage.getItem("token");
-        console.log("Token:", token);
-        const response = await axios.get(
-          `http://localhost:3001/get_user/profile`,
-          {
-            headers: {
-              "x-auth-token": token,
-            },
-          }
-        );
-        console.log("Response:", response);
-        setUser(response.data.data);
-        // Set the notification count to the number of users fetched
-        setNotificationCount(response.data.data.length);
-      } catch (error) {
-        console.error("Error fetching advisor data:", error);
-      }
-    }
-
-    fetchUser();
-  }, []);
 
   const [showModal, setShowModal] = useState(false); // Controls modal visibility
   const [userDatas, setUserDatas] = useState([]); // Holds advisor data
@@ -381,7 +354,6 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
   // Function to handle viewing notifications
   const handleViewNotifications = () => {
     setIsDialogOpen(true);
-    setNotificationCount(0); // Reset the count when viewing notifications
   };
 
   const toggleDropdown = () => {
@@ -675,23 +647,6 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     Hyper Thinking
                   </li>
                 </div>
-                {/* <li
-                  onClick={handleOpenDialog}
-                  className="open-dialog-button ms-3"
-                  style={{
-                    display: "inline-block",
-                    // color: "black",
-                    padding: "15px 10px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Notification
-                  <FontAwesomeIcon
-                    icon={faBell}
-                    className="ms-2"
-                    style={{ color: "white" }}
-                  />
-                </li> */}
                 <li
                   onClick={handleViewNotifications}
                   className="open-dialog-button ms-3"
@@ -707,24 +662,6 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     className="ms-2"
                     style={{ color: "white" }}
                   />
-                  {/* Display the notification count */}
-                  {notificationCount > 0 && (
-                    <span
-                      className="notification-count"
-                      style={{
-                        position: "absolute",
-                        top: "5px",
-                        right: "5px",
-                        backgroundColor: "red",
-                        color: "white",
-                        borderRadius: "50%",
-                        padding: "2px 6px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      {notificationCount}
-                    </span>
-                  )}
                 </li>
                 <li
                   className="ms-3"
@@ -3229,7 +3166,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             <h4>ABOUT</h4>
             <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
             {advisors.map((advisor, index) => (
-              <p>{advisor.About}</p>
+              <p key={index}>{advisor.About}</p>
             ))}
           </div>
           <div>
@@ -3381,7 +3318,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               <h4>GOAL</h4>
               <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
               {advisors.map((advisor, index) => (
-                <p>{advisor.Goal}</p>
+                <p key={index}>{advisor.Goal}</p>
               ))}
               <div className="mb-4">
                 <button className="btn btn-outline-success p-1 w-25 mt-3">
@@ -3449,15 +3386,6 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 </p>
               ))}
 
-              {/* <div>
-                <button
-                  className="btn btn-outline-info bi bi-link"
-                  onClick={HandleModalsOpen}
-                >
-                  {" "}
-                  Join Link
-                </button>
-              </div> */}
               <div>
                 {advisors.some((advisor) =>
                   advisor.Notification?.startsWith("http")
@@ -3492,13 +3420,13 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       </div>
 
       <div
-        class="container-fluid text-white"
+        className="container-fluid text-white"
         style={{ background: "linear-gradient(135deg, blue,red)" }}
       >
-        <div class="container text-center">
-          <div class="row d-flex align-items-center justify-content-center">
-            <div class="col-lg-8 col-md-6">
-              <div class="" style={{ height: "105px" }}>
+        <div className="container text-center">
+          <div className="row d-flex align-items-center justify-content-center">
+            <div className="col-lg-8 col-md-6">
+              <div className="" style={{ height: "105px" }}>
                 <span
                   style={{ fontSize: "30px", textShadow: "3px 2px 3px red" }}
                 >
@@ -3508,7 +3436,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   &copy;{" "}
                   <a
                     href="https://blinkrandomtechnologies.com"
-                    class="text-white border-bottom"
+                    className="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
                     Blink Random Technologies
@@ -3516,7 +3444,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   . All Rights Reserved. Designed by{" "}
                   <a
                     href="https://blinkrandomtechnologies.com"
-                    class="text-white border-bottom"
+                    className="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
                     Saurabh Karn & Aditya Prajapati{" "}

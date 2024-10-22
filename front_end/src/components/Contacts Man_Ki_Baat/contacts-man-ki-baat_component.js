@@ -20,7 +20,7 @@ export function ContactsManKiBaat() {
   const [isOpen, setIsOpen] = useState(false);
   const [contact, setContact] = useState([]);
   const [show, setShow] = useState(false);
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [cookies, removeCookie] = useCookies();
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
@@ -380,13 +380,13 @@ export function ContactsManKiBaat() {
       </div>
 
       <div
-        class="container-fluid text-white"
+        className="container-fluid text-white"
         style={{ background: "linear-gradient(135deg, blue,red)" }}
       >
-        <div class="container text-center">
-          <div class="row d-flex align-items-center justify-content-center">
-            <div class="col-lg-8 col-md-6">
-              <div class="" style={{ height: "105px" }}>
+        <div className="container text-center">
+          <div className="row d-flex align-items-center justify-content-center">
+            <div className="col-lg-8 col-md-6">
+              <div className="" style={{ height: "105px" }}>
                 <span
                   style={{ fontSize: "30px", textShadow: "3px 2px 3px red" }}
                 >
@@ -396,7 +396,7 @@ export function ContactsManKiBaat() {
                   &copy;{" "}
                   <a
                     href="https://blinkrandomtechnologies.com"
-                    class="text-white border-bottom"
+                    className="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
                     Blink Random Technologies
@@ -404,7 +404,7 @@ export function ContactsManKiBaat() {
                   . All Rights Reserved. Designed by{" "}
                   <a
                     href="https://blinkrandomtechnologies.com"
-                    class="text-white border-bottom"
+                    className="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
                     Saurabh Karn & Aditya Prajapati{" "}

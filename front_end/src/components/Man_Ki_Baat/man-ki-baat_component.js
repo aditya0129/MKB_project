@@ -33,13 +33,11 @@ export function ManKiBaatComponent({ data, users }) {
   const [user, setUser] = useState([]);
   const [advisorData, setAdvisorData] = useState([]);
   const [advisors, setAdvisors] = useState([]);
-  const [advisor, setAdvisor] = useState([]);
   const [wallet, setWallet] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(""); // State for selected category
   const [showInitialData, setShowInitialData] = useState(true); // State to control visibility of initial data
   // State to control the visibility of the dialog
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(0); // State to store notification count
   const [formData, setFormData] = useState({
     email: users?.email || "",
     number: users?.number || "",
@@ -53,7 +51,7 @@ export function ManKiBaatComponent({ data, users }) {
     image: null,
   });
   const [show, setShow] = useState(false);
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [cookies, removeCookie] = useCookies();
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
@@ -311,7 +309,7 @@ export function ManKiBaatComponent({ data, users }) {
     SetFilteredAdvisorData(filtered);
   }, [SearchTerm, AdvisorDatas]);
 
-  const [link, setLink] = useState("http://127.0.0.1:3030/");
+  const [link] = useState("http://127.0.0.1:3030/");
   const [ShowModal, SetShowModal] = useState(false);
 
   const HandleModalOpen = () => {
@@ -414,31 +412,6 @@ export function ManKiBaatComponent({ data, users }) {
     fetchAdvisors();
   }, []);
 
-  useEffect(() => {
-    async function fetchAdvisorProfile() {
-      try {
-        const token = localStorage.getItem("token");
-        console.log("Token:", token);
-        const response = await axios.get(
-          `http://localhost:3001/get_Advisor/profile`,
-          {
-            headers: {
-              "x-auth-token": token,
-            },
-          }
-        );
-        console.log("Response:", response);
-        setAdvisor(response.data.data);
-        // Set the notification count to the number of advisors fetched
-        setNotificationCount(response.data.data.length);
-      } catch (error) {
-        console.error("Error fetching advisor data:", error);
-      }
-    }
-
-    fetchAdvisorProfile();
-  }, []);
-
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     setIsOpen(false); // Close dropdown after selection
@@ -506,7 +479,6 @@ export function ManKiBaatComponent({ data, users }) {
   // Function to handle viewing notifications
   const handleViewNotifications = () => {
     setIsDialogOpen(true);
-    setNotificationCount(0); // Reset the count when viewing notifications
   };
 
   // Handle input changes
@@ -837,23 +809,6 @@ export function ManKiBaatComponent({ data, users }) {
                     Hyper Thinking
                   </li>
                 </div>
-                {/* <li
-                  onClick={handleViewNotifications}
-                  className="ms-3"
-                  style={{
-                    display: "inline-block",
-                    // color: "black",
-                    padding: "15px 10px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Notification
-                  <FontAwesomeIcon
-                    icon={faBell}
-                    style={{ color: "white" }}
-                    className="ms-2"
-                  />
-                </li> */}
                 <li
                   onClick={handleViewNotifications}
                   className="open-dialog-button ms-3"
@@ -869,24 +824,6 @@ export function ManKiBaatComponent({ data, users }) {
                     className="ms-2"
                     style={{ color: "white" }}
                   />
-                  {/* Display the notification count */}
-                  {notificationCount > 0 && (
-                    <span
-                      className="notification-count"
-                      style={{
-                        position: "absolute",
-                        top: "5px",
-                        right: "5px",
-                        backgroundColor: "red",
-                        color: "white",
-                        borderRadius: "50%",
-                        padding: "2px 6px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      {notificationCount}
-                    </span>
-                  )}
                 </li>
                 <li
                   className="ms-3"
@@ -1989,7 +1926,7 @@ export function ManKiBaatComponent({ data, users }) {
               Call
             </button>
             {wallet.map((balance, index) => (
-              <p className="mt-4 fw-semibold fs-5">
+              <p key={index} className="mt-4 fw-semibold fs-5">
                 <FontAwesomeIcon
                   icon={faWallet}
                   onClick={handleWalletClick}
@@ -2286,7 +2223,9 @@ export function ManKiBaatComponent({ data, users }) {
               <h3>DESCRIPTION</h3>
               <hr className="w-25 d-flex m-auto mb-4"></hr>
               {user.map((u, index) => (
-                <p style={{ textAlign: "justify" }}>{u.description}</p>
+                <p key={index} style={{ textAlign: "justify" }}>
+                  {u.description}
+                </p>
               ))}
             </div>
           </div>
@@ -2303,22 +2242,22 @@ export function ManKiBaatComponent({ data, users }) {
                   key={index} // Add unique key for each button in map
                   className={`btn mt-3 ms-4 w-25 ${
                     u.category_strength <= 4
-                      ? "btn-outline-success"
+                      ? "btn-outline-success bi bi-1-circle"
                       : u.category_strength <= 7
-                      ? "btn-outline-warning"
-                      : "btn-outline-danger"
+                      ? "btn-outline-warning bi bi-2-circle"
+                      : "btn-outline-danger bi bi-radioactive"
                   }`}
                 >
                   {u.category_strength <= 4
-                    ? "Primary"
+                    ? " Primary"
                     : u.category_strength <= 7
-                    ? "Secondary"
-                    : "Danger"}
+                    ? " Secondary"
+                    : " Danger"}
                 </button>
               ))}
             </h3>
             {user.map((u, index) => (
-              <div>
+              <div key={index}>
                 <p className="text-primary">{u.category}</p>
                 <p className="fw-bold">
                   {user.map((u, index) => (
@@ -2350,17 +2289,17 @@ export function ManKiBaatComponent({ data, users }) {
                       key={index} // Add unique key for each button in map
                       className={`btn mt-3 ms-4 w-25 ${
                         u.subcategory_strength <= 4
-                          ? "btn-outline-success"
+                          ? "btn-outline-success bi bi-1-circle"
                           : u.subcategory_strength <= 7
-                          ? "btn-outline-warning"
-                          : "btn-outline-danger"
+                          ? "btn-outline-warning bi bi-2-circle"
+                          : "btn-outline-danger bi bi-radioactive"
                       }`}
                     >
                       {u.subcategory_strength <= 4
-                        ? "Primary"
+                        ? " Primary"
                         : u.subcategory_strength <= 7
-                        ? "Secondary"
-                        : "Danger"}
+                        ? " Secondary"
+                        : " Danger"}
                     </button>
                   ))}
                 </h3>
@@ -2517,13 +2456,13 @@ export function ManKiBaatComponent({ data, users }) {
       </div>
 
       <div
-        class="container-fluid text-white"
+        className="container-fluid text-white"
         style={{ background: "linear-gradient(135deg, blue,red)" }}
       >
-        <div class="container text-center">
-          <div class="row d-flex align-items-center justify-content-center">
-            <div class="col-lg-8 col-md-6">
-              <div class="" style={{ height: "105px" }}>
+        <div className="container text-center">
+          <div className="row d-flex align-items-center justify-content-center">
+            <div className="col-lg-8 col-md-6">
+              <div className="" style={{ height: "105px" }}>
                 <span
                   style={{ fontSize: "30px", textShadow: "3px 2px 3px red" }}
                 >
@@ -2533,7 +2472,7 @@ export function ManKiBaatComponent({ data, users }) {
                   &copy;{" "}
                   <a
                     href="https://blinkrandomtechnologies.com"
-                    class="text-white border-bottom"
+                    className="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
                     Blink Random Technologies
@@ -2541,7 +2480,7 @@ export function ManKiBaatComponent({ data, users }) {
                   . All Rights Reserved. Designed by{" "}
                   <a
                     href="https://blinkrandomtechnologies.com"
-                    class="text-white border-bottom"
+                    className="text-white border-bottom"
                     style={{ textDecoration: "none" }}
                   >
                     Saurabh Karn & Aditya Prajapati{" "}
