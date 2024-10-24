@@ -40,7 +40,6 @@ export function AdvisorManKiBaatComponent() {
     async function fetchUser() {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token);
         const response = await axios.get(
           `http://localhost:3001/get_user/profile`,
           {
@@ -49,7 +48,6 @@ export function AdvisorManKiBaatComponent() {
             },
           }
         );
-        console.log("Response:", response);
         setUser(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
@@ -386,7 +384,7 @@ export function AdvisorManKiBaatComponent() {
 
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
-          <Modal.Title className="bi bi-person-circle">
+          <Modal.Title className="bi bi-power">
             {" "}
             Confirm Logout
           </Modal.Title>

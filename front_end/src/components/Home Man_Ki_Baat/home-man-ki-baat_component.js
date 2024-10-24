@@ -43,7 +43,6 @@ export function HomeManKiBaatComponenet() {
     async function fetchAdvisorExpertise() {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token);
         const response = await axios.get(
           `http://localhost:3001/User_Home/Advisor_detail`,
           {
@@ -52,7 +51,6 @@ export function HomeManKiBaatComponenet() {
             },
           }
         );
-        console.log("Response:", response);
         setExpertise(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
@@ -66,7 +64,6 @@ export function HomeManKiBaatComponenet() {
     async function fetchUser() {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token);
         const response = await axios.get(
           `http://localhost:3001/get_user/profile`,
           {
@@ -75,7 +72,6 @@ export function HomeManKiBaatComponenet() {
             },
           }
         );
-        console.log("Response:", response);
         setUser(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
@@ -398,7 +394,7 @@ export function HomeManKiBaatComponenet() {
 
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
-          <Modal.Title className="bi bi-person-circle">
+          <Modal.Title className="bi bi-power">
             {" "}
             Confirm Logout
           </Modal.Title>

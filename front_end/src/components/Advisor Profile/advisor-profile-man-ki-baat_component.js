@@ -976,10 +976,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
 
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
-          <Modal.Title className="bi bi-person-circle">
-            {" "}
-            Confirm Logout
-          </Modal.Title>
+          <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
         <Modal.Footer>
@@ -1024,7 +1021,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           <div className="modal-content">
             <div className="modal-header">
               <h3 className="modal-title" id="updateProfileModalLabel">
-                <span className="bi bi-person-circle"> Update Profile</span>
+                <span className="bi bi-pencil-square"> Update Profile</span>
               </h3>
               <button
                 type="button"
@@ -3268,47 +3265,64 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   <h4>SKILLS</h4>
                   {advisors.map((advisor, index) => (
                     <div key={index}>
-                      <p>Communication</p>
-                      <meter
-                        min="1"
-                        max="10"
-                        value={advisor.Communication_Strength} // Dynamic value for Communication
-                        className={`w-75 mb-3 ${
-                          advisor.Communication_Strength <= 4
-                            ? "red-meter"
-                            : advisor.Communication_Strength <= 7
-                            ? "yellow-meter"
-                            : "green-meter"
-                        }`}
-                      ></meter>
+                      <p>Communication Skill</p>
+                      <div>
+                        <meter
+                          className={`custom-meter w-75 mb-3 ${
+                            advisor.Communication_Strength <= 4
+                              ? "red-meter"
+                              : advisor.Communication_Strength <= 7
+                              ? "yellow-meter"
+                              : "green-meter"
+                          }`}
+                          style={{
+                            "--meter-value":
+                              advisor.Communication_Strength * 10 + "%",
+                          }}
+                          min="1"
+                          max="10"
+                          value={advisor.Communication_Strength}
+                        ></meter>
+                      </div>
 
-                      <p>Problem Solving</p>
-                      <meter
-                        min="1"
-                        max="10"
-                        value={advisor.P_S_Strength} // Dynamic value for Problem Solving
-                        className={`w-75 mb-3 ${
-                          advisor.P_S_Strength <= 4
-                            ? "red-meter"
-                            : advisor.P_S_Strength <= 7
-                            ? "yellow-meter"
-                            : "green-meter"
-                        }`}
-                      ></meter>
+                      <p>Problem Solving Skill</p>
+                      <div>
+                        <meter
+                          className={`custom-meter w-75 mb-3 ${
+                            advisor.P_S_Strength <= 4
+                              ? "red-meter"
+                              : advisor.P_S_Strength <= 7
+                              ? "yellow-meter"
+                              : "green-meter"
+                          }`}
+                          style={{
+                            "--meter-value": advisor.P_S_Strength * 10 + "%",
+                          }}
+                          min="1"
+                          max="10"
+                          value={advisor.P_S_Strength}
+                        ></meter>
+                      </div>
 
                       <p>Leadership Experience</p>
-                      <meter
-                        min="1"
-                        max="10"
-                        value={advisor.Leadership_Experience_Strength} // Dynamic value for Leadership
-                        className={`w-75 mb-3 ${
-                          advisor.Leadership_Experience_Strength <= 4
-                            ? "red-meter"
-                            : advisor.Leadership_Experience_Strength <= 7
-                            ? "yellow-meter"
-                            : "green-meter"
-                        }`}
-                      ></meter>
+                      <div>
+                        <meter
+                          className={`custom-meter w-75 mb-3 ${
+                            advisor.Leadership_Experience_Strength <= 4
+                              ? "red-meter"
+                              : advisor.Leadership_Experience_Strength <= 7
+                              ? "yellow-meter"
+                              : "green-meter"
+                          }`}
+                          style={{
+                            "--meter-value":
+                              advisor.Leadership_Experience_Strength * 10 + "%",
+                          }}
+                          min="1"
+                          max="10"
+                          value={advisor.Leadership_Experience_Strength}
+                        ></meter>
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -31,7 +31,6 @@ export function ContactsManKiBaat() {
     async function fetchUserContact() {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token);
         const response = await axios.get(
           `http://localhost:3001/get_user/profile`,
           {
@@ -40,7 +39,6 @@ export function ContactsManKiBaat() {
             },
           }
         );
-        console.log("Response:", response);
         setContact(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
@@ -239,7 +237,7 @@ export function ContactsManKiBaat() {
 
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
-          <Modal.Title className="bi bi-person-circle">
+          <Modal.Title className="bi bi-power">
             {" "}
             Confirm Logout
           </Modal.Title>

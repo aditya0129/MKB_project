@@ -25,72 +25,44 @@
   border-top: 8px solid blue;
 }
 
-/* Default meter styling */
-meter {
-  width: 100%;
-  height: 20px; /* Adjust height */
-  border: 1px solid #ddd; /* Optional border */
-  border-radius: 5px; /* Rounded corners */
+/* Custom meter container */
+.custom-meter {
+  width: 50%;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Green meter for category_strength 1 to 4 */
-.green-meter::-webkit-meter-bar {
-  background-color: #e0f7e4; /* Light green background */
+/* Green meter for values 1 to 4 */
+.green-meter::before {
+  content: "";
+  display: block;
+  height: 100%;
+  background-color: #28a745;
+  width: var(--meter-value);
+  transition: width 0.3s ease-in-out;
 }
 
-.green-meter::-webkit-meter-optimum-value {
-  background-color: #28a745; /* Green value bar */
+/* Yellow meter for values 5 to 7 */
+.yellow-meter::before {
+  content: "";
+  display: block;
+  height: 100%;
+  background-color: #ffc107;
+  width: var(--meter-value);
+  transition: width 0.3s ease-in-out;
 }
 
-.green-meter::-webkit-meter-suboptimum-value {
-  background-color: #28a745; /* Same green for suboptimum */
-}
-
-.green-meter::-webkit-meter-even-less-good-value {
-  background-color: #28a745; /* Same green for less good value */
-}
-
-/* Yellow meter for category_strength 5 to 7 */
-.yellow-meter::-webkit-meter-bar {
-  background-color: #fff7e0; /* Light yellow background */
-}
-
-.yellow-meter::-webkit-meter-suboptimum-value {
-  background-color: #ffc107; /* Yellow value bar */
-}
-
-.yellow-meter::-webkit-meter-optimum-value {
-  background-color: #ffc107; /* Yellow value */
-}
-
-/* Red meter for category_strength 8 to 10 */
-.red-meter::-webkit-meter-bar {
-  background-color: #f7e0e0; /* Light red background */
-}
-
-.red-meter::-webkit-meter-suboptimum-value {
-  background-color: #dc3545; /* Red value bar */
-}
-
-.red-meter::-webkit-meter-optimum-value {
-  background-color: #dc3545; /* Red value */
-}
-
-/* For Firefox support */
-meter::-moz-meter-bar {
-  background-color: #ddd; /* Default bar */
-}
-
-.green-meter::-moz-meter-optimum {
-  background-color: #28a745; /* Green in Firefox */
-}
-
-.yellow-meter::-moz-meter-sub-optimum {
-  background-color: #ffc107; /* Yellow in Firefox */
-}
-
-.red-meter::-moz-meter-sub-sub-optimum {
-  background-color: #dc3545; /* Red in Firefox */
+/* Red meter for values 8 to 10 */
+.red-meter::before {
+  content: "";
+  display: block;
+  height: 100%;
+  background-color: #dc3545;
+  width: var(--meter-value);
+  transition: width 0.3s ease-in-out;
 }
 
 .custom-modal .modal-content {

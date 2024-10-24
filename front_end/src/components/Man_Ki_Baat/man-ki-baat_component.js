@@ -62,7 +62,6 @@ export function ManKiBaatComponent({ data, users }) {
     async function fetchUser() {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token);
         const response = await axios.get(
           `http://localhost:3001/get_user/profile`,
           {
@@ -71,7 +70,6 @@ export function ManKiBaatComponent({ data, users }) {
             },
           }
         );
-        console.log("Response:", response);
         setUser(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
@@ -85,7 +83,6 @@ export function ManKiBaatComponent({ data, users }) {
     async function fetchAdvisorExpertise() {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token);
         const response = await axios.get(
           `http://localhost:3001/User_Home/Advisor_detail`,
           {
@@ -94,7 +91,6 @@ export function ManKiBaatComponent({ data, users }) {
             },
           }
         );
-        console.log("Response:", response);
         setAdvisors(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
@@ -108,13 +104,11 @@ export function ManKiBaatComponent({ data, users }) {
     async function fetchWallet() {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token);
         const response = await axios.get(`http://localhost:3001/wallet`, {
           headers: {
             "x-auth-token": token,
           },
         });
-        console.log("Response:", response);
         if (response.data.status) {
           setWallet([response.data.data]);
         } else {
@@ -447,10 +441,6 @@ export function ManKiBaatComponent({ data, users }) {
   function handleAdvisorClick() {
     navigate("/advisor");
   }
-
-  const redirectToMsgChat = () => {
-    window.location.href = "http://localhost:3002";
-  };
 
   // const [searchQuery, setSearchQuery] = useState("");
   // const [filteredData, setFilteredData] = useState(data);
@@ -1078,10 +1068,7 @@ export function ManKiBaatComponent({ data, users }) {
 
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
-          <Modal.Title className="bi bi-person-circle">
-            {" "}
-            Confirm Logout
-          </Modal.Title>
+          <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
         <Modal.Footer>
@@ -1126,7 +1113,7 @@ export function ManKiBaatComponent({ data, users }) {
           <div className="modal-content">
             <div className="modal-header">
               <h3 className="modal-title" id="updateProfileModalLabel">
-                <span className="bi bi-person-circle"> Update Profile</span>
+                <span className="bi bi-pencil-square"> Update Profile</span>
               </h3>
               <button
                 type="button"
@@ -1854,28 +1841,23 @@ export function ManKiBaatComponent({ data, users }) {
                 </p>
               </div>
             ))}
-            <p className="fw-bold">
+            <div className="fw-bold mb-3">
               {user.map((u, index) => (
                 <div key={index}>
                   <span>{u.category_strength}</span>
                   <meter
-                    min="1"
-                    max="10"
-                    value={u.category_strength}
-                    low="5" // Set threshold for yellow range (5-7)
-                    high="8" // Set threshold for red range (8-10)
-                    optimum="4" // Optimum level considered as 4 (green range)
-                    className={`w-50 ms-2 ${
+                    className={`custom-meter ms-2 mb-1 ${
                       u.category_strength <= 4
                         ? "green-meter"
                         : u.category_strength <= 7
                         ? "yellow-meter"
                         : "red-meter"
                     }`}
+                    style={{ "--meter-value": u.category_strength * 10 + "%" }}
                   ></meter>
                 </div>
               ))}
-            </p>
+            </div>
             <button
               className=""
               type="button"
@@ -1888,7 +1870,6 @@ export function ManKiBaatComponent({ data, users }) {
                 color: "white",
                 // boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
-              onClick={redirectToMsgChat}
             >
               <FontAwesomeIcon className="me-2" icon={faMessage} />
               Msg
@@ -2259,28 +2240,26 @@ export function ManKiBaatComponent({ data, users }) {
             {user.map((u, index) => (
               <div key={index}>
                 <p className="text-primary">{u.category}</p>
-                <p className="fw-bold">
+                {/* Wrap the next section in a div instead of p */}
+                <div className="fw-bold">
                   {user.map((u, index) => (
                     <div key={index}>
                       <span>{u.category_strength}</span>
                       <meter
-                        min="1"
-                        max="10"
-                        value={u.category_strength}
-                        low="5" // Set threshold for yellow range (5-7)
-                        high="8" // Set threshold for red range (8-10)
-                        optimum="4" // Optimum level considered as 4 (green range)
-                        className={`w-50 ms-2 ${
+                        className={`custom-meter ms-2 mb-1 ${
                           u.category_strength <= 4
                             ? "green-meter"
                             : u.category_strength <= 7
                             ? "yellow-meter"
                             : "red-meter"
                         }`}
+                        style={{
+                          "--meter-value": u.category_strength * 10 + "%",
+                        }}
                       ></meter>
                     </div>
                   ))}
-                </p>
+                </div>
                 <hr className="w-75"></hr>
                 <h3>
                   Sub-Category{" "}
@@ -2304,28 +2283,26 @@ export function ManKiBaatComponent({ data, users }) {
                   ))}
                 </h3>
                 <p className="text-primary">{u.sub_category}</p>
-                <p className="fw-bold">
+                {/* Again, wrap the next section in a div instead of p */}
+                <div className="fw-bold">
                   {user.map((u, index) => (
                     <div key={index}>
                       <span>{u.subcategory_strength}</span>
                       <meter
-                        min="1"
-                        max="10"
-                        value={u.subcategory_strength}
-                        low="5" // Set threshold for yellow range (5-7)
-                        high="8" // Set threshold for red range (8-10)
-                        optimum="4" // Optimum level considered as 4 (green range)
-                        className={`w-50 ms-2 ${
+                        className={`custom-meter ms-2 mb-1 ${
                           u.subcategory_strength <= 4
                             ? "green-meter"
                             : u.subcategory_strength <= 7
                             ? "yellow-meter"
                             : "red-meter"
                         }`}
+                        style={{
+                          "--meter-value": u.subcategory_strength * 10 + "%",
+                        }}
                       ></meter>
                     </div>
                   ))}
-                </p>
+                </div>
               </div>
             ))}
           </div>

@@ -3,13 +3,9 @@ import "./register-case-man-ki-baat_component.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { Formik, Form, Field } from "formik";
-import axios from "axios";
-import { useCookies } from "react-cookie";
 
 export function RegisterCaseManKiBaatComponent() {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["token"]);
 
   const LoginClick = () => {
     navigate("/login");

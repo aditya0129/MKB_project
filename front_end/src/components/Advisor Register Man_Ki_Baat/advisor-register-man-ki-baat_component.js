@@ -534,17 +534,11 @@ export function AdvisorRegisterManKiBaatComponent() {
   }
 
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -905,11 +899,6 @@ export function AdvisorRegisterManKiBaatComponent() {
                     <div className="text-danger">
                       <ErrorMessage name="Image" />
                     </div>
-                    {/* {imagePreview && (
-                        <div className="image-preview mt-3">
-                          <img src={imagePreview} alt="Image Preview" style={{width:"100%", height:"100%"}}/>
-                        </div>
-                      )} */}
                     <div className="mt-3">
                       <input
                         type="checkbox"

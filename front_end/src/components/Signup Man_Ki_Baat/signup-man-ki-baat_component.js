@@ -430,17 +430,11 @@ export function SignupManKiBaatComponent() {
   }
 
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -779,22 +773,6 @@ export function SignupManKiBaatComponent() {
                       <div className="text-danger">
                         <ErrorMessage name="image" />
                       </div>
-                      {/* {imagePreview && (
-                        <div className="image-preview mt-2">
-                          <img
-                            src={imagePreview}
-                            alt="Image Preview"
-                            style={{
-                              width: "30%",
-                              height: "30%",
-                              borderRadius: "10px",
-                              marginLeft: "auto",
-                              display: "flex",
-                              border: "2px solid #dd033a",
-                            }}
-                          />
-                        </div>
-                      )} */}
                       <div className="mt-3">
                         <input
                           type="checkbox"
