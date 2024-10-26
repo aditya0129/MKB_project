@@ -591,59 +591,60 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 <div
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
+                  style={{ cursor: "pointer", background: "black" }}
                 >
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     All Advisor
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Stress
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Anxiety
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Elicit
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Job
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Law
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Marriage
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Social Issues
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Kisan
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Property
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Education
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Carrer
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Medical
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Love
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Affair
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Break Up
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Ex
                   </li>
-                  <li className="dropdown-item text-center border border-1">
+                  <li className="dropdown-item text-center border border-1 text-white">
                     Hyper Thinking
                   </li>
                 </div>

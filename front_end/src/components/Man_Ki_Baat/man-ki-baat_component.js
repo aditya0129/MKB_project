@@ -334,13 +334,14 @@ export function ManKiBaatComponent({ data, users }) {
           width: "40px",
           height: "40px",
           borderRadius: "50%",
-          backgroundColor: "white",
+          background:
+            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
           boxShadow: "0 0 5px rgba(0, 0, 0, 0.3)",
         }}
       >
         <FontAwesomeIcon
           icon={faChevronRight}
-          style={{ fontSize: "30px", color: "cyan" }}
+          style={{ fontSize: "30px", color: "white" }}
         />
       </div>
     );
@@ -365,13 +366,14 @@ export function ManKiBaatComponent({ data, users }) {
           width: "40px",
           height: "40px",
           borderRadius: "50%",
-          backgroundColor: "white",
+          background:
+            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
           boxShadow: "0 0 5px rgba(0, 0, 0, 0.3)",
         }}
       >
         <FontAwesomeIcon
           icon={faChevronLeft}
-          style={{ fontSize: "30px", color: "blue" }}
+          style={{ fontSize: "30px", color: "white" }}
         />
       </div>
     );
@@ -688,112 +690,112 @@ export function ManKiBaatComponent({ data, users }) {
                 <div
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", background: "black" }}
                 >
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={handleAdvisorClick}
                   >
                     All Advisor
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Stress")}
                   >
                     Stress
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Anxiety")}
                   >
                     Anxiety
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Elicit")}
                   >
                     Elicit
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Job")}
                   >
                     Job
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Law")}
                   >
                     Law
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Marriage")}
                   >
                     Marriage
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Social issues")}
                   >
                     Social Issues
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Kisan")}
                   >
                     Kisan
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Property")}
                   >
                     Property
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Education")}
                   >
                     Education
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Carrer")}
                   >
                     Carrer
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Medical")}
                   >
                     Medical
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Love")}
                   >
                     Love
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Affair")}
                   >
                     Affair
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Breakup")}
                   >
                     Break Up
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Ex")}
                   >
                     Ex
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Hyper thinking")}
                   >
                     Hyper Thinking
@@ -1803,15 +1805,9 @@ export function ManKiBaatComponent({ data, users }) {
             {user.map((u, index) => (
               <img
                 key={index}
-                className="p-1"
+                className="styled-image p-1"
                 src={`http://localhost:3001/${u.image}`}
                 alt=""
-                style={{
-                  height: "350px",
-                  width: "350px",
-                  borderRadius: "50px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
-                }}
               />
             ))}
           </div>
@@ -1998,22 +1994,22 @@ export function ManKiBaatComponent({ data, users }) {
                       <FontAwesomeIcon
                         className="ms-2"
                         icon={faStar}
-                        style={{ color: "blue" }}
+                        style={{ color: "goldenrod" }}
                       />
                       <FontAwesomeIcon
                         className="ms-2"
                         icon={faStar}
-                        style={{ color: "blue" }}
+                        style={{ color: "goldenrod" }}
                       />
                       <FontAwesomeIcon
                         className="ms-2"
                         icon={faStar}
-                        style={{ color: "blue" }}
+                        style={{ color: "goldenrod" }}
                       />
                       <FontAwesomeIcon
                         className="ms-2"
                         icon={faStar}
-                        style={{ color: "blue" }}
+                        style={{ color: "goldenrod" }}
                       />
                       <FontAwesomeIcon
                         className="ms-2"
@@ -2025,7 +2021,8 @@ export function ManKiBaatComponent({ data, users }) {
                       <button
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,cyan,blue)",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "70px",
@@ -2041,7 +2038,8 @@ export function ManKiBaatComponent({ data, users }) {
                       <button
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,cyan,blue)",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "70px",
@@ -2060,7 +2058,8 @@ export function ManKiBaatComponent({ data, users }) {
                       <button
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,cyan,blue)",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "70px",
@@ -2107,22 +2106,22 @@ export function ManKiBaatComponent({ data, users }) {
                       <FontAwesomeIcon
                         className="ms-2"
                         icon={faStar}
-                        style={{ color: "blue" }}
+                        style={{ color: "goldenrod" }}
                       />
                       <FontAwesomeIcon
                         className="ms-2"
                         icon={faStar}
-                        style={{ color: "blue" }}
+                        style={{ color: "goldenrod" }}
                       />
                       <FontAwesomeIcon
                         className="ms-2"
                         icon={faStar}
-                        style={{ color: "blue" }}
+                        style={{ color: "goldenrod" }}
                       />
                       <FontAwesomeIcon
                         className="ms-2"
                         icon={faStar}
-                        style={{ color: "blue" }}
+                        style={{ color: "goldenrod" }}
                       />
                       <FontAwesomeIcon
                         className="ms-2"
@@ -2134,7 +2133,8 @@ export function ManKiBaatComponent({ data, users }) {
                       <button
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,cyan,blue)",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "70px",
@@ -2150,7 +2150,8 @@ export function ManKiBaatComponent({ data, users }) {
                       <button
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,cyan,blue)",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "70px",
@@ -2169,7 +2170,8 @@ export function ManKiBaatComponent({ data, users }) {
                       <button
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,cyan,blue)",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "70px",
@@ -2190,23 +2192,16 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       </div>
 
-      <div
-        className="container mt-5"
-        style={{
-          borderTop: "8px solid blue",
-          borderBottom: "8px solid cyan",
-          borderRadius: "30px",
-        }}
-      >
+      <div className="container mt-5 description-container">
         <div className="row">
           <div className="col-md-12">
-            <div className="text-center p-2">
+            <div className="text-center p-2 description-header">
               <h3>DESCRIPTION</h3>
-              <hr className="w-25 d-flex m-auto mb-4"></hr>
+              <hr className="w-25 d-flex m-auto"></hr>
+            </div>
+            <div className="description-text">
               {user.map((u, index) => (
-                <p key={index} style={{ textAlign: "justify" }}>
-                  {u.description}
-                </p>
+                <p key={index}>{u.description}</p>
               ))}
             </div>
           </div>

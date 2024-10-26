@@ -146,9 +146,10 @@ export function ContactsManKiBaat() {
                 <div
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
+                  style={{ cursor: "pointer", background: "black" }}
                 >
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={handleAdvisorClick}
                   >
                     All Advisor
@@ -237,10 +238,7 @@ export function ContactsManKiBaat() {
 
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
-          <Modal.Title className="bi bi-power">
-            {" "}
-            Confirm Logout
-          </Modal.Title>
+          <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
         <Modal.Footer>

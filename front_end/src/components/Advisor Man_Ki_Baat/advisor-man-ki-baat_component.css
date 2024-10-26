@@ -1,5 +1,6 @@
 .card {
-  background: #ffffff;
+  background: linear-gradient(135deg, blue, cyan);
+  color: white;
   padding: 20px;
   margin-bottom: 20px;
   border-top-right-radius: 30px;
@@ -22,8 +23,7 @@
 }
 
 .card-footer {
-  box-shadow: 0 0 8px rgb(81, 80, 82);
-  background: linear-gradient(135deg, blue, cyan);
+  background: linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78));
   color: #ffffff;
 }
 

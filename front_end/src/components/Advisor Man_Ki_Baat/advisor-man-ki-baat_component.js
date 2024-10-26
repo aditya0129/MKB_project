@@ -190,111 +190,112 @@ export function AdvisorManKiBaatComponent() {
                 <div
                   className={`dropdown-menu${isOpen ? " show" : ""}`}
                   aria-labelledby="dropdownMenuButton"
+                  style={{ cursor: "pointer", background: "black" }}
                 >
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={handleAdvisorClick}
                   >
                     All Advisor
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Stress")}
                   >
                     Stress
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Anxiety")}
                   >
                     Anxiety
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Elicit")}
                   >
                     Elicit
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Job")}
                   >
                     Job
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Law")}
                   >
                     Law
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Marriage")}
                   >
                     Marriage
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Social issues")}
                   >
                     Social Issues
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Kisan")}
                   >
                     Kisan
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Property")}
                   >
                     Property
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Education")}
                   >
                     Education
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Carrer")}
                   >
                     Carrer
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Medical")}
                   >
                     Medical
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Love")}
                   >
                     Love
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Affair")}
                   >
                     Affair
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Breakup")}
                   >
                     Break Up
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Ex")}
                   >
                     Ex
                   </li>
                   <li
-                    className="dropdown-item text-center border border-1"
+                    className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Hyper thinking")}
                   >
                     Hyper Thinking
@@ -384,10 +385,7 @@ export function AdvisorManKiBaatComponent() {
 
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
-          <Modal.Title className="bi bi-power">
-            {" "}
-            Confirm Logout
-          </Modal.Title>
+          <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
         <Modal.Footer>
@@ -443,7 +441,7 @@ export function AdvisorManKiBaatComponent() {
                             height: "110px",
                             width: "110px",
                             borderRadius: "100px",
-                            boxShadow: "0 0 8px rgb(145, 144, 146)",
+                            // boxShadow: "0 0 8px rgb(145, 144, 146)",
                           }}
                         />
                       </div>
@@ -458,22 +456,22 @@ export function AdvisorManKiBaatComponent() {
                         <FontAwesomeIcon
                           className="ms-2"
                           icon={faStar}
-                          style={{ color: "blue" }}
+                          style={{ color: "goldenrod" }}
                         />
                         <FontAwesomeIcon
                           className="ms-2"
                           icon={faStar}
-                          style={{ color: "blue" }}
+                          style={{ color: "goldenrod" }}
                         />
                         <FontAwesomeIcon
                           className="ms-2"
                           icon={faStar}
-                          style={{ color: "blue" }}
+                          style={{ color: "goldenrod" }}
                         />
                         <FontAwesomeIcon
                           className="ms-2"
                           icon={faStar}
-                          style={{ color: "blue" }}
+                          style={{ color: "goldenrod" }}
                         />
                         <FontAwesomeIcon
                           className="ms-2"
@@ -485,7 +483,7 @@ export function AdvisorManKiBaatComponent() {
                         className="btn btn-primary me-2"
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,blue,cyan)",
+                          background: "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "100px",
@@ -501,7 +499,7 @@ export function AdvisorManKiBaatComponent() {
                         className="btn btn-primary mt-2"
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,blue,cyan)",
+                          background: "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "150px",
@@ -562,7 +560,7 @@ export function AdvisorManKiBaatComponent() {
                             height: "110px",
                             width: "110px",
                             borderRadius: "100px",
-                            boxShadow: "0 0 8px rgb(145, 144, 146)",
+                            // boxShadow: "0 0 8px rgb(145, 144, 146)",
                           }}
                         />
                       </div>
@@ -577,22 +575,22 @@ export function AdvisorManKiBaatComponent() {
                         <FontAwesomeIcon
                           className="ms-2"
                           icon={faStar}
-                          style={{ color: "blue" }}
+                          style={{ color: "goldenrod" }}
                         />
                         <FontAwesomeIcon
                           className="ms-2"
                           icon={faStar}
-                          style={{ color: "blue" }}
+                          style={{ color: "goldenrod" }}
                         />
                         <FontAwesomeIcon
                           className="ms-2"
                           icon={faStar}
-                          style={{ color: "blue" }}
+                          style={{ color: "goldenrod" }}
                         />
                         <FontAwesomeIcon
                           className="ms-2"
                           icon={faStar}
-                          style={{ color: "blue" }}
+                          style={{ color: "goldenrod" }}
                         />
                         <FontAwesomeIcon
                           className="ms-2"
@@ -604,7 +602,7 @@ export function AdvisorManKiBaatComponent() {
                         className="btn btn-primary me-2"
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,blue,cyan)",
+                          background: "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "100px",
@@ -620,7 +618,7 @@ export function AdvisorManKiBaatComponent() {
                         className="btn btn-primary mt-2"
                         type="button"
                         style={{
-                          background: "linear-gradient(135deg,blue,cyan)",
+                          background: "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "150px",
