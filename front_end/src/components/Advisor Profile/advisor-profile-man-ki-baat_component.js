@@ -2888,7 +2888,8 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       <div
         className="container mt-5 mb-5"
         style={{
-          background: "#ffffff",
+          background: "linear-gradient(135deg, cyan, blue)",
+          color: "white",
           borderTopRightRadius: "30px",
           borderBottomLeftRadius: "30px",
           boxShadow: "0 0 8px rgb(145, 144, 146)",
@@ -2901,14 +2902,14 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             {advisors.map((advisor, index) => (
               <img
                 key={index}
-                className="p-1"
+                className=""
                 src={`http://localhost:3001/${advisor.Image}`}
                 alt=""
                 style={{
                   height: "350px",
                   width: "350px",
                   borderRadius: "50px",
-                  boxShadow: "0 0 8px rgb(145, 144, 146)",
+                  // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   display: "flex",
                   justifyContent: "center",
                   margin: "auto",
@@ -2920,7 +2921,8 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 className=""
                 type="button"
                 style={{
-                  background: "linear-gradient(135deg,cyan,blue)",
+                  background:
+                    "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                   border: "none",
                   borderRadius: "7px",
                   width: "90px",
@@ -2935,7 +2937,8 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 className="ms-4"
                 type="button"
                 style={{
-                  background: "linear-gradient(135deg,cyan,blue)",
+                  background:
+                    "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                   border: "none",
                   borderRadius: "7px",
                   width: "90px",
@@ -2950,7 +2953,8 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 className="ms-4"
                 type="button"
                 style={{
-                  background: "linear-gradient(135deg,cyan,blue)",
+                  background:
+                    "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                   border: "none",
                   borderRadius: "7px",
                   width: "90px",
@@ -2968,11 +2972,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             <div className="col-md-3 mt-5 mb-5" key={advisor._id}>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon
@@ -2987,11 +2991,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon
@@ -3006,11 +3010,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon icon={faCity} style={{ color: "#fbfbfb" }} />
@@ -3022,11 +3026,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon
@@ -3041,11 +3045,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon
@@ -3065,11 +3069,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             <div className="col-md-4 mt-5" key={`desc-${advisor._id}`}>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon
@@ -3084,11 +3088,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon
@@ -3103,11 +3107,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon
@@ -3122,11 +3126,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon
@@ -3141,11 +3145,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
               <div className="d-flex">
                 <div
-                  className="bg-primary text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
+                  className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
                   style={{
                     width: "45px",
                     height: "45px",
-                    boxShadow: "0 0 8px rgb(145, 144, 146)",
+                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
                 >
                   <FontAwesomeIcon
@@ -3162,7 +3166,9 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           ))}
           <div className="text-center">
             <h4>ABOUT</h4>
-            <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
+            <div className="about">
+              <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
+            </div>
             {advisors.map((advisor, index) => (
               <p key={index}>{advisor.About}</p>
             ))}
@@ -3219,7 +3225,8 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                       className=""
                       type="button"
                       style={{
-                        background: "linear-gradient(135deg,cyan,blue)",
+                        background:
+                          "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                         border: "none",
                         borderRadius: "7px",
                         width: "90px",
@@ -3234,7 +3241,8 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                       className="ms-4"
                       type="button"
                       style={{
-                        background: "linear-gradient(135deg,cyan,blue)",
+                        background:
+                          "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                         border: "none",
                         borderRadius: "7px",
                         width: "90px",
@@ -3249,7 +3257,8 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                       className="ms-4"
                       type="button"
                       style={{
-                        background: "linear-gradient(135deg,cyan,blue)",
+                        background:
+                          "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                         border: "none",
                         borderRadius: "7px",
                         width: "90px",
@@ -3331,12 +3340,14 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             </div>
             <div className="text-center">
               <h4>GOAL</h4>
-              <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
+              <div className="goal">
+                <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
+              </div>
               {advisors.map((advisor, index) => (
                 <p key={index}>{advisor.Goal}</p>
               ))}
               <div className="mb-4">
-                <button className="btn btn-outline-success p-1 w-25 mt-3">
+                <button className="btn btn-outline-info p-1 w-25 mt-3">
                   Review
                 </button>
                 <div className="fw-semibold fs-6 mt-3">

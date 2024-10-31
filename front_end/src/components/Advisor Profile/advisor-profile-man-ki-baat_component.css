@@ -171,3 +171,15 @@
     transform: translateY(-5px); /* Move up again */
   }
 }
+
+.about hr {
+  border: 0;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.goal hr {
+  border: 0;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
