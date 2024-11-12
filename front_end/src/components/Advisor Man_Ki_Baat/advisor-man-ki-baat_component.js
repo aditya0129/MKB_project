@@ -3,12 +3,12 @@ import "./advisor-man-ki-baat_component.css";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEnvelope,
   faStar,
   faPhone,
   faComment,
@@ -17,6 +17,7 @@ import {
   faPlus,
   faPowerOff,
   faCircleUp,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 
 export function AdvisorManKiBaatComponent() {
@@ -25,6 +26,8 @@ export function AdvisorManKiBaatComponent() {
   const [advisors, setAdvisors] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(""); // State for selected category
   const [showInitialData, setShowInitialData] = useState(true); // State to control visibility of initial data
+  // State to control the visibility of the dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [cookies, removeCookie] = useCookies();
   const navigate = useNavigate();
@@ -115,6 +118,116 @@ export function AdvisorManKiBaatComponent() {
   function handleAdvisorClick() {
     navigate("/advisor");
   }
+
+  const [ShowModals, SetShowModals] = useState(false); // Controls modal visibility
+  const [AdvisorDatas, SetAdvisorDatas] = useState([]); // Holds advisor data
+  const [SelectedAdvisorId, SetSelectedAdvisorId] = useState(""); // Selected advisorId
+  const [SearchTerm, SetSearchTerm] = useState("");
+  const [FilteredAdvisorData, SetFilteredAdvisorData] = useState([]);
+  const [roomId, setRoomId] = useState(""); // Holds the roomId
+
+  // Function to fetch advisors and store their data
+  const FetchAdvisors = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/Advisor_All_Data"
+      );
+      const advisors = response.data.Data;
+
+      if (advisors.length > 0) {
+        // Store advisor data with id and name
+        const advisorList = advisors.map((advisor) => ({
+          id: advisor.advisorId,
+          name: advisor.Name, // Assuming Name field exists
+        }));
+        SetAdvisorDatas(advisorList);
+      } else {
+        alert("No Advisors Found.");
+      }
+    } catch (error) {
+      console.error("Error fetching advisors:", error);
+      alert("Error Fetching Advisors.");
+    }
+  };
+
+  // Function to open the modal and fetch advisors
+  const HandleOpenModal = () => {
+    SetShowModals(true);
+    FetchAdvisors(); // Fetch advisors when the modal is opened
+  };
+
+  // Function to close the modal
+  const HandleCloseModal = () => {
+    SetShowModals(false);
+  };
+
+  // Function to send notifications
+  const sendLink = async () => {
+    try {
+      if (!SelectedAdvisorId) {
+        alert("Please Select An Advisor Before Sending A Notification.");
+        return;
+      }
+
+      if (!roomId) {
+        alert("Room ID Is Missing. Please Try Again.");
+        return;
+      }
+
+      const token = localStorage.getItem("token"); // Ensure the token is stored in localStorage
+
+      if (!token) {
+        alert("Please Login To Send A Notification.");
+        return;
+      }
+
+      const response = await axios.post(
+        `http://localhost:3001/sendLink/${SelectedAdvisorId}`,
+        { roomId }, // Send roomId in the request body
+        {
+          headers: {
+            "x-auth-token": token, // Send token in request headers for authentication
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert("Notification Sent Successfully.");
+        SetSearchTerm(""); // Clear search term after success
+        SetSelectedAdvisorId(""); // Clear selected advisor after success
+        window.location.reload(); // Reload the page if necessary
+      } else {
+        alert("Failed To Send Notification.");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("Error Sending Notification.");
+    }
+  };
+
+  useEffect(() => {
+    // Filter advisors based on search term
+    const filtered = AdvisorDatas.filter((advisor) =>
+      advisor.name.toLowerCase().includes(SearchTerm.toLowerCase())
+    );
+    SetFilteredAdvisorData(filtered);
+  }, [SearchTerm, AdvisorDatas]);
+
+  const [link] = useState("http://127.0.0.1:3030/");
+  const [ShowModal, SetShowModal] = useState(false);
+
+  const HandleModalOpen = () => {
+    SetShowModal(true);
+  };
+
+  const HandleModalClose = () => {
+    SetShowModal(false);
+  };
+
+  // Function to handle viewing notifications
+  const handleViewNotifications = () => {
+    setIsDialogOpen(true);
+  };
 
   const [isVisible, setIsVisible] = useState(false);
   const [isClicked, setIsClicked] = useState(false); // Track if button is clicked
@@ -302,19 +415,23 @@ export function AdvisorManKiBaatComponent() {
                   </li>
                 </div>
                 <li
-                  className="ms-4"
+                  onClick={handleViewNotifications}
+                  className="open-dialog-button ms-3"
                   style={{
                     display: "inline-block",
-                    // color: "black",
                     padding: "15px 10px",
                     cursor: "pointer",
                   }}
                 >
-                  Message
+                  Notification
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    className="ms-2"
+                    style={{ color: "white" }}
+                  />
                 </li>
-                <FontAwesomeIcon icon={faEnvelope} style={{ color: "white" }} />
                 <li
-                  className="ms-4"
+                  className="ms-3"
                   onClick={handleContactsClick}
                   style={{
                     display: "inline-block",
@@ -328,7 +445,7 @@ export function AdvisorManKiBaatComponent() {
                 {user.map((detail, index) => (
                   <img
                     key={index}
-                    className="ms-4 mt-2"
+                    className="ms-3 mt-2"
                     src={`http://localhost:3001/${detail.image}`}
                     onClick={handleUserProfileClick}
                     alt=""
@@ -408,6 +525,118 @@ export function AdvisorManKiBaatComponent() {
         </Modal.Footer>
       </Modal>
 
+      <Modal show={ShowModal} onHide={HandleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-link-45deg"> Room Link</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Your Room Link is:{" "}
+            <a href={link} target="_blank" rel="noopener noreferrer">
+              {link}
+            </a>
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={HandleModalClose}
+          >
+            {" "}
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={ShowModals}
+        onHide={HandleCloseModal}
+        dialogClassName="modal-dialog modal-dialog-scrollable"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-link-45deg">
+            {" "}
+            Select Advisor & Paste Room ID
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Room ID Input */}
+          <Form.Group className="mb-3" controlId="roomIdInput">
+            <Form.Label>Paste Room ID</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Paste Room ID"
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value)}
+              className="text-white custom-placeholder"
+              style={{ backgroundColor: "black" }}
+            />
+          </Form.Group>
+
+          {/* Search for Advisor */}
+          <Form.Group className="mb-3" controlId="advisorSearch">
+            <Form.Label>Search Advisor</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Type to search..."
+              value={SearchTerm}
+              onChange={(e) => SetSearchTerm(e.target.value)}
+              className="text-white custom-placeholder"
+              style={{ backgroundColor: "black" }}
+            />
+          </Form.Group>
+
+          {/* Advisor Selection */}
+          <Form.Group controlId="advisorSelectDropdown">
+            <Form.Label>Select Advisor</Form.Label>
+            <Form.Control
+              as="select"
+              value={SelectedAdvisorId}
+              onChange={(e) => SetSelectedAdvisorId(e.target.value)}
+              className="text-white"
+              style={{ backgroundColor: "black" }}
+            >
+              <option
+                value=""
+                className="text-white"
+                style={{ backgroundColor: "black" }}
+              >
+                -- Select Advisor --
+              </option>
+              {FilteredAdvisorData.map((advisor) => (
+                <option
+                  className="text-white"
+                  key={advisor.id}
+                  value={advisor.id}
+                  style={{ backgroundColor: "black" }}
+                >
+                  {advisor.name}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={HandleCloseModal}
+          >
+            {" "}
+            Close
+          </Button>
+          <Button
+            className="bi bi-bell-fill"
+            variant="outline-success"
+            onClick={sendLink}
+          >
+            {" "}
+            Send Notification
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       {isVisible && (
         <div
           className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
@@ -483,7 +712,8 @@ export function AdvisorManKiBaatComponent() {
                         className="btn btn-primary me-2"
                         type="button"
                         style={{
-                          background: "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "100px",
@@ -499,7 +729,8 @@ export function AdvisorManKiBaatComponent() {
                         className="btn btn-primary mt-2"
                         type="button"
                         style={{
-                          background: "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "150px",
@@ -602,7 +833,8 @@ export function AdvisorManKiBaatComponent() {
                         className="btn btn-primary me-2"
                         type="button"
                         style={{
-                          background: "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "100px",
@@ -618,7 +850,8 @@ export function AdvisorManKiBaatComponent() {
                         className="btn btn-primary mt-2"
                         type="button"
                         style={{
-                          background: "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
+                          background:
+                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
                           border: "none",
                           borderRadius: "7px",
                           width: "150px",
@@ -662,6 +895,85 @@ export function AdvisorManKiBaatComponent() {
                 </div>
               ))}
         </div>
+      </div>
+
+      <div className="notification-page">
+        {/* Dialog for notification */}
+        {isDialogOpen && (
+          <div className="dialog-overlay">
+            <div className="dialog">
+              <div className="dialog-header">
+                <h3 className="bi bi-bell"> Notification</h3>
+                {/* Close button */}
+                <button
+                  className="close-button"
+                  onClick={() => setIsDialogOpen(false)}
+                >
+                  &times;
+                </button>
+              </div>
+
+              {/* Displaying advisor information */}
+              {user.map((u, index) => (
+                <div key={index} className="user-info">
+                  <img
+                    className="mb-3"
+                    src={`http://localhost:3001/${u.advisorDetails.Image}`}
+                    alt={u.advisorDetails.Name}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "10px",
+                    }}
+                  />
+                  <p>
+                    <strong>Name:-</strong> {u.advisorDetails.Name}
+                  </p>
+                  <p>
+                    <strong>Gender:-</strong> {u.advisorDetails.Gender}
+                  </p>
+                  <p>
+                    <strong>Expertise:-</strong> {u.advisorDetails.Expertise}
+                  </p>
+                  <p>
+                    <strong>Experience:-</strong> {u.advisorDetails.Experience}
+                  </p>
+                </div>
+              ))}
+
+              {/* User Notifications */}
+              {user.map((u, index) => (
+                <p key={index} className="bi bi-chat-quote-fill">
+                  {" "}
+                  {u.notification}
+                </p>
+              ))}
+
+              <div className="dialog-actions">
+                {user.some(
+                  (u) => u.notification === "I Am Available Now..."
+                ) && (
+                  <>
+                    <button
+                      className="reject-button bi bi-link"
+                      onClick={HandleModalOpen}
+                    >
+                      {" "}
+                      Get Link
+                    </button>
+                    <button
+                      className="accept-button bi bi-send-check-fill"
+                      onClick={HandleOpenModal}
+                    >
+                      {" "}
+                      Send Link
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div

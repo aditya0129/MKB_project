@@ -146,8 +146,7 @@
 .description-container {
   border-top: 8px solid blue;
   border-bottom: 8px solid cyan;
-  border-top-right-radius: 30px;
-  border-bottom-left-radius: 30px;
+  border-radius: 30px;
   background: linear-gradient(130deg, cyan, blue);
   color: white;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Subtle shadow effect */
