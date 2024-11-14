@@ -1,5 +1,6 @@
 import React from "react";
 import "./man-ki-baat_component.css";
+import AdvisorModal from "../Advisor Modal Man_Ki_Baat/advisor-modal-man-ki-baat_component.js";
 import axios from "axios";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -615,6 +616,19 @@ export function ManKiBaatComponent({ data, users }) {
     }
     setUseErrors("");
   }
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAdvisor, setSelectedAdvisor] = useState(null);
+
+  const HandleOpenModals = (advisor) => {
+    setSelectedAdvisor(advisor);
+    setIsModalOpen(true);
+  };
+
+  const HandleCloseModals = () => {
+    setIsModalOpen(false);
+    setSelectedAdvisor(null);
+  };
 
   const [isVisible, setIsVisible] = useState(false);
   const [isClicked, setIsClicked] = useState(false); // Track if button is clicked
@@ -1962,11 +1976,15 @@ export function ManKiBaatComponent({ data, users }) {
         `}
           </style>
 
-          <Slider {...settings} style={{ width: "380px", margin: "0 auto" }}>
+          <Slider
+            {...settings}
+            style={{ width: "380px", margin: "0 auto", cursor: "pointer" }}
+          >
             {showInitialData
               ? advisors.map((details, index) => (
                   <div
                     key={index}
+                    onClick={() => HandleOpenModals(details)}
                     className="d-flex justify-content-center align-items-center flex-column mt-5 user"
                   >
                     <img
@@ -2068,7 +2086,10 @@ export function ManKiBaatComponent({ data, users }) {
                           margin: "0 5px",
                           // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
-                        onClick={handleOpenModal}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenModal();
+                        }}
                       >
                         <FontAwesomeIcon className="me-2" icon={faVideo} />
                         Call
@@ -2079,6 +2100,7 @@ export function ManKiBaatComponent({ data, users }) {
               : filteredAdvisors.map((details, index) => (
                   <div
                     key={index}
+                    onClick={() => HandleOpenModals(details)}
                     className="d-flex justify-content-center align-items-center flex-column mt-5 user"
                   >
                     <img
@@ -2180,7 +2202,10 @@ export function ManKiBaatComponent({ data, users }) {
                           margin: "0 5px",
                           // boxShadow: "0 0 3px rgb(81, 80, 82)",
                         }}
-                        onClick={handleOpenModal}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenModal();
+                        }}
                       >
                         <FontAwesomeIcon className="me-2" icon={faVideo} />
                         Call
@@ -2191,6 +2216,12 @@ export function ManKiBaatComponent({ data, users }) {
           </Slider>
         </div>
       </div>
+
+      <AdvisorModal
+        isOpen={isModalOpen}
+        advisor={selectedAdvisor}
+        onClose={HandleCloseModals}
+      />
 
       <div className="container mt-5 description-container">
         <div className="row">
