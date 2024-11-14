@@ -107,9 +107,8 @@ mongoose
 app.use("/", route);
 app.use("/api", AuthRoute);
 
-// Start the server
+// Start the server on 0.0.0.0 to make it accessible publicly
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Express app running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Express app running on http://82.112.234.209:${PORT}`);
 });
-
