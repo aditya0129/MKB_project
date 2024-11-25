@@ -52,6 +52,17 @@ export function ContactsManKiBaat() {
     fetchUserContact();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/advisor-search?name=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    } else {
+      alert("Please Enter A Search Term.");
+    }
+  };
+
   useEffect(() => {
     if (cookies["token"] === undefined) {
       navigate("/register-case");
@@ -222,6 +233,7 @@ export function ContactsManKiBaat() {
 
   return (
     <>
+      {/* ************************************HEADER******************************** */}
       <div id="header">
         <div className="container">
           <div className="row">
@@ -230,13 +242,17 @@ export function ContactsManKiBaat() {
               <input
                 type="search"
                 className="form-control ms-5"
-                placeholder="Search"
+                placeholder="Type here to search"
                 style={{ width: "200px", height: "50px" }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
-                className="btn btn-primary ms-2"
+                className="btn btn-outline-info bi bi-search ms-2"
                 style={{ height: "50px" }}
+                onClick={handleSearch}
               >
+                {" "}
                 Search
               </button>
             </div>
@@ -324,6 +340,7 @@ export function ContactsManKiBaat() {
         </div>
       </div>
 
+      {/* **********************************MY CONTACTS***************************** */}
       <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
@@ -354,6 +371,7 @@ export function ContactsManKiBaat() {
         </div>
       </div>
 
+      {/* *****************************CONFIRM-LOGOUT************************ */}
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
@@ -379,6 +397,7 @@ export function ContactsManKiBaat() {
         </Modal.Footer>
       </Modal>
 
+      {/* ******************************GENERATE-VIDEO-LINK********************** */}
       <Modal show={ShowModal} onHide={HandleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-link-45deg"> Room Link</Modal.Title>
@@ -403,6 +422,7 @@ export function ContactsManKiBaat() {
         </Modal.Footer>
       </Modal>
 
+      {/* *******************************SEND ROOM ID NOTIFICATION*********************** */}
       <Modal
         show={ShowModals}
         onHide={HandleCloseModal}
@@ -491,6 +511,7 @@ export function ContactsManKiBaat() {
         </Modal.Footer>
       </Modal>
 
+      {/* *******************************SCROLL-TO-TOP************************ */}
       {isVisible && (
         <div
           className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
@@ -500,6 +521,7 @@ export function ContactsManKiBaat() {
         </div>
       )}
 
+      {/* ****************************USER-CONTACT-DETAIL******************** */}
       <div className="container">
         <div className="row">
           {contact.map((contactdetail, index) => (
@@ -605,6 +627,7 @@ export function ContactsManKiBaat() {
         </div>
       </div>
 
+      {/* ***************************NOTIFICATION-BOX************************ */}
       <div className="notification-page">
         {/* Dialog for notification */}
         {isDialogOpen && (
@@ -684,6 +707,7 @@ export function ContactsManKiBaat() {
         )}
       </div>
 
+      {/* ********************************FOOTER************************************ */}
       <div
         className="container-fluid text-white"
         style={{ background: "linear-gradient(135deg, blue,red)" }}

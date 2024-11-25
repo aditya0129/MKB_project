@@ -445,21 +445,16 @@ export function ManKiBaatComponent({ data, users }) {
     navigate("/advisor");
   }
 
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [filteredData, setFilteredData] = useState(data);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // const handleSearchInputChange = (event) => {
-  //   const value = event.target.value;
-  //   setSearchQuery(value);
-  //   filterData(value);
-  // };
-
-  // const filterData = (query) => {
-  //   const filtered = data.filter((item) =>
-  //     item.name.toLowerCase().includes(query.toLowerCase())
-  //   );
-  //   setFilteredData(filtered);
-  // };
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/advisor-search?name=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    } else {
+      alert("Please Enter A Search Term.");
+    }
+  };
 
   function handleContactsClick() {
     navigate("/contacts");
@@ -630,6 +625,72 @@ export function ManKiBaatComponent({ data, users }) {
     setSelectedAdvisor(null);
   };
 
+  const [ShowsModals, SetShowsModal] = useState(false);
+
+  // Example call details
+  const callDetails = {
+    duration: "15 minutes",
+    date: "2024-11-04",
+    advisorName: "John Doe",
+  };
+
+  const HandleShowsModal = () => SetShowsModal(true);
+  const HandleClosesModal = () => SetShowsModal(false);
+
+  const [ShowingModal, SetShowingModal] = useState(false);
+  const [review, setReview] = useState("");
+  const [rating, setRating] = useState("");
+
+  const HandleShowsModals = () => SetShowingModal(true);
+  const HandleClosesModals = () => SetShowingModal(false);
+  const HandleSubmit = () => {
+    console.log("Review:", review);
+    console.log("Rating:", rating);
+    SetShowsModal(false);
+  };
+
+  const [ShowingModals, SetShowingModals] = useState(false);
+
+  // Sample data for history
+  const historyData = [
+    { date: "2024-11-04", activity: "Logged in" },
+    { date: "2024-11-03", activity: "Updated profile" },
+    { date: "2024-11-02", activity: "Make a call" },
+  ];
+
+  const HandleShowingModal = () => SetShowingModals(true);
+  const HandleClosingModal = () => SetShowingModals(false);
+
+  const [shows, setShows] = useState(false);
+
+  // Modal toggle handlers
+  const handleShows = () => setShows(true);
+  const handleCloses = () => setShows(false);
+
+  const [showingModal, setShowingModal] = useState(false);
+
+  // Handle modal open
+  const HandleShowingModals = () => {
+    setShowingModal(true);
+  };
+
+  // Handle modal close
+  const HandleClosingModals = () => {
+    setShowingModal(false);
+  };
+
+  const [showingsModal, setShowingsModal] = useState(false);
+
+  // Handle modal open
+  const HandleShowingsModals = () => {
+    setShowingsModal(true);
+  };
+
+  // Handle modal close
+  const HandleClosingsModals = () => {
+    setShowingsModal(false);
+  };
+
   const [isVisible, setIsVisible] = useState(false);
   const [isClicked, setIsClicked] = useState(false); // Track if button is clicked
 
@@ -666,6 +727,7 @@ export function ManKiBaatComponent({ data, users }) {
 
   return (
     <>
+      {/* *************************HEADER************************** */}
       <div id="header">
         <div className="container">
           <div className="row">
@@ -674,13 +736,17 @@ export function ManKiBaatComponent({ data, users }) {
               <input
                 type="text"
                 className="form-control ms-5"
-                placeholder="Search"
+                placeholder="Type here to search"
                 style={{ width: "200px", height: "50px" }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
-                className="btn btn-primary ms-2"
+                className="btn btn-outline-info bi bi-search ms-2"
                 style={{ height: "50px" }}
+                onClick={handleSearch}
               >
+                {" "}
                 Search
               </button>
             </div>
@@ -869,6 +935,7 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       </div>
 
+      {/* ******************************USER-PROFILE******************************* */}
       <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
@@ -898,6 +965,7 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       </div>
 
+      {/* ************************SEND-NOTIFICATION******************* */}
       <Modal
         show={showModal}
         onHide={handleCloseModal}
@@ -932,6 +1000,7 @@ export function ManKiBaatComponent({ data, users }) {
             >
               <option
                 value=""
+                disabled
                 className="text-white"
                 style={{ backgroundColor: "black" }}
               >
@@ -970,6 +1039,7 @@ export function ManKiBaatComponent({ data, users }) {
         </Modal.Footer>
       </Modal>
 
+      {/* ***************GENERATE-VIDEO-LINK***************************** */}
       <Modal show={ShowModal} onHide={HandleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-link-45deg"> Room Link</Modal.Title>
@@ -994,6 +1064,7 @@ export function ManKiBaatComponent({ data, users }) {
         </Modal.Footer>
       </Modal>
 
+      {/* *****************************SEND ROOM ID NOTIFICATION*********************** */}
       <Modal
         show={ShowModals}
         onHide={HandleCloseModal}
@@ -1044,6 +1115,7 @@ export function ManKiBaatComponent({ data, users }) {
             >
               <option
                 value=""
+                disabled
                 className="text-white"
                 style={{ backgroundColor: "black" }}
               >
@@ -1082,6 +1154,7 @@ export function ManKiBaatComponent({ data, users }) {
         </Modal.Footer>
       </Modal>
 
+      {/* *************************CONFIRM-LOGOUT******************************** */}
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
@@ -1107,6 +1180,7 @@ export function ManKiBaatComponent({ data, users }) {
         </Modal.Footer>
       </Modal>
 
+      {/* ******************UPDATE-PROFILE********************* */}
       <div className="container text-center">
         <button
           type="button"
@@ -1190,6 +1264,7 @@ export function ManKiBaatComponent({ data, users }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -1328,6 +1403,7 @@ export function ManKiBaatComponent({ data, users }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -1466,6 +1542,7 @@ export function ManKiBaatComponent({ data, users }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -1618,6 +1695,7 @@ export function ManKiBaatComponent({ data, users }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -1804,6 +1882,7 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       </div>
 
+      {/* *****************************SCROLL-TO-TOP*************************** */}
       {isVisible && (
         <div
           className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
@@ -1813,6 +1892,7 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       )}
 
+      {/* *****************USER-DETAIL********************* */}
       <div className="container">
         <div className="row">
           <div className="col-md-4 mt-5">
@@ -1912,10 +1992,48 @@ export function ManKiBaatComponent({ data, users }) {
                 color: "white",
                 // boxShadow: "0 0 3px rgb(81, 80, 82)",
               }}
+              onClick={HandleShowsModal}
             >
               <FontAwesomeIcon className="me-2" icon={faVideo} />
               Call
             </button>
+
+            {/* *********************************VIDEO-CALL DETAILS********************** */}
+            <Modal show={ShowsModals} onHide={HandleClosesModal} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  <i className="bi bi-camera-reels-fill me-2"></i>Call Details
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <p>
+                  <strong className="bi bi-person-circle">
+                    {" "}
+                    Advisor Name:
+                  </strong>{" "}
+                  {callDetails.advisorName}
+                </p>
+                <p>
+                  <strong className="bi bi-calendar-week-fill">
+                    {" "}
+                    Call Date:
+                  </strong>{" "}
+                  {callDetails.date}
+                </p>
+                <p>
+                  <strong className="bi bi-stopwatch-fill">
+                    {" "}
+                    Call Duration:
+                  </strong>{" "}
+                  {callDetails.duration}
+                </p>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="outline-danger" onClick={HandleClosesModal}>
+                  <i className="bi bi-x-lg me-2"></i>Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
             {wallet.map((balance, index) => (
               <p key={index} className="mt-4 fw-semibold fs-5">
                 <FontAwesomeIcon
@@ -1929,15 +2047,224 @@ export function ManKiBaatComponent({ data, users }) {
                 ₹ {balance.walletBalance}/-
               </p>
             ))}
-            <button className="btn btn-outline-success p-1 w-25">Review</button>
-            <span className="fw-semibold fs-6 ms-4">
+            <button
+              className="btn btn-outline-success p-1 w-25 bi bi-yelp"
+              onClick={HandleShowsModals}
+            >
+              Review
+            </button>
+
+            {/* **************************SUBMIT-REVIEW************************** */}
+            <Modal show={ShowingModal} onHide={HandleClosesModals} centered>
+              <Modal.Header closeButton>
+                <Modal.Title className="bi bi-yelp">
+                  {" "}
+                  Submit Your Review
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="mb-3">
+                  <label htmlFor="reviewInput" className="form-label">
+                    Your Review
+                  </label>
+                  <textarea
+                    className="form-control"
+                    id="reviewInput"
+                    rows="3"
+                    placeholder="Write your review here..."
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                  ></textarea>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="ratingInput" className="form-label">
+                    Rating
+                  </label>
+                  <select
+                    className="form-select w-50"
+                    id="ratingInput"
+                    value={rating}
+                    onChange={(e) => setRating(e.target.value)}
+                  >
+                    <option
+                      value=""
+                      disabled
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
+                      Select a rating
+                    </option>
+                    <option
+                      value="5"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
+                      5 - Excellent
+                    </option>
+                    <option
+                      value="4"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
+                      4 - Good
+                    </option>
+                    <option
+                      value="3"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
+                      3 - Average
+                    </option>
+                    <option
+                      value="2"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
+                      2 - Poor
+                    </option>
+                    <option
+                      value="1"
+                      className="text-white"
+                      style={{ backgroundColor: "black" }}
+                    >
+                      1 - Very Poor
+                    </option>
+                  </select>
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="outline-success"
+                  className="bi bi-check-lg"
+                  onClick={HandleSubmit}
+                >
+                  {" "}
+                  Submit
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  className="bi bi-x-lg"
+                  onClick={HandleClosesModals}
+                >
+                  {" "}
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <span
+              className="fw-semibold fs-6 ms-4"
+              style={{ cursor: "pointer" }}
+              onClick={HandleShowingModal}
+            >
               <FontAwesomeIcon icon={faStackExchange} /> History
             </span>
-            <p className="mt-3" style={{ color: "darkgray" }}>
+
+            {/* ****************************ACTIVITY-HISTORY********************* */}
+            <Modal show={ShowingModals} onHide={HandleClosingModal} centered>
+              <Modal.Header closeButton>
+                <Modal.Title className="bi bi-clock-history">
+                  {" "}
+                  Activity History
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {historyData.length > 0 ? (
+                  <ul className="list-group">
+                    {historyData.map((item, index) => (
+                      <li
+                        key={index}
+                        className="list-group-item d-flex justify-content-between align-items-center"
+                        style={{ backgroundColor: "black" }}
+                      >
+                        <span className="text-white">{item.activity}</span>
+                        <span className="text-white small">{item.date}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No history available.</p>
+                )}
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="outline-danger"
+                  className="bi bi-x-lg"
+                  onClick={HandleClosingModal}
+                >
+                  {" "}
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <p
+              className="mt-3"
+              style={{ color: "darkgray", cursor: "pointer" }}
+              onClick={handleShows}
+            >
               <FontAwesomeIcon icon={faEye} /> Timeline{" "}
             </p>
+
+            {/* ****************************TIMELINE-DETAILS********************* */}
+            <Modal show={shows} onHide={handleCloses} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  <FontAwesomeIcon icon={faEye} /> Timeline Details
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <ul className="list-group">
+                  <li
+                    className="list-group-item text-white"
+                    style={{ backgroundColor: "black" }}
+                  >
+                    <strong className="d-flex justify-content-center">
+                      Event 1
+                    </strong>
+                    <p className="text-center">
+                      <FontAwesomeIcon icon={faMessage} /> Start the message -
+                      Jan 2024 - 08:20 pm
+                    </p>
+                  </li>
+                  <li
+                    className="list-group-item text-white"
+                    style={{ backgroundColor: "black" }}
+                  >
+                    <strong className="d-flex justify-content-center">
+                      Event 2
+                    </strong>
+                    <p className="text-center">
+                      <FontAwesomeIcon icon={faPhoneVolume} /> Start the call -
+                      Jun 2023 - 10:00 am
+                    </p>
+                  </li>
+                  <li
+                    className="list-group-item text-white"
+                    style={{ backgroundColor: "black" }}
+                  >
+                    <strong className="d-flex justify-content-center">
+                      Event 3
+                    </strong>
+                    <p className="text-center">
+                      <FontAwesomeIcon icon={faVideo} /> Start the video-call -
+                      Nov 2023 - 09:30 am
+                    </p>
+                  </li>
+                </ul>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="outline-danger"
+                  className="bi bi-x-lg"
+                  onClick={handleCloses}
+                >
+                  {" "}
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </div>
 
+          {/* ***************************ADVISOR-SLIDER-STYLE******************** */}
           <style>
             {`
           .slick-dots li button:before {
@@ -1976,6 +2303,7 @@ export function ManKiBaatComponent({ data, users }) {
         `}
           </style>
 
+          {/* ************************************ADVISOR-SLIDER********************* */}
           <Slider
             {...settings}
             style={{ width: "380px", margin: "0 auto", cursor: "pointer" }}
@@ -2217,12 +2545,14 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       </div>
 
+      {/* **************ADVISOR-DETAILS**************** */}
       <AdvisorModal
         isOpen={isModalOpen}
         advisor={selectedAdvisor}
         onClose={HandleCloseModals}
       />
 
+      {/* **************************DESCRIPTION*********************** */}
       <div className="container mt-5 description-container">
         <div className="row">
           <div className="col-md-12">
@@ -2239,6 +2569,7 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       </div>
 
+      {/* ********************************CATEGORY-STRENGTH************************* */}
       <div className="container">
         <div className="row">
           <div className="col-md-6 mt-5 mb-5">
@@ -2254,6 +2585,7 @@ export function ManKiBaatComponent({ data, users }) {
                       ? "btn-outline-warning bi bi-2-circle"
                       : "btn-outline-danger bi bi-radioactive"
                   }`}
+                  onClick={HandleShowingModals}
                 >
                   {u.category_strength <= 4
                     ? " Primary"
@@ -2263,6 +2595,105 @@ export function ManKiBaatComponent({ data, users }) {
                 </button>
               ))}
             </h3>
+
+            {/* ******************************CATEGORY-DETAILS************************ */}
+            <Modal show={showingModal} onHide={HandleClosingModals} centered>
+              <Modal.Header closeButton>
+                <Modal.Title className="bi bi-bookmark">
+                  {" "}
+                  Category Details
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body
+                style={{
+                  padding: "20px",
+                  border: "12px solid white",
+                }}
+              >
+                {user.map((u, index) => (
+                  <div key={index} className="text-center">
+                    <img
+                      className="mb-3"
+                      src={`http://localhost:3001/${u.image}`}
+                      alt=""
+                      style={{
+                        width: "150px",
+                        height: "150px",
+                        borderRadius: "10px",
+                        border: "2px solid white",
+                      }}
+                    />
+                    <ul className="list-group">
+                      <li
+                        className="list-group-item text-white"
+                        style={{ background: "black" }}
+                      >
+                        <h5 style={{ textShadow: "2px 3px 2px blue" }}>
+                          <span className="bi bi-person-fill"> Name :-</span>{" "}
+                          {u.name}
+                        </h5>
+                      </li>
+                      <li
+                        className="list-group-item text-white"
+                        style={{ background: "black" }}
+                      >
+                        <h5 style={{ textShadow: "2px 3px 2px blue" }}>
+                          <span className="bi bi-bookmark-fill">
+                            {" "}
+                            Category :-
+                          </span>{" "}
+                          {u.category}
+                        </h5>
+                      </li>
+                      <li
+                        className="list-group-item text-white"
+                        style={{ background: "black" }}
+                      >
+                        <div className="fw-bold">
+                          <span style={{ textShadow: "2px 3px 2px blue" }}>
+                            {u.category_strength}
+                          </span>
+                          <meter
+                            className={`custom-meter ms-2 mb-1 ${
+                              u.category_strength <= 4
+                                ? "green-meter"
+                                : u.category_strength <= 7
+                                ? "yellow-meter"
+                                : "red-meter"
+                            }`}
+                            value={u.category_strength}
+                            max="10" // Assuming the maximum strength is 10
+                            style={{
+                              "--meter-value": `${u.category_strength * 10}%`,
+                            }}
+                          ></meter>
+                          <span
+                            className={`ms-2 ${
+                              u.category_strength <= 4
+                                ? "bi bi-1-circle text-success"
+                                : u.category_strength <= 7
+                                ? "bi bi-2-circle text-warning"
+                                : "bi bi-radioactive text-danger"
+                            }`}
+                            style={{ fontSize: "1.2rem" }} // Adjust size as needed
+                          ></span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                ))}
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="outline-danger"
+                  className="bi bi-x-lg"
+                  onClick={HandleClosingModals}
+                >
+                  {" "}
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
             {user.map((u, index) => (
               <div key={index}>
                 <p className="text-primary">{u.category}</p>
@@ -2299,6 +2730,7 @@ export function ManKiBaatComponent({ data, users }) {
                           ? "btn-outline-warning bi bi-2-circle"
                           : "btn-outline-danger bi bi-radioactive"
                       }`}
+                      onClick={HandleShowingsModals}
                     >
                       {u.subcategory_strength <= 4
                         ? " Primary"
@@ -2308,6 +2740,114 @@ export function ManKiBaatComponent({ data, users }) {
                     </button>
                   ))}
                 </h3>
+
+                {/* *****************************SUB-CATEGORY-DETAILS*************************** */}
+                <Modal
+                  show={showingsModal}
+                  onHide={HandleClosingsModals}
+                  centered
+                >
+                  <Modal.Header closeButton>
+                    <Modal.Title className="bi bi-bookmark">
+                      {" "}
+                      Sub-Category Details
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body
+                    style={{
+                      padding: "20px",
+                      border: "12px solid white",
+                    }}
+                  >
+                    {user.map((u, index) => (
+                      <div key={index} className="text-center">
+                        <img
+                          className="mb-3"
+                          src={`http://localhost:3001/${u.image}`}
+                          alt=""
+                          style={{
+                            width: "150px",
+                            height: "150px",
+                            borderRadius: "10px",
+                            border: "2px solid white",
+                          }}
+                        />
+                        <ul className="list-group">
+                          <li
+                            className="list-group-item text-white"
+                            style={{ background: "black" }}
+                          >
+                            <h5 style={{ textShadow: "2px 3px 2px blue" }}>
+                              <span className="bi bi-person-fill">
+                                {" "}
+                                Name :-
+                              </span>{" "}
+                              {u.name}
+                            </h5>
+                          </li>
+                          <li
+                            className="list-group-item text-white"
+                            style={{ background: "black" }}
+                          >
+                            <h5 style={{ textShadow: "2px 3px 2px blue" }}>
+                              <span className="bi bi-bookmark-fill">
+                                {" "}
+                                Sub-Category :-
+                              </span>{" "}
+                              {u.sub_category}
+                            </h5>
+                          </li>
+                          <li
+                            className="list-group-item text-white"
+                            style={{ background: "black" }}
+                          >
+                            <div className="fw-bold">
+                              <span style={{ textShadow: "2px 3px 2px blue" }}>
+                                {u.subcategory_strength}
+                              </span>
+                              <meter
+                                className={`custom-meter ms-2 mb-1 ${
+                                  u.subcategory_strength <= 4
+                                    ? "green-meter"
+                                    : u.subcategory_strength <= 7
+                                    ? "yellow-meter"
+                                    : "red-meter"
+                                }`}
+                                value={u.subcategory_strength}
+                                max="10" // Assuming the maximum strength is 10
+                                style={{
+                                  "--meter-value": `${
+                                    u.subcategory_strength * 10
+                                  }%`,
+                                }}
+                              ></meter>
+                              <span
+                                className={`ms-2 ${
+                                  u.subcategory_strength <= 4
+                                    ? "bi bi-1-circle text-success"
+                                    : u.subcategory_strength <= 7
+                                    ? "bi bi-2-circle text-warning"
+                                    : "bi bi-radioactive text-danger"
+                                }`}
+                                style={{ fontSize: "1.2rem" }} // Adjust size as needed
+                              ></span>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    ))}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button
+                      variant="outline-danger"
+                      className="bi bi-x-lg"
+                      onClick={HandleClosingsModals}
+                    >
+                      {" "}
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
                 <p className="text-primary">{u.sub_category}</p>
                 {/* Again, wrap the next section in a div instead of p */}
                 <div className="fw-bold">
@@ -2332,6 +2872,8 @@ export function ManKiBaatComponent({ data, users }) {
               </div>
             ))}
           </div>
+
+          {/* ***********************************USER-DETAIL********************* */}
           <div className="col-md-6 mt-5">
             {user.map((u, index) => (
               <div key={index}>
@@ -2379,6 +2921,7 @@ export function ManKiBaatComponent({ data, users }) {
         </div>
       </div>
 
+      {/* **************************NOTIFICATION-BOX********************* */}
       <div className="notification-page">
         {/* Dialog for notification */}
         {isDialogOpen && (
@@ -2458,6 +3001,7 @@ export function ManKiBaatComponent({ data, users }) {
         )}
       </div>
 
+      {/* ****************************************FOOTER************************** */}
       <div
         className="container-fluid text-white"
         style={{ background: "linear-gradient(135deg, blue,red)" }}

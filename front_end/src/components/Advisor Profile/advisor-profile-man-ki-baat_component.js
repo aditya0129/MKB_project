@@ -553,6 +553,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
 
   return (
     <>
+      {/* *******************************HEADER*************************** */}
       <div id="header">
         <div className="container">
           <div className="row">
@@ -705,6 +706,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </div>
       </div>
 
+      {/* ************************************ADVISOR-PROFILE************************** */}
       <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
@@ -726,6 +728,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </div>
       </div>
 
+      {/* **************************SEND-ACCEPT-NOTIFICATION************************ */}
       <Modal
         show={showModal}
         onHide={handleCloseModal}
@@ -760,6 +763,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             >
               <option
                 value=""
+                disabled
                 className="text-white"
                 style={{ backgroundColor: "black" }}
               >
@@ -798,6 +802,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </Modal.Footer>
       </Modal>
 
+      {/* ************************SEND-REJECT-NOTIFICATION*************************** */}
       <Modal
         show={ShowModal}
         onHide={HandleCloseModal}
@@ -832,6 +837,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             >
               <option
                 value=""
+                disabled
                 className="text-white"
                 style={{ backgroundColor: "black" }}
               >
@@ -870,6 +876,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </Modal.Footer>
       </Modal>
 
+      {/* ************************************SEND-BUSY-NOTIFICATION************************ */}
       <Modal
         show={ShowModals}
         onHide={HandleCloseModals}
@@ -904,6 +911,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             >
               <option
                 value=""
+                disabled
                 className="text-white"
                 style={{ backgroundColor: "black" }}
               >
@@ -942,6 +950,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </Modal.Footer>
       </Modal>
 
+      {/* ********************************VIDEO-MEET-LINK**************************** */}
       <Modal show={ShowSModalS} onHide={HandleModalsClose}>
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-link-45deg"> Meet Link</Modal.Title>
@@ -975,6 +984,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </Modal.Footer>
       </Modal>
 
+      {/* *****************************CONFIRM-LOGOUT**************************** */}
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
@@ -1000,6 +1010,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </Modal.Footer>
       </Modal>
 
+      {/* ********************************UPDATE-PROFILE**************************** */}
       <div className="container text-center">
         <button
           type="button"
@@ -1083,6 +1094,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -1340,6 +1352,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -1478,6 +1491,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -1532,6 +1546,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -1778,6 +1793,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -1930,6 +1946,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -2082,6 +2099,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -2234,6 +2252,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -2386,6 +2405,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -2538,6 +2558,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -2690,6 +2711,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   >
                     <option
                       value=""
+                      disabled
                       className="text-white"
                       style={{ backgroundColor: "black" }}
                     >
@@ -2876,6 +2898,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </div>
       </div>
 
+      {/* **************************SCROLL-TO-TOP***************************** */}
       {isVisible && (
         <div
           className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
@@ -2885,6 +2908,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </div>
       )}
 
+      {/* ***********************************ADVISOR-DATA******************************* */}
       <div
         className="container mt-5 mb-5"
         style={{
@@ -3359,6 +3383,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         </div>
       </div>
 
+      {/* ******************************NOTIFICATION-BOX************************* */}
       <div className="notification-page">
         {/* Dialog for notification */}
         {isDialogOpen && (
@@ -3445,6 +3470,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         )}
       </div>
 
+      {/* ****************************************FOOTER*************************** */}
       <div
         className="container-fluid text-white"
         style={{ background: "linear-gradient(135deg, blue,red)" }}

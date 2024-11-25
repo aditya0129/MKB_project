@@ -76,6 +76,17 @@ export function AdvisorManKiBaatComponent() {
     fetchAdvisors();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/advisor-search?name=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    } else {
+      alert("Please Enter A Search Term.");
+    }
+  };
+
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     setIsOpen(false); // Close dropdown after selection
@@ -114,10 +125,6 @@ export function AdvisorManKiBaatComponent() {
   const handleUserProfileClick = () => {
     navigate("/user-profile");
   };
-
-  function handleAdvisorClick() {
-    navigate("/advisor");
-  }
 
   const [ShowModals, SetShowModals] = useState(false); // Controls modal visibility
   const [AdvisorDatas, SetAdvisorDatas] = useState([]); // Holds advisor data
@@ -265,6 +272,7 @@ export function AdvisorManKiBaatComponent() {
 
   return (
     <>
+      {/* *************************************HEADER************************* */}
       <div id="header">
         <div className="container">
           <div className="row">
@@ -273,13 +281,17 @@ export function AdvisorManKiBaatComponent() {
               <input
                 type="search"
                 className="form-control ms-5"
-                placeholder="Search"
+                placeholder="Type here to search"
                 style={{ width: "200px", height: "50px" }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
-                className="btn btn-primary ms-2"
+                className="btn btn-outline-info bi bi-search ms-2"
                 style={{ height: "50px" }}
+                onClick={handleSearch}
               >
+                {" "}
                 Search
               </button>
             </div>
@@ -305,12 +317,12 @@ export function AdvisorManKiBaatComponent() {
                   aria-labelledby="dropdownMenuButton"
                   style={{ cursor: "pointer", background: "black" }}
                 >
-                  <li
+                  <a
                     className="dropdown-item text-center border border-1 text-white"
-                    onClick={handleAdvisorClick}
+                    href="advisor"
                   >
                     All Advisor
-                  </li>
+                  </a>
                   <li
                     className="dropdown-item text-center border border-1 text-white"
                     onClick={() => handleCategorySelect("Stress")}
@@ -470,6 +482,7 @@ export function AdvisorManKiBaatComponent() {
         </div>
       </div>
 
+      {/* ***************************************ADVISOR**************************** */}
       <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
@@ -500,6 +513,7 @@ export function AdvisorManKiBaatComponent() {
         </div>
       </div>
 
+      {/* ****************************CONFIRM-LOGOUT**************************** */}
       <Modal show={show} onHide={handleClose} className="custom-modal">
         <Modal.Header closeButton className="custom-modal-header">
           <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
@@ -525,6 +539,7 @@ export function AdvisorManKiBaatComponent() {
         </Modal.Footer>
       </Modal>
 
+      {/* ***********************GENERATE-VIDEO-LINK*************************** */}
       <Modal show={ShowModal} onHide={HandleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-link-45deg"> Room Link</Modal.Title>
@@ -549,6 +564,7 @@ export function AdvisorManKiBaatComponent() {
         </Modal.Footer>
       </Modal>
 
+      {/* ************************************SEND ROOM ID NOTIFICATION************************* */}
       <Modal
         show={ShowModals}
         onHide={HandleCloseModal}
@@ -637,6 +653,7 @@ export function AdvisorManKiBaatComponent() {
         </Modal.Footer>
       </Modal>
 
+      {/* ****************************SCROLL-TO-TOP************************** */}
       {isVisible && (
         <div
           className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
@@ -646,6 +663,7 @@ export function AdvisorManKiBaatComponent() {
         </div>
       )}
 
+      {/* *******************************ADVISOR-DATA*********************** */}
       <div
         className="container-fluid mt-5 advisor"
         style={{ background: "white" }}
@@ -897,6 +915,7 @@ export function AdvisorManKiBaatComponent() {
         </div>
       </div>
 
+      {/* *****************************NOTIFICATION-BOX************************ */}
       <div className="notification-page">
         {/* Dialog for notification */}
         {isDialogOpen && (
@@ -976,6 +995,7 @@ export function AdvisorManKiBaatComponent() {
         )}
       </div>
 
+      {/* **********************************FOOTER********************************* */}
       <div
         className="container-fluid text-white"
         style={{ background: "linear-gradient(135deg, blue,red)" }}

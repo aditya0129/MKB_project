@@ -18,12 +18,19 @@ const AdvisorModal = ({ isOpen, advisor, onClose }) => {
       onExited={onClose} // Trigger onClose when the fade-out completes
     >
       <Modal.Header closeButton>
-        <Modal.Title className="bi bi-person-bounding-box">
+        <Modal.Title className="bi bi-person-circle">
           {" "}
           {advisor.Name}{" "}
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="text-center">
+      <Modal.Body
+        className="text-center"
+        style={{
+          borderLeft: "12px solid white",
+          borderTop: "12px solid white",
+          borderBottom: "12px solid white",
+        }}
+      >
         <img
           src={`http://localhost:3001/${advisor.Image}`}
           alt=""

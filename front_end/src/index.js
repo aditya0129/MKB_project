@@ -28,6 +28,7 @@ import TermsAndConditions from "./components/Terms And Conditions/TermsAndCondit
 import { AdvisorForgetPasswordMankiBaatComponent } from "./components/Advisor Forgot Password/advisor-forgot-password-man-ki-baat_component";
 import { AdvisorVerifyOTPManKiBaatComponent } from "./components/Advisor Verify OTP/advisor-verify-otp-man-ki-baat_component";
 import { AdvisorSetPasswordManKiBaatComponent } from "./components/Advisor Set Password/advisor-set-password-man-ki-baat_component";
+import AdvisorSearchManKiBaatComponent from "./components/Advisor Search/advisor-search-man-ki-baat_component";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -80,6 +81,10 @@ root.render(
         <Route
           path="advisor-set-password"
           element={<AdvisorSetPasswordManKiBaatComponent />}
+        />
+        <Route
+          path="advisor-search"
+          element={<AdvisorSearchManKiBaatComponent />}
         />
       </Routes>
     </BrowserRouter>
