@@ -1,13 +1,22 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./advisor-verify-otp-man-ki-baat_component.css";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 
 export function AdvisorVerifyOTPManKiBaatComponent() {
   const [Otp, setOtp] = useState(["", "", "", ""]);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const inputRefs = useRef([]);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in milliseconds
+      offset: 120, // Offset (in px) from the original trigger point
+    });
+  }, []);
 
   const handleChange = (element, index) => {
     let newOtp = [...Otp];
@@ -34,10 +43,13 @@ export function AdvisorVerifyOTPManKiBaatComponent() {
         return;
       }
 
-      const response = await axios.post("http://localhost:3001/advisor_verify_otp", {
-        advisor_id: advisorId,
-        Otp: otpValue,
-      });
+      const response = await axios.post(
+        "http://localhost:3001/advisor_verify_otp",
+        {
+          advisor_id: advisorId,
+          Otp: otpValue,
+        }
+      );
 
       setMessage(response.data.MSG);
       if (response.data.status) {
@@ -68,13 +80,21 @@ export function AdvisorVerifyOTPManKiBaatComponent() {
         textAlign: "center",
       }}
     >
-      <h3 style={{ fontFamily: "fantasy", textShadow: "3px 2px 3px blue" }}>
+      <h3
+        style={{ fontFamily: "fantasy", textShadow: "3px 2px 3px blue" }}
+        data-aos="zoom-in"
+      >
         Verify OTP
       </h3>
       <div className="row">
         <div className="col d-flex">
           {Otp.map((data, index) => (
-            <div className="form-group m-auto" key={index}>
+            <div
+              className="form-group m-auto"
+              key={index}
+              data-aos="zoom-in"
+              data-aos-delay="100"
+            >
               <input
                 type="text"
                 className="form-control"
@@ -91,7 +111,7 @@ export function AdvisorVerifyOTPManKiBaatComponent() {
             </div>
           ))}
         </div>
-        <div className="mt-3">
+        <div className="mt-3" data-aos="zoom-in" data-aos-delay="200">
           <button className="verify" onClick={handleVerify}>
             Verify
           </button>

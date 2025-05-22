@@ -1,0 +1,114 @@
+/* ✨ Gradient Color Changing Text */
+.matching-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-image: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #ffeb00,
+    #00ff00,
+    #00ffff,
+    #0000ff,
+    #ff00ff
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientText 3s infinite alternate;
+}
+
+/* 🔥 Gradient Animation */
+@keyframes gradientText {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 😊 Spinning & Color-Changing Emoji */
+.emoji-effect {
+  font-size: 60px;
+  animation: spinEffect 2s linear infinite,
+    emojiColorChange 3s infinite alternate ease-in-out;
+}
+
+/* 🔄 Smooth Spinning Animation */
+@keyframes spinEffect {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 🎨 Green Color Changing Effect */
+@keyframes emojiColorChange {
+  0% {
+    color: #006400;
+  } /* Dark Green */
+  25% {
+    color: #008000;
+  } /* Standard Green */
+  50% {
+    color: #32cd32;
+  } /* Lime Green */
+  75% {
+    color: #00ff00;
+  } /* Bright Green */
+  100% {
+    color: #228b22;
+  } /* Forest Green */
+}
+
+/* 😊 Spinning Emoji Effect */
+.emoji-spin {
+  font-size: 60px;
+  color: #ff6347; /* Tomato Red */
+  display: inline-block;
+  animation: spinEffect 2s linear infinite;
+}
+
+/* 🔄 Smooth Spinning Animation */
+@keyframes spinEffect {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 🎨 Gradient Color Change Effect */
+.text-color-change {
+  animation: textColorChange 3s infinite alternate ease-in-out;
+}
+
+/* 🔄 Keyframes for Smooth Color Transition */
+@keyframes textColorChange {
+  0% {
+    color: #ff0000;
+  } /* Bright Red */
+  25% {
+    color: #ff3333;
+  } /* Light Red */
+  50% {
+    color: #cc0000;
+  } /* Deep Red */
+  75% {
+    color: #ff6666;
+  } /* Soft Red */
+  100% {
+    color: #990000;
+  } /* Dark Red */
+}

@@ -25,6 +25,7 @@
 
 .logo > h3 {
   color: var(--main-light);
+  margin-left: 20px;
 }
 
 .main {
@@ -189,4 +190,12 @@ video {
   #showChat {
     display: flex;
   }
+}
+
+.header__timer {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  margin-left: auto;
+  margin-right: 20px;
 }

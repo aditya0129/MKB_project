@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 import { useNavigate } from "react-router-dom";
 import "./forgot-password-man-ki-baat_component.css";
 
@@ -9,6 +11,13 @@ export function ForgetPasswordMankiBaatComponent() {
   const [message, setMessage] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [timer, setTimer] = useState(60);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in milliseconds
+      offset: 120, // Offset (in px) from the original trigger point
+    });
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -74,6 +83,7 @@ export function ForgetPasswordMankiBaatComponent() {
       <h1
         className="text-center"
         style={{ fontFamily: "fantasy", textShadow: "3px 2px 3px blue" }}
+        data-aos="zoom-in"
       >
         Please Enter Your E-mail Address
       </h1>
@@ -83,6 +93,8 @@ export function ForgetPasswordMankiBaatComponent() {
             <label
               className="d-flex m-auto justify-content-center"
               style={{ fontFamily: "fantasy" }}
+              data-aos="zoom-in"
+              data-aos-delay="100"
             >
               E-mail:
             </label>
@@ -94,9 +106,15 @@ export function ForgetPasswordMankiBaatComponent() {
               onChange={handleChange}
               style={{ fontFamily: "fantasy" }}
               required
+              data-aos="zoom-in"
+              data-aos-delay="200"
             ></input>
           </div>
-          <div className="mt-3 d-flex m-auto justify-content-center">
+          <div
+            className="mt-3 d-flex m-auto justify-content-center"
+            data-aos="zoom-in"
+            data-aos-delay="300"
+          >
             <button onClick={handleClick} className="otp" disabled={otpSent}>
               {otpSent ? `Wait ${timer}s` : "Send OTP"}
             </button>

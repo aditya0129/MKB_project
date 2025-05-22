@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./advisor-man-ki-baat_component.css";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -38,6 +41,14 @@ export function AdvisorManKiBaatComponent() {
       navigate("/register-case");
     }
   }, [cookies, navigate]);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in milliseconds
+      offset: 120, // Offset (in px) from the original trigger point
+      once: true, // Ensure animations happen only once
+    });
+  }, []);
 
   useEffect(() => {
     async function fetchUser() {
@@ -146,6 +157,7 @@ export function AdvisorManKiBaatComponent() {
         const advisorList = advisors.map((advisor) => ({
           id: advisor.advisorId,
           name: advisor.Name, // Assuming Name field exists
+          image: advisor.Image,
         }));
         SetAdvisorDatas(advisorList);
       } else {
@@ -270,6 +282,47 @@ export function AdvisorManKiBaatComponent() {
     };
   }, []);
 
+  // Convert Advisors for react-select
+  const AdvisorOptions = FilteredAdvisorData.map((advisor) => ({
+    value: advisor.id,
+    label: advisor.name,
+    image: `http://localhost:3001/${advisor.image}`,
+  }));
+
+  // Custom Dropdown Option (Show Image + Name)
+  const CustomOption = ({ data, innerRef, innerProps }) => (
+    <div
+      ref={innerRef}
+      {...innerProps}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: 10,
+        backgroundColor: "black",
+        color: "white",
+      }}
+    >
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
+  // Custom Selected Value (Show Image + Name)
+  const CustomSingleValue = ({ data }) => (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
   return (
     <>
       {/* *************************************HEADER************************* */}
@@ -278,22 +331,18 @@ export function AdvisorManKiBaatComponent() {
           <div className="row">
             <div className="col-md-6 form-group mt-2 d-flex">
               <h1 style={{ fontFamily: "French Script MT" }}>MKB</h1>
-              <input
-                type="search"
-                className="form-control ms-5"
-                placeholder="Type here to search"
-                style={{ width: "200px", height: "50px" }}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button
-                className="btn btn-outline-info bi bi-search ms-2"
-                style={{ height: "50px" }}
-                onClick={handleSearch}
-              >
-                {" "}
-                Search
-              </button>
+              <div className="search-container ms-5">
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search here..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button className="search-button" onClick={handleSearch}>
+                  <i className="bi bi-search"></i>
+                </button>
+              </div>
             </div>
             <div className="col-md-6">
               <ul
@@ -436,10 +485,15 @@ export function AdvisorManKiBaatComponent() {
                   }}
                 >
                   Notification
-                  <FontAwesomeIcon
+                  {/* <FontAwesomeIcon
                     icon={faBell}
                     className="ms-2"
                     style={{ color: "white" }}
+                  /> */}
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    className="ms-2 bell-icon"
+                    style={{ color: "yellow" }}
                   />
                 </li>
                 <li
@@ -454,7 +508,7 @@ export function AdvisorManKiBaatComponent() {
                 >
                   My Contacts
                 </li>
-                {user.map((detail, index) => (
+                {/* {user.map((detail, index) => (
                   <img
                     key={index}
                     className="ms-3 mt-2"
@@ -475,7 +529,27 @@ export function AdvisorManKiBaatComponent() {
                   icon={faPowerOff}
                   onClick={handleShow}
                   style={{ color: "white", cursor: "pointer" }}
-                />
+                /> */}
+                <div className="profile-container">
+                  {user.map((u, index) => (
+                    <div key={index} className="profile-wrapper">
+                      <div className="neon-ring"></div>
+                      <img
+                        src={`http://localhost:3001/${u.image}`}
+                        onClick={handleUserProfileClick}
+                        alt="Profile"
+                        className="profile-img"
+                        style={{ cursor: "pointer" }}
+                      />
+                    </div>
+                  ))}
+
+                  <FontAwesomeIcon
+                    className="logout-btn"
+                    icon={faPowerOff}
+                    onClick={handleShow}
+                  />
+                </div>
               </ul>
             </div>
           </div>
@@ -483,7 +557,7 @@ export function AdvisorManKiBaatComponent() {
       </div>
 
       {/* ***************************************ADVISOR**************************** */}
-      <div className="container-fluid bg-primary mb-5">
+      {/* <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "150px" }}
@@ -491,6 +565,7 @@ export function AdvisorManKiBaatComponent() {
           <h3
             className="display-2 font-weight-bold text-white"
             style={{ fontFamily: "Edwardian  Script ITC" }}
+            data-aos="zoom-in"
           >
             {" "}
             <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
@@ -511,17 +586,33 @@ export function AdvisorManKiBaatComponent() {
             <p className="m-0">Advisor</p>
           </div>
         </div>
+      </div> */}
+
+      <div className="header-container mb-5">
+        <div className="header-card" data-aos="zoom-in">
+          <h3 className="header-title">
+            <span className="header-icon">&#9884;</span> Advisor{" "}
+            <span className="header-icon">&#9884;</span>
+          </h3>
+          <div className="breadcrumb">
+            <a href="/" className="breadcrumb-link">
+              Home
+            </a>
+            <span className="breadcrumb-separator"> / </span>
+            <span className="breadcrumb-current">Advisor</span>
+          </div>
+        </div>
       </div>
 
       {/* ****************************CONFIRM-LOGOUT**************************** */}
       <Modal show={show} onHide={handleClose} className="custom-modal">
-        <Modal.Header closeButton className="custom-modal-header">
+        <Modal.Header closeButton>
           <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
         <Modal.Footer>
           <Button
-            className="bi bi-x-lg"
+            className="bi bi-emoji-frown-fill"
             variant="outline-danger"
             onClick={handleClose}
           >
@@ -529,7 +620,7 @@ export function AdvisorManKiBaatComponent() {
             No
           </Button>
           <Button
-            className="bi bi-check-lg"
+            className="bi bi-emoji-smile-fill"
             variant="outline-success"
             onClick={handleLogout}
           >
@@ -573,7 +664,7 @@ export function AdvisorManKiBaatComponent() {
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-link-45deg">
             {" "}
-            Select Advisor & Paste Room ID
+            Select Advisor & Paste Room ID{" "}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -603,34 +694,46 @@ export function AdvisorManKiBaatComponent() {
             />
           </Form.Group>
 
-          {/* Advisor Selection */}
+          {/* Advisor Selection with React-Select */}
           <Form.Group controlId="advisorSelectDropdown">
             <Form.Label>Select Advisor</Form.Label>
-            <Form.Control
-              as="select"
-              value={SelectedAdvisorId}
-              onChange={(e) => SetSelectedAdvisorId(e.target.value)}
-              className="text-white"
-              style={{ backgroundColor: "black" }}
-            >
-              <option
-                value=""
-                className="text-white"
-                style={{ backgroundColor: "black" }}
-              >
-                -- Select Advisor --
-              </option>
-              {FilteredAdvisorData.map((advisor) => (
-                <option
-                  className="text-white"
-                  key={advisor.id}
-                  value={advisor.id}
-                  style={{ backgroundColor: "black" }}
-                >
-                  {advisor.name}
-                </option>
-              ))}
-            </Form.Control>
+            <Select
+              options={AdvisorOptions}
+              value={AdvisorOptions.find(
+                (opt) => opt.value === SelectedAdvisorId
+              )}
+              onChange={(selectedOption) =>
+                SetSelectedAdvisorId(selectedOption.value)
+              }
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? "#444" : "black",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+              }}
+              components={{
+                SingleValue: CustomSingleValue,
+                Option: CustomOption,
+              }}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -674,10 +777,14 @@ export function AdvisorManKiBaatComponent() {
                 <div className="col-md-4 mt-3 mb-5" key={index}>
                   <div
                     className="card"
-                    style={{
-                      borderTop: "8px solid blue",
-                      borderBottom: "8px solid cyan",
-                    }}
+                    style={
+                      {
+                        // borderTop: "8px solid blue",
+                        // borderBottom: "8px solid cyan",
+                      }
+                    }
+                    data-aos="zoom-in"
+                    data-aos-delay="100"
                   >
                     <div className="card-body">
                       <div className="text-center">
@@ -795,10 +902,14 @@ export function AdvisorManKiBaatComponent() {
                 <div className="col-md-4 mt-3 mb-5" key={index}>
                   <div
                     className="card"
-                    style={{
-                      borderTop: "8px solid blue",
-                      borderBottom: "8px solid cyan",
-                    }}
+                    style={
+                      {
+                        // borderTop: "8px solid blue",
+                        // borderBottom: "8px solid cyan",
+                      }
+                    }
+                    data-aos="zoom-in"
+                    data-aos-delay="200"
                   >
                     <div className="card-body">
                       <div className="text-center">

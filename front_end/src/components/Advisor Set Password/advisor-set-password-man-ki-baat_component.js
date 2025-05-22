@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./advisor-set-password-man-ki-baat_component.css";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 
 export function AdvisorSetPasswordManKiBaatComponent() {
   const [Password, setPassword] = useState("");
@@ -11,6 +13,13 @@ export function AdvisorSetPasswordManKiBaatComponent() {
   const [useErrors, setUseErrors] = useState("");
   const [errors, setErrors] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in milliseconds
+      offset: 120, // Offset (in px) from the original trigger point
+    });
+  }, []);
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
@@ -128,6 +137,7 @@ export function AdvisorSetPasswordManKiBaatComponent() {
       <h1
         className="text-center p-2"
         style={{ fontFamily: "fantasy", textShadow: "3px 2px 3px blue" }}
+        data-aos="zoom-in"
       >
         Update Your Password
       </h1>
@@ -137,6 +147,8 @@ export function AdvisorSetPasswordManKiBaatComponent() {
             <label
               className="d-flex m-auto justify-content-center"
               style={{ fontFamily: "fantasy" }}
+              data-aos="zoom-in"
+              data-aos-delay="100"
             >
               Set New Password:
             </label>
@@ -149,6 +161,8 @@ export function AdvisorSetPasswordManKiBaatComponent() {
               onChange={handlePasswordChange}
               onKeyUp={handlePasswordKeyUp}
               required
+              data-aos="zoom-in"
+              data-aos-delay="200"
             />
             {useErrors && (
               <div className="text-white text-center">{useErrors}</div>
@@ -158,6 +172,8 @@ export function AdvisorSetPasswordManKiBaatComponent() {
             <label
               className="d-flex m-auto justify-content-center"
               style={{ fontFamily: "fantasy" }}
+              data-aos="zoom-in"
+              data-aos-delay="300"
             >
               Re-Enter Password:
             </label>
@@ -170,10 +186,16 @@ export function AdvisorSetPasswordManKiBaatComponent() {
               onChange={handleRePasswordChange}
               onKeyUp={HandlePasswordKeyUp}
               required
+              data-aos="zoom-in"
+              data-aos-delay="400"
             />
             {errors && <div className="text-white text-center">{errors}</div>}
           </div>
-          <div className="mt-3 d-flex m-auto justify-content-center">
+          <div
+            className="mt-3 d-flex m-auto justify-content-center"
+            data-aos="zoom-in"
+            data-aos-delay="500"
+          >
             <button onClick={handleUpdateClick} className="otp mb-2">
               Update
             </button>

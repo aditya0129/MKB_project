@@ -7,7 +7,7 @@
   <title>videoChatApp</title>
   <link rel="stylesheet" href="style.css" />
   <script src="/socket.io/socket.io.js"></script>
-  <script src="https://kit.fontawesome.com/c939d0e917.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/js/all.min.js"></script>
   <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
   <script>
     const ROOM_ID = "<%= roomId %>";
@@ -20,7 +20,10 @@
       <div class="header__back">
         <i class="fas fa-angle-left"></i>
       </div>
-      <h3>Video Chat</h2>
+      <h3>VIDEO CHAT</h2>
+    </div>
+    <div id="timer" class="header__timer">
+      <p>Call Duration: <span>00:00:00</span></p>
     </div>
   </div>
   <div class="main">

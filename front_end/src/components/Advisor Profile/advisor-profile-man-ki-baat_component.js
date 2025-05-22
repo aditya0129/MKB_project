@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./advisor-profile-man-ki-baat_component.css";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -62,6 +65,14 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
     }
   }, [cookies, navigate]);
 
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in milliseconds
+      offset: 120, // Offset (in px) from the original trigger point
+      once: true, // Ensure animations happen only once
+    });
+  }, []);
+
   const [ShowSModalS, SetShowSModals] = useState(false); // Corrected state and setter
 
   useEffect(() => {
@@ -113,6 +124,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         const userList = users.map((user) => ({
           id: user.userId,
           name: user.name, // Assuming name field exists
+          image: user.image,
         }));
         setUserDatas(userList);
       } else {
@@ -198,6 +210,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         const userList = users.map((user) => ({
           id: user.userId,
           name: user.name, // Assuming name field exists
+          image: user.image,
         }));
         SetUserDatas(userList);
       } else {
@@ -283,6 +296,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         const userList = users.map((user) => ({
           id: user.userId,
           name: user.name, // Assuming name field exists
+          image: user.image,
         }));
         SetUserData(userList);
       } else {
@@ -551,6 +565,129 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
     };
   }, []);
 
+  // Convert Users for react-select
+  const userOptions = filteredUserData.map((user) => ({
+    value: user.id,
+    label: user.name,
+    image: `http://localhost:3001/${user.image}`,
+  }));
+
+  // Custom Dropdown Option (Show Image + Name)
+  const customOption = ({ data, innerRef, innerProps }) => (
+    <div
+      ref={innerRef}
+      {...innerProps}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: 10,
+        backgroundColor: "black",
+        color: "white",
+      }}
+    >
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
+  // Custom Selected Value (Show Image + Name)
+  const customSingleValue = ({ data }) => (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
+  // Convert Users for react-select
+  const UserOptions = FilteredUserData.map((user) => ({
+    value: user.id,
+    label: user.name,
+    image: `http://localhost:3001/${user.image}`,
+  }));
+
+  // Custom Dropdown Option (Show Image + Name)
+  const CustomOption = ({ data, innerRef, innerProps }) => (
+    <div
+      ref={innerRef}
+      {...innerProps}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: 10,
+        backgroundColor: "black",
+        color: "white",
+      }}
+    >
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
+  // Custom Selected Value (Show Image + Name)
+  const CustomSingleValue = ({ data }) => (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
+  // Convert Users for react-select
+  const UsersOptions = FilteredUserDatas.map((user) => ({
+    value: user.id,
+    label: user.name,
+    image: `http://localhost:3001/${user.image}`,
+  }));
+
+  // Custom Dropdown Option (Show Image + Name)
+  const CustomsOption = ({ data, innerRef, innerProps }) => (
+    <div
+      ref={innerRef}
+      {...innerProps}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: 10,
+        backgroundColor: "black",
+        color: "white",
+      }}
+    >
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
+  // Custom Selected Value (Show Image + Name)
+  const CustomsSingleValue = ({ data }) => (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
   return (
     <>
       {/* *******************************HEADER*************************** */}
@@ -559,18 +696,16 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           <div className="row">
             <div className="col-md-6 form-group mt-2 d-flex">
               <h1 style={{ fontFamily: "French Script MT" }}>MKB</h1>
-              <input
-                type="search"
-                className="form-control ms-5"
-                placeholder="Search"
-                style={{ width: "200px", height: "50px" }}
-              />
-              <button
-                className="btn btn-primary ms-2"
-                style={{ height: "50px" }}
-              >
-                Search
-              </button>
+              <div className="search-container ms-5">
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search here..."
+                />
+                <button className="search-button">
+                  <i className="bi bi-search"></i>
+                </button>
+              </div>
             </div>
             <div className="col-md-6">
               <ul
@@ -659,10 +794,15 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   }}
                 >
                   Notification
-                  <FontAwesomeIcon
+                  {/* <FontAwesomeIcon
                     icon={faBell}
                     className="ms-2"
                     style={{ color: "white" }}
+                  /> */}
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    className="ms-2 bell-icon"
+                    style={{ color: "yellow" }}
                   />
                 </li>
                 <li
@@ -677,7 +817,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 >
                   My Contacts
                 </li>
-                {advisors.map((advisor, index) => (
+                {/* {advisors.map((advisor, index) => (
                   <img
                     key={index}
                     className="ms-3 mt-2"
@@ -699,7 +839,25 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     color: "white",
                     cursor: "pointer",
                   }}
-                />
+                /> */}
+                <div className="profile-container">
+                  {advisors.map((advisor, index) => (
+                    <div key={index} className="profile-wrapper">
+                      <div className="neon-ring"></div>
+                      <img
+                        src={`http://localhost:3001/${advisor.Image}`}
+                        alt="Profile"
+                        className="profile-img"
+                      />
+                    </div>
+                  ))}
+
+                  <FontAwesomeIcon
+                    className="logout-btn"
+                    icon={faPowerOff}
+                    onClick={handleShow}
+                  />
+                </div>
               </ul>
             </div>
           </div>
@@ -707,7 +865,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       </div>
 
       {/* ************************************ADVISOR-PROFILE************************** */}
-      <div className="container-fluid bg-primary mb-5">
+      {/* <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "100px" }}
@@ -715,6 +873,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           <h3
             className="display-3 font-weight-bold text-white"
             style={{ fontFamily: "Edwardian  Script ITC" }}
+            data-aos="zoom-in"
           >
             {" "}
             <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
@@ -724,6 +883,15 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
               &#10046;
             </span>
+          </h3>
+        </div>
+      </div> */}
+
+      <div className="header-container mb-5">
+        <div className="header-card" data-aos="zoom-in">
+          <h3 className="header-title">
+            <span className="header-icon">&#9884;</span> Advisor-Profile{" "}
+            <span className="header-icon">&#9884;</span>
           </h3>
         </div>
       </div>
@@ -737,11 +905,12 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-person-circle">
             {" "}
-            Select User
+            Select User{" "}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className="mb-3" controlId="advisorSearch">
+          {/* Search User Input */}
+          <Form.Group className="mb-3" controlId="userSearch">
             <Form.Label>Search User</Form.Label>
             <Form.Control
               type="text"
@@ -752,34 +921,45 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               style={{ backgroundColor: "black" }}
             />
           </Form.Group>
-          <Form.Group controlId="advisorSelectDropdown">
+
+          {/* User Selection with React-Select */}
+          <Form.Group controlId="userSelectDropdown">
             <Form.Label>Select User</Form.Label>
-            <Form.Control
-              as="select"
-              value={selectedUserId}
-              onChange={(e) => setSelectedUserId(e.target.value)}
-              className="text-white"
-              style={{ backgroundColor: "black" }}
-            >
-              <option
-                value=""
-                disabled
-                className="text-white"
-                style={{ backgroundColor: "black" }}
-              >
-                -- Select User --
-              </option>
-              {filteredUserData.map((user) => (
-                <option
-                  className="text-white"
-                  key={user.id}
-                  value={user.id}
-                  style={{ backgroundColor: "black" }}
-                >
-                  {user.name}
-                </option>
-              ))}
-            </Form.Control>
+            <Select
+              options={userOptions}
+              value={userOptions.find((opt) => opt.value === selectedUserId)}
+              onChange={(selectedOption) =>
+                setSelectedUserId(selectedOption.value)
+              }
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? "#444" : "black",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+              }}
+              components={{
+                SingleValue: customSingleValue,
+                Option: customOption,
+              }}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -811,11 +991,12 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-person-circle">
             {" "}
-            Select User
+            Select User{" "}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className="mb-3" controlId="advisorSearch">
+          {/* Search User Input */}
+          <Form.Group className="mb-3" controlId="userSearch">
             <Form.Label>Search User</Form.Label>
             <Form.Control
               type="text"
@@ -826,34 +1007,45 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               style={{ backgroundColor: "black" }}
             />
           </Form.Group>
-          <Form.Group controlId="advisorSelectDropdown">
+
+          {/* User Selection with React-Select */}
+          <Form.Group controlId="userSelectDropdown">
             <Form.Label>Select User</Form.Label>
-            <Form.Control
-              as="select"
-              value={SelectedUserId}
-              onChange={(e) => SetSelectedUserId(e.target.value)}
-              className="text-white"
-              style={{ backgroundColor: "black" }}
-            >
-              <option
-                value=""
-                disabled
-                className="text-white"
-                style={{ backgroundColor: "black" }}
-              >
-                -- Select User --
-              </option>
-              {FilteredUserData.map((user) => (
-                <option
-                  className="text-white"
-                  key={user.id}
-                  value={user.id}
-                  style={{ backgroundColor: "black" }}
-                >
-                  {user.name}
-                </option>
-              ))}
-            </Form.Control>
+            <Select
+              options={UserOptions}
+              value={UserOptions.find((opt) => opt.value === selectedUserId)}
+              onChange={(selectedOption) =>
+                setSelectedUserId(selectedOption.value)
+              }
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? "#444" : "black",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+              }}
+              components={{
+                SingleValue: CustomSingleValue,
+                Option: CustomOption,
+              }}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -885,11 +1077,12 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-person-circle">
             {" "}
-            Select User
+            Select User{" "}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className="mb-3" controlId="advisorSearch">
+          {/* Search User Input */}
+          <Form.Group className="mb-3" controlId="userSearch">
             <Form.Label>Search User</Form.Label>
             <Form.Control
               type="text"
@@ -900,34 +1093,45 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               style={{ backgroundColor: "black" }}
             />
           </Form.Group>
-          <Form.Group controlId="advisorSelectDropdown">
+
+          {/* User Selection with React-Select */}
+          <Form.Group controlId="userSelectDropdown">
             <Form.Label>Select User</Form.Label>
-            <Form.Control
-              as="select"
-              value={SelectedUserIds}
-              onChange={(e) => SetSelectedUserIds(e.target.value)}
-              className="text-white"
-              style={{ backgroundColor: "black" }}
-            >
-              <option
-                value=""
-                disabled
-                className="text-white"
-                style={{ backgroundColor: "black" }}
-              >
-                -- Select User --
-              </option>
-              {FilteredUserDatas.map((user) => (
-                <option
-                  className="text-white"
-                  key={user.id}
-                  value={user.id}
-                  style={{ backgroundColor: "black" }}
-                >
-                  {user.name}
-                </option>
-              ))}
-            </Form.Control>
+            <Select
+              options={UsersOptions}
+              value={UsersOptions.find((opt) => opt.value === selectedUserId)}
+              onChange={(selectedOption) =>
+                setSelectedUserId(selectedOption.value)
+              }
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? "#444" : "black",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+              }}
+              components={{
+                SingleValue: CustomsSingleValue,
+                Option: CustomsOption,
+              }}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -986,13 +1190,13 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
 
       {/* *****************************CONFIRM-LOGOUT**************************** */}
       <Modal show={show} onHide={handleClose} className="custom-modal">
-        <Modal.Header closeButton className="custom-modal-header">
+        <Modal.Header closeButton>
           <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
         <Modal.Footer>
           <Button
-            className="bi bi-x-lg"
+            className="bi bi-emoji-frown-fill"
             variant="outline-danger"
             onClick={handleClose}
           >
@@ -1000,7 +1204,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
             No
           </Button>
           <Button
-            className="bi bi-check-lg"
+            className="bi bi-emoji-smile-fill"
             variant="outline-success"
             onClick={handleLogout}
           >
@@ -1011,14 +1215,18 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       </Modal>
 
       {/* ********************************UPDATE-PROFILE**************************** */}
-      <div className="container text-center">
+      <div
+        className="container d-flex justify-content-center"
+        data-aos="zoom-in"
+        data-aos-delay="100"
+      >
         <button
           type="button"
-          className="btn btn-outline-dark"
+          className="animated-gradient-button"
           data-bs-toggle="modal"
           data-bs-target="#updateProfileModal"
         >
-          <span className="bi bi-pencil-square"> Update-Profile</span>
+          <span className="bi bi-pencil-square"></span> Update Profile
         </button>
       </div>
 
@@ -1037,14 +1245,14 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </h3>
               <button
                 type="button"
-                className="btn-close"
+                className="btn-close bg-danger"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
             <div className="modal-body">
               <dl>
-                <dt>Email</dt>
+                <dt className="bi bi-envelope-at"> Email</dt>
                 <dd>
                   <input
                     type="email"
@@ -1057,7 +1265,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 </dd>
                 {useError && <div className="text-danger">{useError}</div>}
 
-                <dt>Number</dt>
+                <dt className="bi bi-phone"> Number</dt>
                 <dd>
                   <input
                     type="text"
@@ -1072,7 +1280,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 </dd>
                 {useErrors && <div className="text-danger">{useErrors}</div>}
 
-                <dt>City</dt>
+                <dt className="bi bi-buildings"> City</dt>
                 <dd>
                   <input
                     type="text"
@@ -1083,7 +1291,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   />
                 </dd>
 
-                <dt>State</dt>
+                <dt className="bi bi-building"> State</dt>
                 <dd>
                   <select
                     name="State"
@@ -1341,7 +1549,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>Expertise</dt>
+                <dt className="bi bi-award"> Expertise</dt>
                 <dd>
                   <select
                     name="Expertise"
@@ -1480,7 +1688,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>Experience</dt>
+                <dt className="bi bi-pass"> Experience</dt>
                 <dd>
                   <select
                     name="Experience"
@@ -1535,7 +1743,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>Language</dt>
+                <dt className="bi bi-translate"> Language</dt>
                 <dd>
                   <select
                     name="Language"
@@ -1772,7 +1980,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>About</dt>
+                <dt className="bi bi-file-earmark-person"> About</dt>
                 <dd>
                   <textarea
                     name="About"
@@ -1782,7 +1990,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   ></textarea>
                 </dd>
 
-                <dt>Analytical Strength</dt>
+                <dt className="bi bi-bar-chart"> Analytical Strength</dt>
                 <dd>
                   <select
                     name="Analytical_Strength"
@@ -1935,7 +2143,10 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>Problem Solving Strength</dt>
+                <dt className="bi bi-clipboard-data">
+                  {" "}
+                  Problem Solving Strength
+                </dt>
                 <dd>
                   <select
                     name="Problem_Solving_Strength"
@@ -2088,7 +2299,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>Public Speaking Strength</dt>
+                <dt className="bi bi-megaphone"> Public Speaking Strength</dt>
                 <dd>
                   <select
                     name="Public_Speaking_Strength"
@@ -2241,7 +2452,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>Adaptable Strength</dt>
+                <dt className="bi bi-activity"> Adaptable Strength</dt>
                 <dd>
                   <select
                     name="Adaptable_Strength"
@@ -2394,7 +2605,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>Communication Strength</dt>
+                <dt className="bi bi-mic"> Communication Strength</dt>
                 <dd>
                   <select
                     name="Communication_Strength"
@@ -2547,7 +2758,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>P S Strength</dt>
+                <dt className="bi bi-clipboard-data"> P S Strength</dt>
                 <dd>
                   <select
                     name="P_S_Strength"
@@ -2700,7 +2911,10 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>Leadership Experience Strength</dt>
+                <dt className="bi bi-mortarboard">
+                  {" "}
+                  Leadership Experience Strength
+                </dt>
                 <dd>
                   <select
                     name="Leadership_Experience_Strength"
@@ -2853,7 +3067,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   </select>
                 </dd>
 
-                <dt>Image</dt>
+                <dt className="bi bi-image"> Image</dt>
                 <dd>
                   <input
                     type="file"
@@ -2864,7 +3078,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                   />
                 </dd>
 
-                <dt>Goal</dt>
+                <dt className="bi bi-lightbulb"> Goal</dt>
                 <dd>
                   <textarea
                     name="Goal"
@@ -2912,17 +3126,22 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       <div
         className="container mt-5 mb-5"
         style={{
-          background: "linear-gradient(135deg, cyan, blue)",
+          // background: "linear-gradient(135deg, cyan, blue)",
+          background: "linear-gradient(135deg, #1e3c72, #2a5298)",
           color: "white",
           borderTopRightRadius: "30px",
           borderBottomLeftRadius: "30px",
           boxShadow: "0 0 8px rgb(145, 144, 146)",
-          borderTop: "8px solid blue",
-          borderBottom: "8px solid cyan",
+          // borderTop: "8px solid blue",
+          // borderBottom: "8px solid cyan",
         }}
       >
         <div className="row">
-          <div className="col-md-5 mt-5 mb-5">
+          <div
+            className="col-md-5 mt-5 mb-5"
+            data-aos="zoom-in"
+            data-aos-delay="200"
+          >
             {advisors.map((advisor, index) => (
               <img
                 key={index}
@@ -2940,7 +3159,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 }}
               />
             ))}
-            <div className="mt-4 d-flex m-auto justify-content-center">
+            <div
+              className="mt-4 d-flex m-auto justify-content-center"
+              data-aos="zoom-in"
+              data-aos-delay="100"
+            >
               <button
                 className=""
                 type="button"
@@ -2993,7 +3216,12 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           </div>
 
           {advisors.map((advisor) => (
-            <div className="col-md-3 mt-5 mb-5" key={advisor._id}>
+            <div
+              className="col-md-3 mt-5 mb-5"
+              key={advisor._id}
+              data-aos="zoom-in"
+              data-aos-delay="300"
+            >
               <div className="d-flex">
                 <div
                   className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
@@ -3090,7 +3318,12 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           ))}
 
           {advisors.map((advisor) => (
-            <div className="col-md-4 mt-5" key={`desc-${advisor._id}`}>
+            <div
+              className="col-md-4 mt-5"
+              key={`desc-${advisor._id}`}
+              data-aos="zoom-in"
+              data-aos-delay="400"
+            >
               <div className="d-flex">
                 <div
                   className="bg-danger text-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
@@ -3188,8 +3421,8 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               </div>
             </div>
           ))}
-          <div className="text-center">
-            <h4>ABOUT</h4>
+          <div className="text-center" data-aos="zoom-in" data-aos-delay="200">
+            <h4>About</h4>
             <div className="about">
               <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
             </div>
@@ -3200,8 +3433,12 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           <div>
             <div className="container">
               <div className="row">
-                <div className="col-md-4">
-                  <h4>PERSONALITY</h4>
+                <div
+                  className="col-md-4"
+                  data-aos="zoom-in"
+                  data-aos-delay="300"
+                >
+                  <h4>Personality</h4>
                   {advisors.map((advisor, index) => (
                     <div key={index}>
                       <p>
@@ -3243,7 +3480,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     </div>
                   ))}
                 </div>
-                <div className="col-md-4 mt-5">
+                <div
+                  className="col-md-4 mt-5"
+                  data-aos="zoom-in"
+                  data-aos-delay="400"
+                >
                   <div className="mt-5">
                     <button
                       className=""
@@ -3295,8 +3536,12 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     </button>
                   </div>
                 </div>
-                <div className="col-md-4">
-                  <h4>SKILLS</h4>
+                <div
+                  className="col-md-4"
+                  data-aos="zoom-in"
+                  data-aos-delay="100"
+                >
+                  <h4>Skills</h4>
                   {advisors.map((advisor, index) => (
                     <div key={index}>
                       <p>Communication Skill</p>
@@ -3362,19 +3607,27 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 </div>
               </div>
             </div>
-            <div className="text-center">
-              <h4>GOAL</h4>
+            <div
+              className="text-center"
+              data-aos="zoom-in"
+              data-aos-delay="200"
+            >
+              <h4>Goal</h4>
               <div className="goal">
                 <hr className="w-25 d-flex justify-content-center m-auto mb-3"></hr>
               </div>
               {advisors.map((advisor, index) => (
                 <p key={index}>{advisor.Goal}</p>
               ))}
-              <div className="mb-4">
-                <button className="btn btn-outline-info p-1 w-25 mt-3">
+              <div className="mb-4" data-aos="zoom-in" data-aos-delay="300">
+                <button className="btn btn-outline-info bi bi-yelp p-1 w-25 mt-3">
                   Review
                 </button>
-                <div className="fw-semibold fs-6 mt-3">
+                <div
+                  className="fw-semibold fs-6 mt-3"
+                  data-aos="zoom-in"
+                  data-aos-delay="400"
+                >
                   <FontAwesomeIcon icon={faStackExchange} /> History
                 </div>
               </div>

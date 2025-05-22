@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./wallet-man-ki-baat_component.css";
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // Import AOS styles
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faCoins } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +10,13 @@ export function WalletManKiBaatComponent() {
   const [user, setUser] = useState([]);
   const [wallet, setWallet] = useState([]);
   const [amount, setAmount] = useState("");
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in milliseconds
+      offset: 120, // Offset (in px) from the original trigger point
+    });
+  }, []);
 
   useEffect(() => {
     async function fetchUser() {
@@ -123,7 +132,7 @@ export function WalletManKiBaatComponent() {
   };
 
   return (
-    <div className="container m-auto d-flex justify-content-center">
+    <div className="container m-auto d-flex justify-content-center" data-aos="zoom-in">
       <div className="row">
         <div className="col mt-5">
           <div

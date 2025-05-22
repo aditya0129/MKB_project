@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./advisor-forgot-password-man-ki-baat_component.css";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 
 export function AdvisorForgetPasswordMankiBaatComponent() {
   const navigate = useNavigate();
@@ -9,6 +11,13 @@ export function AdvisorForgetPasswordMankiBaatComponent() {
   const [message, setMessage] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [timer, setTimer] = useState(60);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in milliseconds
+      offset: 120, // Offset (in px) from the original trigger point
+    });
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -34,9 +43,12 @@ export function AdvisorForgetPasswordMankiBaatComponent() {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:3001/advisor_send_otp", {
-        Email,
-      });
+      const response = await axios.post(
+        "http://localhost:3001/advisor_send_otp",
+        {
+          Email,
+        }
+      );
       setMessage(response.data.msg);
       if (response.data.status && response.data.advisor_id) {
         console.log("Advisor ID from response:", response.data.advisor_id);
@@ -74,6 +86,7 @@ export function AdvisorForgetPasswordMankiBaatComponent() {
       <h1
         className="text-center"
         style={{ fontFamily: "fantasy", textShadow: "3px 2px 3px blue" }}
+        data-aos="zoom-in"
       >
         Please Enter Your E-mail Address
       </h1>
@@ -83,6 +96,8 @@ export function AdvisorForgetPasswordMankiBaatComponent() {
             <label
               className="d-flex m-auto justify-content-center"
               style={{ fontFamily: "fantasy" }}
+              data-aos="zoom-in"
+              data-aos-delay="100"
             >
               E-mail:
             </label>
@@ -94,9 +109,15 @@ export function AdvisorForgetPasswordMankiBaatComponent() {
               onChange={handleChange}
               style={{ fontFamily: "fantasy" }}
               required
+              data-aos="zoom-in"
+              data-aos-delay="200"
             ></input>
           </div>
-          <div className="mt-3 d-flex m-auto justify-content-center">
+          <div
+            className="mt-3 d-flex m-auto justify-content-center"
+            data-aos="zoom-in"
+            data-aos-delay="300"
+          >
             <button onClick={handleClick} className="otp" disabled={otpSent}>
               {otpSent ? `Wait ${timer}s` : "Send OTP"}
             </button>

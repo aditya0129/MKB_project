@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./advisor-search-man-ki-baat_component.css";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useLocation } from "react-router-dom";
@@ -15,6 +19,8 @@ import {
   faMinus,
   faPlus,
   faPowerOff,
+  faCircleUp,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 
 const AdvisorSearchManKiBaatComponent = () => {
@@ -80,6 +86,14 @@ const AdvisorSearchManKiBaatComponent = () => {
     }
   });
 
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in milliseconds
+      offset: 120, // Offset (in px) from the original trigger point
+      once: true, // Ensure animations happen only once
+    });
+  }, []);
+
   const handleClose = () => setShow(false);
   const [cookies, removeCookie] = useCookies();
   const navigate = useNavigate();
@@ -106,6 +120,210 @@ const AdvisorSearchManKiBaatComponent = () => {
     }
   };
 
+  const [isVisible, setIsVisible] = useState(false);
+  const [isClicked, setIsClicked] = useState(false); // Track if button is clicked
+
+  // Show or hide the button based on scroll position
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // Scroll to the top of the page when the button is clicked
+  const scrollToTop = () => {
+    setIsClicked(true); // Trigger the click animation
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Smooth scroll effect
+    });
+
+    // Remove the click animation class after some time (e.g., 1s)
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 1000); // Matches the duration of the animation
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", toggleVisibility);
+    };
+  }, []);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  function handleContactsClick() {
+    navigate("/contacts");
+  }
+
+  function handleAdvisorClick() {
+    navigate("/advisor");
+  }
+
+  // State to control the visibility of the dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Function to handle viewing notifications
+  const handleViewNotifications = () => {
+    setIsDialogOpen(true);
+  };
+
+  const [link] = useState("http://127.0.0.1:3030/");
+  const [ShowModal, SetShowModal] = useState(false);
+
+  const HandleModalOpen = () => {
+    SetShowModal(true);
+  };
+
+  const HandleModalClose = () => {
+    SetShowModal(false);
+  };
+
+  const [ShowModals, SetShowModals] = useState(false); // Controls modal visibility
+
+  const HandleOpenModal = () => {
+    SetShowModals(true);
+    FetchAdvisors(); // Fetch advisors when the modal is opened
+  };
+
+  const [AdvisorDatas, SetAdvisorDatas] = useState([]); // Holds advisor data
+
+  // Function to fetch advisors and store their data
+  const FetchAdvisors = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/Advisor_All_Data"
+      );
+      const advisors = response.data.Data;
+
+      if (advisors.length > 0) {
+        // Store advisor data with id and name
+        const advisorList = advisors.map((advisor) => ({
+          id: advisor.advisorId,
+          name: advisor.Name, // Assuming Name field exists
+          image: advisor.Image,
+        }));
+        SetAdvisorDatas(advisorList);
+      } else {
+        alert("No Advisors Found.");
+      }
+    } catch (error) {
+      console.error("Error fetching advisors:", error);
+      alert("Error Fetching Advisors.");
+    }
+  };
+
+  // Function to close the modal
+  const HandleCloseModal = () => {
+    SetShowModals(false);
+  };
+
+  const [SelectedAdvisorId, SetSelectedAdvisorId] = useState(""); // Selected advisorId
+  const [SearchTerm, SetSearchTerm] = useState("");
+  const [FilteredAdvisorData, SetFilteredAdvisorData] = useState([]);
+  const [roomId, setRoomId] = useState(""); // Holds the roomId
+
+  // Function to send notifications
+  const sendLink = async () => {
+    try {
+      if (!SelectedAdvisorId) {
+        alert("Please Select An Advisor Before Sending A Notification.");
+        return;
+      }
+
+      if (!roomId) {
+        alert("Room ID Is Missing. Please Try Again.");
+        return;
+      }
+
+      const token = localStorage.getItem("token"); // Ensure the token is stored in localStorage
+
+      if (!token) {
+        alert("Please Login To Send A Notification.");
+        return;
+      }
+
+      const response = await axios.post(
+        `http://localhost:3001/sendLink/${SelectedAdvisorId}`,
+        { roomId }, // Send roomId in the request body
+        {
+          headers: {
+            "x-auth-token": token, // Send token in request headers for authentication
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert("Notification Sent Successfully.");
+        SetSearchTerm(""); // Clear search term after success
+        SetSelectedAdvisorId(""); // Clear selected advisor after success
+        window.location.reload(); // Reload the page if necessary
+      } else {
+        alert("Failed To Send Notification.");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("Error Sending Notification.");
+    }
+  };
+
+  useEffect(() => {
+    // Filter advisors based on search term
+    const filtered = AdvisorDatas.filter((advisor) =>
+      advisor.name.toLowerCase().includes(SearchTerm.toLowerCase())
+    );
+    SetFilteredAdvisorData(filtered);
+  }, [SearchTerm, AdvisorDatas]);
+
+  // Convert Advisors for react-select
+  const AdvisorOptions = FilteredAdvisorData.map((advisor) => ({
+    value: advisor.id,
+    label: advisor.name,
+    image: `http://localhost:3001/${advisor.image}`,
+  }));
+
+  // Custom Dropdown Option (Show Image + Name)
+  const CustomOption = ({ data, innerRef, innerProps }) => (
+    <div
+      ref={innerRef}
+      {...innerProps}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: 10,
+        backgroundColor: "black",
+        color: "white",
+      }}
+    >
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
+  // Custom Selected Value (Show Image + Name)
+  const CustomSingleValue = ({ data }) => (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
   return (
     <>
       {/* *******************************HEADER*************************** */}
@@ -114,56 +332,131 @@ const AdvisorSearchManKiBaatComponent = () => {
           <div className="row">
             <div className="col-md-6 form-group mt-2 d-flex">
               <h1 style={{ fontFamily: "French Script MT" }}>MKB</h1>
-              <input
-                type="search"
-                className="form-control ms-5"
-                placeholder="Type here to search"
-                style={{ width: "200px", height: "50px" }}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button
-                className="btn btn-outline-info bi bi-search ms-2"
-                style={{ height: "50px" }}
-                onClick={handleSearch}
-              >
-                {" "}
-                Search
-              </button>
+              <div className="search-container ms-5">
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search here..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button className="search-button" onClick={handleSearch}>
+                  <i className="bi bi-search"></i>
+                </button>
+              </div>
             </div>
             <div className="col-md-6">
-              <FontAwesomeIcon
-                className="float-end mt-4"
-                icon={faPowerOff}
-                onClick={handleShow}
-                style={{
-                  color: "white",
-                  cursor: "pointer",
-                }}
-              />
-              {user.map((u, index) => (
-                <img
-                  key={index}
-                  className="float-end mt-2 me-3"
-                  src={`http://localhost:3001/${u.image}`}
-                  alt=""
-                  onClick={handleUserProfileClick}
+              <ul
+                className="dropdown"
+                style={{ listStyle: "none", margin: "0", padding: "0" }}
+              >
+                <li
+                  className="ms-4 dropdown-toggle"
+                  onClick={toggleDropdown}
                   style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "100px",
+                    display: "inline-block",
+                    // color: "black",
+                    padding: "15px 10px",
                     cursor: "pointer",
-                    // boxShadow: "0 0 8px rgb(145, 144, 146)",
                   }}
-                />
-              ))}
+                >
+                  Find People
+                </li>
+                <div
+                  className={`dropdown-menu${isOpen ? " show" : ""}`}
+                  aria-labelledby="dropdownMenuButton"
+                  style={{ cursor: "pointer", background: "black" }}
+                >
+                  <li
+                    className="dropdown-item text-center border border-1 text-white"
+                    onClick={handleAdvisorClick}
+                  >
+                    All Advisor
+                  </li>
+                </div>
+                <li
+                  onClick={handleViewNotifications}
+                  className="open-dialog-button ms-3"
+                  style={{
+                    display: "inline-block",
+                    padding: "15px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Notification
+                  {/* <FontAwesomeIcon
+                          icon={faBell}
+                          className="ms-2"
+                          style={{ color: "white" }}
+                        /> */}
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    className="ms-2 bell-icon"
+                    style={{ color: "yellow" }}
+                  />
+                </li>
+                <li
+                  className="ms-3"
+                  onClick={handleContactsClick}
+                  style={{
+                    display: "inline-block",
+                    // color: "black",
+                    padding: "15px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  My Contacts
+                </li>
+                {/* {contact.map((detail, index) => (
+                        <img
+                          key={index}
+                          className="ms-3 mt-2"
+                          src={`http://localhost:3001/${detail.image}`}
+                          onClick={handleUserProfileClick}
+                          alt=""
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            borderRadius: "100px",
+                            cursor: "pointer",
+                            // boxShadow: "0 0 8px rgb(145, 144, 146)",
+                          }}
+                        />
+                      ))}
+                      <FontAwesomeIcon
+                        className="ms-4"
+                        icon={faPowerOff}
+                        onClick={handleShow}
+                        style={{ color: "white", cursor: "pointer" }}
+                      /> */}
+                <div className="profile-container">
+                  {user.map((detail, index) => (
+                    <div key={index} className="profile-wrapper">
+                      <div className="neon-ring"></div>
+                      <img
+                        src={`http://localhost:3001/${detail.image}`}
+                        onClick={handleUserProfileClick}
+                        alt="Profile"
+                        className="profile-img"
+                        style={{ cursor: "pointer" }}
+                      />
+                    </div>
+                  ))}
+
+                  <FontAwesomeIcon
+                    className="logout-btn"
+                    icon={faPowerOff}
+                    onClick={handleShow}
+                  />
+                </div>
+              </ul>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ******************************USER-PROFILE******************************* */}
-      <div className="container-fluid bg-primary mb-5">
+      {/* ******************************SEARCHED-ADVISOR******************************* */}
+      {/* <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "150px" }}
@@ -171,6 +464,7 @@ const AdvisorSearchManKiBaatComponent = () => {
           <h3
             className="display-2 font-weight-bold text-white"
             style={{ fontFamily: "Edwardian  Script ITC" }}
+            data-aos="zoom-in"
           >
             <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
               &#10049;
@@ -190,18 +484,242 @@ const AdvisorSearchManKiBaatComponent = () => {
             <p className="m-0">Searched-Advisor</p>
           </div>
         </div>
+      </div> */}
+
+      <div className="header-container mb-5">
+        <div className="header-card" data-aos="zoom-in">
+          <h3 className="header-title">
+            <span className="header-icon">&#9884;</span> Searched-Advisor{" "}
+            <span className="header-icon">&#9884;</span>
+          </h3>
+          <div className="breadcrumb">
+            <a href="/" className="breadcrumb-link">
+              Home
+            </a>
+            <span className="breadcrumb-separator"> / </span>
+            <span className="breadcrumb-current">Searched-Advisor</span>
+          </div>
+        </div>
       </div>
+
+      {/* **************************NOTIFICATION-BOX********************* */}
+      <div className="notification-page">
+        {/* Dialog for notification */}
+        {isDialogOpen && (
+          <div className="dialog-overlay">
+            <div className="dialog">
+              <div className="dialog-header">
+                <h3 className="bi bi-bell"> Notification</h3>
+                {/* Close button */}
+                <button
+                  className="close-button"
+                  onClick={() => setIsDialogOpen(false)}
+                >
+                  &times;
+                </button>
+              </div>
+
+              {/* Displaying advisor information */}
+              {user.map((u, index) => (
+                <div key={index} className="user-info">
+                  <img
+                    className="mb-3"
+                    src={`http://localhost:3001/${u.advisorDetails.Image}`}
+                    alt={u.advisorDetails.Name}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "10px",
+                    }}
+                  />
+                  <p>
+                    <strong>Name:-</strong> {u.advisorDetails.Name}
+                  </p>
+                  <p>
+                    <strong>Gender:-</strong> {u.advisorDetails.Gender}
+                  </p>
+                  <p>
+                    <strong>Expertise:-</strong> {u.advisorDetails.Expertise}
+                  </p>
+                  <p>
+                    <strong>Experience:-</strong> {u.advisorDetails.Experience}
+                  </p>
+                </div>
+              ))}
+
+              {/* User Notifications */}
+              {user.map((u, index) => (
+                <p key={index} className="bi bi-chat-quote-fill">
+                  {" "}
+                  {u.notification}
+                </p>
+              ))}
+
+              <div className="dialog-actions">
+                {user.some(
+                  (u) => u.notification === "I Am Available Now..."
+                ) && (
+                  <>
+                    <button
+                      className="reject-button bi bi-link"
+                      onClick={HandleModalOpen}
+                    >
+                      {" "}
+                      Get Link
+                    </button>
+                    <button
+                      className="accept-button bi bi-send-check-fill"
+                      onClick={HandleOpenModal}
+                    >
+                      {" "}
+                      Send Link
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ***************GENERATE-VIDEO-LINK***************************** */}
+      <Modal show={ShowModal} onHide={HandleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-link-45deg"> Room Link</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Your Room Link is:{" "}
+            <a href={link} target="_blank" rel="noopener noreferrer">
+              {link}
+            </a>
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={HandleModalClose}
+          >
+            {" "}
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* *****************************SEND ROOM ID NOTIFICATION*********************** */}
+      <Modal
+        show={ShowModals}
+        onHide={HandleCloseModal}
+        dialogClassName="modal-dialog modal-dialog-scrollable"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="bi bi-link-45deg">
+            {" "}
+            Select Advisor & Paste Room ID{" "}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Room ID Input */}
+          <Form.Group className="mb-3" controlId="roomIdInput">
+            <Form.Label>Paste Room ID</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Paste Room ID"
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value)}
+              className="text-white custom-placeholder"
+              style={{ backgroundColor: "black" }}
+            />
+          </Form.Group>
+
+          {/* Search for Advisor */}
+          <Form.Group className="mb-3" controlId="advisorSearch">
+            <Form.Label>Search Advisor</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Type to search..."
+              value={SearchTerm}
+              onChange={(e) => SetSearchTerm(e.target.value)}
+              className="text-white custom-placeholder"
+              style={{ backgroundColor: "black" }}
+            />
+          </Form.Group>
+
+          {/* Advisor Selection with React-Select */}
+          <Form.Group controlId="advisorSelectDropdown">
+            <Form.Label>Select Advisor</Form.Label>
+            <Select
+              options={AdvisorOptions}
+              value={AdvisorOptions.find(
+                (opt) => opt.value === SelectedAdvisorId
+              )}
+              onChange={(selectedOption) =>
+                SetSelectedAdvisorId(selectedOption.value)
+              }
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? "#444" : "black",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+              }}
+              components={{
+                SingleValue: CustomSingleValue,
+                Option: CustomOption,
+              }}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bi bi-x-lg"
+            variant="outline-danger"
+            onClick={HandleCloseModal}
+          >
+            {" "}
+            Close
+          </Button>
+          <Button
+            className="bi bi-bell-fill"
+            variant="outline-success"
+            onClick={sendLink}
+          >
+            {" "}
+            Send Notification
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* ******************************SEARCHED-ADVISOR-DATA************************** */}
       <div
         className="container-fluid mt-5 advisor"
         style={{ background: "white" }}
       >
-        <h3
+        {/* <h3
           className="text-center mb-4"
           style={{
             color: advisors.length === 0 ? "red" : "green",
           }}
+          data-aos="zoom-in"
+          data-aos-delay="100"
         >
           Advisors Matching: "{advisorName}"
         </h3>
@@ -209,18 +727,38 @@ const AdvisorSearchManKiBaatComponent = () => {
           <div
             className="bi bi-emoji-smile-fill text-center fs-1"
             style={{ color: "green" }}
+            data-aos="zoom-in"
+            data-aos-delay="200"
+          ></div>
+        )} */}
+        <h3 className="matching-text" data-aos="zoom-in" data-aos-delay="100">
+          Advisors Matching: "{advisorName}"
+        </h3>
+
+        {advisors.length > 0 && (
+          <div
+            className="emoji-effect bi bi-emoji-smile-fill text-center fs-1"
+            data-aos="zoom-in"
+            data-aos-delay="200"
           ></div>
         )}
         <div className="row">
           {advisors.length > 0 ? (
             advisors.map((details, index) => (
-              <div className="col-md-4 mt-3 mb-5" key={index}>
+              <div
+                className="col-md-4 mt-3 mb-5"
+                key={index}
+                data-aos="zoom-in"
+                data-aos-delay="300"
+              >
                 <div
                   className="card"
-                  style={{
-                    borderTop: "8px solid blue",
-                    borderBottom: "8px solid cyan",
-                  }}
+                  style={
+                    {
+                      // borderTop: "8px solid blue",
+                      // borderBottom: "8px solid cyan",
+                    }
+                  }
                 >
                   <div className="card-body">
                     <div className="text-center">
@@ -332,26 +870,56 @@ const AdvisorSearchManKiBaatComponent = () => {
               </div>
             ))
           ) : (
-            <h4 className="text-center" style={{ color: "red" }}>
-              <div className="bi bi-emoji-frown-fill fs-1 mb-2"></div>
-              No Advisors Found.
-              <h4 className="mb-5">
+            // <h4
+            //   className="text-center"
+            //   style={{ color: "red" }}
+            //   data-aos="zoom-in"
+            //   data-aos-delay="400"
+            // >
+            //   <div
+            //     className="bi bi-emoji-frown-fill fs-1 mb-2"
+            //     data-aos="zoom-in"
+            //     data-aos-delay="200"
+            //   ></div>
+            //   No Advisors Found.
+            //   <h4 className="mb-5" data-aos="zoom-in" data-aos-delay="300">
+            //     Please Try Again With A Different Keyword.
+            //   </h4>
+            // </h4>
+            <div
+              className="text-center"
+              data-aos="zoom-in"
+              data-aos-delay="400"
+            >
+              <div
+                className="bi bi-emoji-frown-fill fs-1 mb-2 emoji-spin"
+                data-aos="zoom-in"
+                data-aos-delay="200"
+              ></div>
+              <h4 className="text-color-change">
+                Oops! No Advisors Were Found!
+              </h4>
+              <h4
+                className="text-color-change mb-5"
+                data-aos="zoom-in"
+                data-aos-delay="300"
+              >
                 Please Try Again With A Different Keyword.
               </h4>
-            </h4>
+            </div>
           )}
         </div>
       </div>
 
       {/* *************************CONFIRM-LOGOUT******************************** */}
       <Modal show={show} onHide={handleClose} className="custom-modal">
-        <Modal.Header closeButton className="custom-modal-header">
+        <Modal.Header closeButton>
           <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
         <Modal.Footer>
           <Button
-            className="bi bi-x-lg"
+            className="bi bi-emoji-frown-fill"
             variant="outline-danger"
             onClick={handleClose}
           >
@@ -359,7 +927,7 @@ const AdvisorSearchManKiBaatComponent = () => {
             No
           </Button>
           <Button
-            className="bi bi-check-lg"
+            className="bi bi-emoji-smile-fill"
             variant="outline-success"
             onClick={handleLogout}
           >
@@ -368,6 +936,16 @@ const AdvisorSearchManKiBaatComponent = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* *****************************SCROLL-TO-TOP*************************** */}
+      {isVisible && (
+        <div
+          className={`scroll-to-top ${isClicked ? "animate-click" : ""}`} // Apply animation class on click
+          onClick={scrollToTop}
+        >
+          <FontAwesomeIcon className="arrow-icon fs-2" icon={faCircleUp} />
+        </div>
+      )}
 
       {/* ****************************************FOOTER*************************** */}
       <div

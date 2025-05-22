@@ -1,5 +1,7 @@
 import React from "react";
 import "./man-ki-baat_component.css";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 import AdvisorModal from "../Advisor Modal Man_Ki_Baat/advisor-modal-man-ki-baat_component.js";
 import axios from "axios";
 import Slider from "react-slick";
@@ -8,6 +10,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
@@ -30,6 +33,12 @@ import {
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 
 export function ManKiBaatComponent({ data, users }) {
+  const [msgHovered, setMsgHovered] = useState(false);
+  const [callHovered, setCallHovered] = useState(false);
+  const [videoHovered, setVideoHovered] = useState(false);
+  const [advMsgHovered, setAdvMsgHovered] = useState(false);
+  const [advCallHovered, setAdvCallHovered] = useState(false);
+  const [advVideoHovered, setAdvVideoHovered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState([]);
   const [advisorData, setAdvisorData] = useState([]);
@@ -142,6 +151,7 @@ export function ManKiBaatComponent({ data, users }) {
         const advisorList = advisors.map((advisor) => ({
           id: advisor.advisorId,
           name: advisor.Name, // Assuming Name field exists
+          image: advisor.Image,
         }));
         setAdvisorDatas(advisorList);
       } else {
@@ -230,6 +240,7 @@ export function ManKiBaatComponent({ data, users }) {
         const advisorList = advisors.map((advisor) => ({
           id: advisor.advisorId,
           name: advisor.Name, // Assuming Name field exists
+          image: advisor.Image,
         }));
         SetAdvisorDatas(advisorList);
       } else {
@@ -431,6 +442,15 @@ export function ManKiBaatComponent({ data, users }) {
       navigate("/register-case");
     }
   });
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in milliseconds
+      offset: 120, // Offset (in px) from the original trigger point
+      once: true, // Ensure animations happen only once
+    });
+  }, []);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -725,6 +745,94 @@ export function ManKiBaatComponent({ data, users }) {
     };
   }, []);
 
+  const advisorOptions = filteredAdvisorData.map((advisor) => ({
+    value: advisor.id,
+    label: advisor.name,
+    image: `http://localhost:3001/${advisor.image}`, // Advisor's image URL
+  }));
+
+  // Custom Option Renderer
+  const customSingleValue = ({ data }) => (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
+  const customOption = (props) => {
+    const { data, innerRef, innerProps } = props;
+    return (
+      <div
+        ref={innerRef}
+        {...innerProps}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          padding: 10,
+          backgroundColor: "black",
+          color: "white",
+        }}
+      >
+        <img
+          src={data.image}
+          alt={data.label}
+          style={{
+            width: 70,
+            height: 70,
+            borderRadius: "50%",
+            marginRight: 10,
+          }}
+        />
+        {data.label}
+      </div>
+    );
+  };
+
+  // Convert Advisors for react-select
+  const AdvisorOptions = FilteredAdvisorData.map((advisor) => ({
+    value: advisor.id,
+    label: advisor.name,
+    image: `http://localhost:3001/${advisor.image}`,
+  }));
+
+  // Custom Dropdown Option (Show Image + Name)
+  const CustomOption = ({ data, innerRef, innerProps }) => (
+    <div
+      ref={innerRef}
+      {...innerProps}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: 10,
+        backgroundColor: "black",
+        color: "white",
+      }}
+    >
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
+  // Custom Selected Value (Show Image + Name)
+  const CustomSingleValue = ({ data }) => (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <img
+        src={data.image}
+        alt={data.label}
+        style={{ width: 70, height: 70, borderRadius: "50%", marginRight: 10 }}
+      />
+      {data.label}
+    </div>
+  );
+
   return (
     <>
       {/* *************************HEADER************************** */}
@@ -733,22 +841,18 @@ export function ManKiBaatComponent({ data, users }) {
           <div className="row">
             <div className="col-md-6 form-group mt-2 d-flex">
               <h1 style={{ fontFamily: "French Script MT" }}>MKB</h1>
-              <input
-                type="text"
-                className="form-control ms-5"
-                placeholder="Type here to search"
-                style={{ width: "200px", height: "50px" }}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button
-                className="btn btn-outline-info bi bi-search ms-2"
-                style={{ height: "50px" }}
-                onClick={handleSearch}
-              >
-                {" "}
-                Search
-              </button>
+              <div className="search-container ms-5">
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search here..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button className="search-button" onClick={handleSearch}>
+                  <i className="bi bi-search"></i>
+                </button>
+              </div>
             </div>
             <div className="col-md-6">
               <ul
@@ -891,10 +995,15 @@ export function ManKiBaatComponent({ data, users }) {
                   }}
                 >
                   Notification
-                  <FontAwesomeIcon
+                  {/* <FontAwesomeIcon
                     icon={faBell}
                     className="ms-2"
                     style={{ color: "white" }}
+                  /> */}
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    className="ms-2 bell-icon"
+                    style={{ color: "yellow" }}
                   />
                 </li>
                 <li
@@ -909,7 +1018,7 @@ export function ManKiBaatComponent({ data, users }) {
                 >
                   My Contacts
                 </li>
-                {user.map((u, index) => (
+                {/* {user.map((u, index) => (
                   <img
                     key={index}
                     className="ms-3 mt-2"
@@ -928,7 +1037,25 @@ export function ManKiBaatComponent({ data, users }) {
                   icon={faPowerOff}
                   onClick={handleShow}
                   style={{ color: "white", cursor: "pointer" }}
-                />
+                /> */}
+                <div className="profile-container">
+                  {user.map((u, index) => (
+                    <div key={index} className="profile-wrapper">
+                      <div className="neon-ring"></div>
+                      <img
+                        src={`http://localhost:3001/${u.image}`}
+                        alt="Profile"
+                        className="profile-img"
+                      />
+                    </div>
+                  ))}
+
+                  <FontAwesomeIcon
+                    className="logout-btn"
+                    icon={faPowerOff}
+                    onClick={handleShow}
+                  />
+                </div>
               </ul>
             </div>
           </div>
@@ -936,7 +1063,7 @@ export function ManKiBaatComponent({ data, users }) {
       </div>
 
       {/* ******************************USER-PROFILE******************************* */}
-      <div className="container-fluid bg-primary mb-5">
+      {/* <div className="container-fluid bg-primary mb-5">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "150px" }}
@@ -944,6 +1071,7 @@ export function ManKiBaatComponent({ data, users }) {
           <h3
             className="display-2 font-weight-bold text-white"
             style={{ fontFamily: "Edwardian  Script ITC" }}
+            data-aos="zoom-in"
           >
             <span style={{ fontSize: "90px", textShadow: "3px 2px 3px red" }}>
               &#10049;
@@ -963,6 +1091,22 @@ export function ManKiBaatComponent({ data, users }) {
             <p className="m-0">User-Profile</p>
           </div>
         </div>
+      </div> */}
+
+      <div className="header-container mb-5">
+        <div className="header-card" data-aos="zoom-in">
+          <h3 className="header-title">
+            <span className="header-icon">&#9884;</span> User-Profile{" "}
+            <span className="header-icon">&#9884;</span>
+          </h3>
+          <div className="breadcrumb">
+            <a href="/" className="breadcrumb-link">
+              Home
+            </a>
+            <span className="breadcrumb-separator"> / </span>
+            <span className="breadcrumb-current">User-Profile</span>
+          </div>
+        </div>
       </div>
 
       {/* ************************SEND-NOTIFICATION******************* */}
@@ -974,7 +1118,7 @@ export function ManKiBaatComponent({ data, users }) {
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-person-circle">
             {" "}
-            Select Advisor
+            Select Advisor{" "}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -991,32 +1135,43 @@ export function ManKiBaatComponent({ data, users }) {
           </Form.Group>
           <Form.Group controlId="advisorSelectDropdown">
             <Form.Label>Select Advisor</Form.Label>
-            <Form.Control
-              as="select"
-              value={selectedAdvisorId}
-              onChange={(e) => setSelectedAdvisorId(e.target.value)}
-              className="text-white"
-              style={{ backgroundColor: "black" }}
-            >
-              <option
-                value=""
-                disabled
-                className="text-white"
-                style={{ backgroundColor: "black" }}
-              >
-                -- Select Advisor --
-              </option>
-              {filteredAdvisorData.map((advisor) => (
-                <option
-                  className="text-white"
-                  key={advisor.id}
-                  value={advisor.id}
-                  style={{ backgroundColor: "black" }}
-                >
-                  {advisor.name}
-                </option>
-              ))}
-            </Form.Control>
+            <Select
+              options={advisorOptions}
+              value={advisorOptions.find(
+                (opt) => opt.value === selectedAdvisorId
+              )}
+              onChange={(selectedOption) =>
+                setSelectedAdvisorId(selectedOption.value)
+              }
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? "#444" : "black",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+              }}
+              components={{
+                SingleValue: customSingleValue,
+                Option: customOption,
+              }}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -1073,7 +1228,7 @@ export function ManKiBaatComponent({ data, users }) {
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-link-45deg">
             {" "}
-            Select Advisor & Paste Room ID
+            Select Advisor & Paste Room ID{" "}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -1103,35 +1258,46 @@ export function ManKiBaatComponent({ data, users }) {
             />
           </Form.Group>
 
-          {/* Advisor Selection */}
+          {/* Advisor Selection with React-Select */}
           <Form.Group controlId="advisorSelectDropdown">
             <Form.Label>Select Advisor</Form.Label>
-            <Form.Control
-              as="select"
-              value={SelectedAdvisorId}
-              onChange={(e) => SetSelectedAdvisorId(e.target.value)}
-              className="text-white"
-              style={{ backgroundColor: "black" }}
-            >
-              <option
-                value=""
-                disabled
-                className="text-white"
-                style={{ backgroundColor: "black" }}
-              >
-                -- Select Advisor --
-              </option>
-              {FilteredAdvisorData.map((advisor) => (
-                <option
-                  className="text-white"
-                  key={advisor.id}
-                  value={advisor.id}
-                  style={{ backgroundColor: "black" }}
-                >
-                  {advisor.name}
-                </option>
-              ))}
-            </Form.Control>
+            <Select
+              options={AdvisorOptions}
+              value={AdvisorOptions.find(
+                (opt) => opt.value === SelectedAdvisorId
+              )}
+              onChange={(selectedOption) =>
+                SetSelectedAdvisorId(selectedOption.value)
+              }
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                  color: "white",
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "black",
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? "#444" : "black",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+              }}
+              components={{
+                SingleValue: CustomSingleValue,
+                Option: CustomOption,
+              }}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -1155,14 +1321,14 @@ export function ManKiBaatComponent({ data, users }) {
       </Modal>
 
       {/* *************************CONFIRM-LOGOUT******************************** */}
-      <Modal show={show} onHide={handleClose} className="custom-modal">
-        <Modal.Header closeButton className="custom-modal-header">
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
           <Modal.Title className="bi bi-power"> Confirm Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are You Really Sure You Want To Exit?</Modal.Body>
         <Modal.Footer>
           <Button
-            className="bi bi-x-lg"
+            className="bi bi-emoji-frown-fill"
             variant="outline-danger"
             onClick={handleClose}
           >
@@ -1170,7 +1336,7 @@ export function ManKiBaatComponent({ data, users }) {
             No
           </Button>
           <Button
-            className="bi bi-check-lg"
+            className="bi bi-emoji-smile-fill"
             variant="outline-success"
             onClick={handleLogout}
           >
@@ -1181,14 +1347,18 @@ export function ManKiBaatComponent({ data, users }) {
       </Modal>
 
       {/* ******************UPDATE-PROFILE********************* */}
-      <div className="container text-center">
+      <div
+        className="container d-flex justify-content-center"
+        data-aos="zoom-in"
+        data-aos-delay="100"
+      >
         <button
           type="button"
-          className="btn btn-outline-dark"
+          className="animated-gradient-button"
           data-bs-toggle="modal"
           data-bs-target="#updateProfileModal"
         >
-          <span className="bi bi-pencil-square"> Update Profile</span>
+          <span className="bi bi-pencil-square"></span> Update Profile
         </button>
       </div>
 
@@ -1207,14 +1377,14 @@ export function ManKiBaatComponent({ data, users }) {
               </h3>
               <button
                 type="button"
-                className="btn-close"
+                className="btn-close bg-danger"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
             <div className="modal-body">
               <dl>
-                <dt>Email</dt>
+                <dt className="bi bi-envelope-at"> Email</dt>
                 <dd>
                   <input
                     type="email"
@@ -1227,7 +1397,7 @@ export function ManKiBaatComponent({ data, users }) {
                 </dd>
                 {useError && <div className="text-danger">{useError}</div>}
 
-                <dt>Number</dt>
+                <dt className="bi bi-phone"> Number</dt>
                 <dd>
                   <input
                     type="text"
@@ -1242,7 +1412,7 @@ export function ManKiBaatComponent({ data, users }) {
                 </dd>
                 {useErrors && <div className="text-danger">{useErrors}</div>}
 
-                <dt>Place</dt>
+                <dt className="bi bi-shop"> Place</dt>
                 <dd>
                   <input
                     type="text"
@@ -1253,7 +1423,7 @@ export function ManKiBaatComponent({ data, users }) {
                   />
                 </dd>
 
-                <dt>Category</dt>
+                <dt className="bi bi-bookmarks"> Category</dt>
                 <dd>
                   <select
                     name="category"
@@ -1392,7 +1562,7 @@ export function ManKiBaatComponent({ data, users }) {
                   </select>
                 </dd>
 
-                <dt>Subcategory</dt>
+                <dt className="bi bi-bookmark-star"> Subcategory</dt>
                 <dd>
                   <select
                     name="sub_category"
@@ -1531,7 +1701,7 @@ export function ManKiBaatComponent({ data, users }) {
                   </select>
                 </dd>
 
-                <dt>Category Strength</dt>
+                <dt className="bi bi-bookmarks"> Category Strength</dt>
                 <dd>
                   <select
                     name="category_strength"
@@ -1684,7 +1854,7 @@ export function ManKiBaatComponent({ data, users }) {
                   </select>
                 </dd>
 
-                <dt>Subcategory Strength</dt>
+                <dt className="bi bi-bookmark-star"> Subcategory Strength</dt>
                 <dd>
                   <select
                     name="subcategory_strength"
@@ -1837,7 +2007,7 @@ export function ManKiBaatComponent({ data, users }) {
                   </select>
                 </dd>
 
-                <dt>Image</dt>
+                <dt className="bi bi-image"> Image</dt>
                 <dd>
                   <input
                     type="file"
@@ -1848,7 +2018,7 @@ export function ManKiBaatComponent({ data, users }) {
                   />
                 </dd>
 
-                <dt>Description</dt>
+                <dt className="bi bi-clipboard2-data"> Description</dt>
                 <dd>
                   <textarea
                     name="description"
@@ -1895,7 +2065,11 @@ export function ManKiBaatComponent({ data, users }) {
       {/* *****************USER-DETAIL********************* */}
       <div className="container">
         <div className="row">
-          <div className="col-md-4 mt-5">
+          <div
+            className="col-md-4 mt-5"
+            data-aos="zoom-in"
+            data-aos-delay="200"
+          >
             {user.map((u, index) => (
               <img
                 key={index}
@@ -1905,16 +2079,27 @@ export function ManKiBaatComponent({ data, users }) {
               />
             ))}
           </div>
-          <div className="col-md-4 mt-5">
+          <div
+            className="col-md-4 mt-5"
+            data-aos="zoom-in"
+            data-aos-delay="300"
+            style={{
+              background: "linear-gradient(135deg, #f3f3f3, #e6e6e6)",
+              borderRadius: "12px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+              textAlign: "center",
+            }}
+          >
             {user.map((u, index) => (
               <div key={index}>
                 <h1 style={{ fontFamily: "Brush Script MT" }}>
                   {u.name}{" "}
-                  <FontAwesomeIcon
-                    className="ms-2"
-                    icon={faLocationDot}
-                    style={{ color: "green", fontSize: "25px" }}
-                  />{" "}
+                  <div className="location-pulse">
+                    <FontAwesomeIcon
+                      icon={faLocationDot}
+                      style={{ color: "green", fontSize: "18px", zIndex: 1 }}
+                    />
+                  </div>{" "}
                   <span style={{ fontSize: "1.2rem", color: "grey" }}>
                     {u.place}
                   </span>
@@ -1952,14 +2137,18 @@ export function ManKiBaatComponent({ data, users }) {
               className=""
               type="button"
               style={{
-                background: "linear-gradient(135deg,cyan,blue)",
+                background: msgHovered
+                  ? "linear-gradient(135deg, blue, cyan)" // Hover effect for Msg
+                  : "linear-gradient(135deg, cyan, blue)", // Default
                 border: "none",
                 borderRadius: "7px",
                 width: "70px",
                 height: "40px",
                 color: "white",
-                // boxShadow: "0 0 3px rgb(81, 80, 82)",
+                cursor: "pointer",
               }}
+              onMouseEnter={() => setMsgHovered(true)}
+              onMouseLeave={() => setMsgHovered(false)}
             >
               <FontAwesomeIcon className="me-2" icon={faMessage} />
               Msg
@@ -1968,14 +2157,18 @@ export function ManKiBaatComponent({ data, users }) {
               className="ms-2"
               type="button"
               style={{
-                background: "linear-gradient(135deg,cyan,blue)",
+                background: callHovered
+                  ? "linear-gradient(135deg, blue, cyan)" // Hover effect for Call
+                  : "linear-gradient(135deg, cyan, blue)", // Default
                 border: "none",
                 borderRadius: "7px",
                 width: "70px",
                 height: "40px",
                 color: "white",
-                // boxShadow: "0 0 3px rgb(81, 80, 82)",
+                cursor: "pointer",
               }}
+              onMouseEnter={() => setCallHovered(true)}
+              onMouseLeave={() => setCallHovered(false)}
             >
               <FontAwesomeIcon className="me-2" icon={faPhoneVolume} />
               Call
@@ -1984,14 +2177,18 @@ export function ManKiBaatComponent({ data, users }) {
               className="ms-2"
               type="button"
               style={{
-                background: "linear-gradient(135deg,cyan,blue)",
+                background: videoHovered
+                  ? "linear-gradient(135deg, blue, cyan)" // Hover effect for Call
+                  : "linear-gradient(135deg, cyan, blue)", // Default
                 border: "none",
                 borderRadius: "7px",
                 width: "70px",
                 height: "40px",
                 color: "white",
-                // boxShadow: "0 0 3px rgb(81, 80, 82)",
+                cursor: "pointer",
               }}
+              onMouseEnter={() => setVideoHovered(true)}
+              onMouseLeave={() => setVideoHovered(false)}
               onClick={HandleShowsModal}
             >
               <FontAwesomeIcon className="me-2" icon={faVideo} />
@@ -2034,6 +2231,7 @@ export function ManKiBaatComponent({ data, users }) {
                 </Button>
               </Modal.Footer>
             </Modal>
+
             {wallet.map((balance, index) => (
               <p key={index} className="mt-4 fw-semibold fs-5">
                 <FontAwesomeIcon
@@ -2269,12 +2467,12 @@ export function ManKiBaatComponent({ data, users }) {
             {`
           .slick-dots li button:before {
             font-size: 20px; /* Increase dot size */
-            color: cyan; /* Dot color */
+            color: #1e3c72; /* Dot color */
             opacity: 1; /* Ensure dots are visible */
           }
 
           .slick-dots li.slick-active button:before {
-            color: blue; /* Color of the active dot */
+            color: rgb(224, 5, 42); /* Color of the active dot */
           }
 
           .slick-dots {
@@ -2314,6 +2512,8 @@ export function ManKiBaatComponent({ data, users }) {
                     key={index}
                     onClick={() => HandleOpenModals(details)}
                     className="d-flex justify-content-center align-items-center flex-column mt-5 user"
+                    data-aos="zoom-in"
+                    data-aos-delay="400"
                   >
                     <img
                       className="mt-4"
@@ -2367,16 +2567,19 @@ export function ManKiBaatComponent({ data, users }) {
                       <button
                         type="button"
                         style={{
-                          background:
-                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
+                          background: advMsgHovered
+                            ? "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))" // Hover effect for Msg
+                            : "linear-gradient(-135deg, rgb(4, 4, 78), rgb(224, 5, 42))", // Default
                           border: "none",
                           borderRadius: "7px",
                           width: "70px",
                           height: "40px",
                           color: "white",
                           margin: "0 5px",
-                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          cursor: "pointer",
                         }}
+                        onMouseEnter={() => setAdvMsgHovered(true)}
+                        onMouseLeave={() => setAdvMsgHovered(false)}
                       >
                         <FontAwesomeIcon className="me-2" icon={faMessage} />
                         Msg
@@ -2384,16 +2587,19 @@ export function ManKiBaatComponent({ data, users }) {
                       <button
                         type="button"
                         style={{
-                          background:
-                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
+                          background: advCallHovered
+                            ? "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))" // Hover effect for Msg
+                            : "linear-gradient(-135deg, rgb(4, 4, 78), rgb(224, 5, 42))", // Default
                           border: "none",
                           borderRadius: "7px",
                           width: "70px",
                           height: "40px",
                           color: "white",
                           margin: "0 5px",
-                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          cursor: "pointer",
                         }}
+                        onMouseEnter={() => setAdvCallHovered(true)}
+                        onMouseLeave={() => setAdvCallHovered(false)}
                       >
                         <FontAwesomeIcon
                           className="me-2"
@@ -2404,16 +2610,19 @@ export function ManKiBaatComponent({ data, users }) {
                       <button
                         type="button"
                         style={{
-                          background:
-                            "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))",
+                          background: advVideoHovered
+                            ? "linear-gradient(-135deg, rgb(224, 5, 42), rgb(4, 4, 78))" // Hover effect for Msg
+                            : "linear-gradient(-135deg, rgb(4, 4, 78), rgb(224, 5, 42))", // Default
                           border: "none",
                           borderRadius: "7px",
                           width: "70px",
                           height: "40px",
                           color: "white",
                           margin: "0 5px",
-                          // boxShadow: "0 0 3px rgb(81, 80, 82)",
+                          cursor: "pointer",
                         }}
+                        onMouseEnter={() => setAdvVideoHovered(true)}
+                        onMouseLeave={() => setAdvVideoHovered(false)}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleOpenModal();
@@ -2430,6 +2639,8 @@ export function ManKiBaatComponent({ data, users }) {
                     key={index}
                     onClick={() => HandleOpenModals(details)}
                     className="d-flex justify-content-center align-items-center flex-column mt-5 user"
+                    data-aos="zoom-in"
+                    data-aos-delay="500"
                   >
                     <img
                       className="mt-4"
@@ -2553,11 +2764,15 @@ export function ManKiBaatComponent({ data, users }) {
       />
 
       {/* **************************DESCRIPTION*********************** */}
-      <div className="container mt-5 description-container">
+      {/* <div
+        className="container mt-5 description-container"
+        data-aos="zoom-in"
+        data-aos-delay="100"
+      >
         <div className="row">
           <div className="col-md-12">
             <div className="text-center p-2 description-header">
-              <h3>DESCRIPTION</h3>
+              <h3>Description</h3>
               <hr className="w-25 d-flex m-auto"></hr>
             </div>
             <div className="description-text">
@@ -2567,13 +2782,104 @@ export function ManKiBaatComponent({ data, users }) {
             </div>
           </div>
         </div>
+      </div> */}
+
+      {/* <div
+        className="container mt-5 description-container"
+        data-aos="zoom-in"
+        data-aos-delay="100"
+      >
+        <div className="row">
+          <div className="col-md-12">
+            <div className="text-center p-3 description-header">
+              <h3
+                style={{
+                  background: "linear-gradient(135deg, #6a11cb, #2575fc)",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "10px",
+                  display: "inline-block",
+                }}
+              >
+                Description
+              </h3>
+              <hr
+                style={{
+                  width: "100px",
+                  height: "3px",
+                  background: "#2575fc",
+                  border: "none",
+                  margin: "10px auto",
+                }}
+              />
+            </div>
+
+            <div
+              className="description-text p-4"
+              style={{
+                // background: "#f8f9fa",
+                // padding: "20px",
+                // borderRadius: "10px",
+                // boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                // fontSize: "18px",
+                // lineHeight: "1.6",
+                // color: "#444",
+                background: "linear-gradient(135deg, #20bf55, #01baef)",
+                padding: "20px",
+                borderRadius: "12px",
+                boxShadow: "0 8px 20px rgba(1, 186, 239, 0.3)",
+                fontSize: "18px",
+                lineHeight: "1.6",
+                color: "#fff", // White text for strong contrast
+                textAlign: "center",
+              }}
+            >
+              {user.map((u, index) => (
+                <p key={index} style={{ marginBottom: "15px" }}>
+                  {u.description}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+      <div
+        className="description-container"
+        data-aos="zoom-in"
+        data-aos-delay="100"
+      >
+        <h3 className="description-title">Description</h3>
+        <div className="description-grid">
+          {user.map((u, index) => (
+            <div key={index} className="flip-card">
+              <div className="flip-card-inner">
+                <div className="flip-card-front">
+                  <h4>! Hover to Reveal !</h4>
+                </div>
+                <div className="flip-card-back">
+                  <p>{u.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* ********************************CATEGORY-STRENGTH************************* */}
       <div className="container">
         <div className="row">
-          <div className="col-md-6 mt-5 mb-5">
-            <h3>
+          <div
+            className="col-md-6 mt-5 mb-5"
+            data-aos="zoom-in"
+            data-aos-delay="200"
+            style={{
+              background: "linear-gradient(135deg, #f3f3f3, #e6e6e6)",
+              borderRadius: "12px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+            }}
+          >
+            <h3 className="bi bi-bookmarks">
               Category{" "}
               {user.map((u, index) => (
                 <button
@@ -2599,7 +2905,7 @@ export function ManKiBaatComponent({ data, users }) {
             {/* ******************************CATEGORY-DETAILS************************ */}
             <Modal show={showingModal} onHide={HandleClosingModals} centered>
               <Modal.Header closeButton>
-                <Modal.Title className="bi bi-bookmark">
+                <Modal.Title className="bi bi-bookmarks">
                   {" "}
                   Category Details
                 </Modal.Title>
@@ -2638,7 +2944,7 @@ export function ManKiBaatComponent({ data, users }) {
                         style={{ background: "black" }}
                       >
                         <h5 style={{ textShadow: "2px 3px 2px blue" }}>
-                          <span className="bi bi-bookmark-fill">
+                          <span className="bi bi-bookmarks-fill">
                             {" "}
                             Category :-
                           </span>{" "}
@@ -2718,7 +3024,7 @@ export function ManKiBaatComponent({ data, users }) {
                   ))}
                 </div>
                 <hr className="w-75"></hr>
-                <h3>
+                <h3 className="bi bi-bookmark-star">
                   Sub-Category{" "}
                   {user.map((u, index) => (
                     <button
@@ -2748,7 +3054,7 @@ export function ManKiBaatComponent({ data, users }) {
                   centered
                 >
                   <Modal.Header closeButton>
-                    <Modal.Title className="bi bi-bookmark">
+                    <Modal.Title className="bi bi-bookmark-star">
                       {" "}
                       Sub-Category Details
                     </Modal.Title>
@@ -2790,7 +3096,7 @@ export function ManKiBaatComponent({ data, users }) {
                             style={{ background: "black" }}
                           >
                             <h5 style={{ textShadow: "2px 3px 2px blue" }}>
-                              <span className="bi bi-bookmark-fill">
+                              <span className="bi bi-bookmark-star">
                                 {" "}
                                 Sub-Category :-
                               </span>{" "}
@@ -2874,7 +3180,11 @@ export function ManKiBaatComponent({ data, users }) {
           </div>
 
           {/* ***********************************USER-DETAIL********************* */}
-          <div className="col-md-6 mt-5">
+          {/* <div
+            className="col-md-6 mt-5"
+            data-aos="zoom-in"
+            data-aos-delay="300"
+          >
             {user.map((u, index) => (
               <div key={index}>
                 <span
@@ -2915,6 +3225,84 @@ export function ManKiBaatComponent({ data, users }) {
                 <p>
                   Gender <span style={{ marginLeft: "55px" }}>{u.gender}</span>
                 </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div> */}
+
+          <div
+            className="col-md-6 mt-5"
+            data-aos="zoom-in"
+            data-aos-delay="300"
+          >
+            {user.map((u, index) => (
+              <div
+                key={index}
+                style={{
+                  background: "linear-gradient(135deg, #f3f3f3, #e6e6e6)",
+                  padding: "22px",
+                  borderRadius: "12px",
+                  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "15px",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faUserTie}
+                    style={{
+                      fontSize: "24px",
+                      color: "#4A90E2",
+                      marginRight: "10px",
+                    }}
+                  />
+                  <h4 style={{ margin: 0, color: "#333" }}>About</h4>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "120px auto",
+                    rowGap: "10px",
+                    columnGap: "10px",
+                    fontSize: "16px",
+                  }}
+                >
+                  <span style={{ fontWeight: "bold", color: "#555" }}>
+                    Phone:
+                  </span>
+                  <span style={{ color: "#007bff" }}>{u.number}</span>
+
+                  <span style={{ fontWeight: "bold", color: "#555" }}>
+                    Address:
+                  </span>
+                  <span>{u.place}</span>
+
+                  <span style={{ fontWeight: "bold", color: "#555" }}>
+                    Email:
+                  </span>
+                  <span style={{ color: "#007bff" }}>{u.email}</span>
+
+                  <span style={{ fontWeight: "bold", color: "#555" }}>
+                    Age:
+                  </span>
+                  <span style={{ color: "#007bff" }}>{u.age}</span>
+
+                  <span style={{ fontWeight: "bold", color: "#555" }}>
+                    Birthday:
+                  </span>
+                  <span>{u.birthdate}</span>
+
+                  <span style={{ fontWeight: "bold", color: "#555" }}>
+                    Gender:
+                  </span>
+                  <span>{u.gender}</span>
+                </div>
               </div>
             ))}
           </div>
