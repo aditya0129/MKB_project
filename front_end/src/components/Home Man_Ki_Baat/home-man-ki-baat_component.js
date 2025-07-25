@@ -1053,7 +1053,7 @@ export function HomeManKiBaatComponenet() {
               {user.map((u, index) => (
                 <div key={index} className="user-info">
                   <img
-                    className="mb-3"
+                    className="mb-3 m-auto"
                     src={`http://localhost:3001/${u.advisorDetails.Image}`}
                     alt={u.advisorDetails.Name}
                     style={{

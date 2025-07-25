@@ -3657,7 +3657,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               {advisors.map((advisor, index) => (
                 <div key={index} className="user-info">
                   <img
-                    className="mb-3"
+                    className="mb-3 m-auto"
                     src={`http://localhost:3001/${advisor.userDetails.image}`}
                     alt={advisor.userDetails.name}
                     style={{

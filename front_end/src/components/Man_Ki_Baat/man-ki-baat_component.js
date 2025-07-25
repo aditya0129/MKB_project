@@ -2919,7 +2919,7 @@ export function ManKiBaatComponent({ data, users }) {
                 {user.map((u, index) => (
                   <div key={index} className="text-center">
                     <img
-                      className="mb-3"
+                      className="mb-3 m-auto"
                       src={`http://localhost:3001/${u.image}`}
                       alt=""
                       style={{
@@ -3068,7 +3068,7 @@ export function ManKiBaatComponent({ data, users }) {
                     {user.map((u, index) => (
                       <div key={index} className="text-center">
                         <img
-                          className="mb-3"
+                          className="mb-3 m-auto"
                           src={`http://localhost:3001/${u.image}`}
                           alt=""
                           style={{
@@ -3241,7 +3241,7 @@ export function ManKiBaatComponent({ data, users }) {
                 key={index}
                 style={{
                   background: "linear-gradient(135deg, #f3f3f3, #e6e6e6)",
-                  padding: "22px",
+                  padding: "23px",
                   borderRadius: "12px",
                   boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
                 }}
@@ -3330,7 +3330,7 @@ export function ManKiBaatComponent({ data, users }) {
               {user.map((u, index) => (
                 <div key={index} className="user-info">
                   <img
-                    className="mb-3"
+                    className="mb-3 m-auto"
                     src={`http://localhost:3001/${u.advisorDetails.Image}`}
                     alt={u.advisorDetails.Name}
                     style={{

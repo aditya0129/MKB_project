@@ -29,6 +29,7 @@ import { AdvisorForgetPasswordMankiBaatComponent } from "./components/Advisor Fo
 import { AdvisorVerifyOTPManKiBaatComponent } from "./components/Advisor Verify OTP/advisor-verify-otp-man-ki-baat_component";
 import { AdvisorSetPasswordManKiBaatComponent } from "./components/Advisor Set Password/advisor-set-password-man-ki-baat_component";
 import AdvisorSearchManKiBaatComponent from "./components/Advisor Search/advisor-search-man-ki-baat_component";
+import Dashboard from "./components/Admin/admin-panel";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -86,6 +87,7 @@ root.render(
           path="advisor-search"
           element={<AdvisorSearchManKiBaatComponent />}
         />
+        <Route path="admin" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
