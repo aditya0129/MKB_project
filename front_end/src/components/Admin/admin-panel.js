@@ -22,6 +22,37 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+const salesData = [
+  { id: "#1", name: "Brandon Jacob", price: "₹2,500.00", status: "Approved" },
+  { id: "#2", name: "Bridie Kessler", price: "₹4,200.00", status: "Pending" },
+  {
+    id: "#3",
+    name: "Ashleigh Langosh",
+    price: "₹1,100.00",
+    status: "Approved",
+  },
+  { id: "#4", name: "Angus Grady", price: "₹3,800.00", status: "Rejected" },
+  { id: "#5", name: "Raheem Lehner", price: "₹5,000.00", status: "Approved" },
+  { id: "#6", name: "David Rai", price: "₹2,200.00", status: "Approved" },
+  { id: "#7", name: "Neha Rani", price: "₹6,500.00", status: "Rejected" },
+  { id: "#8", name: "Raj Malhotra", price: "₹3,000.00", status: "Approved" },
+  { id: "#9", name: "Ayesha Khan", price: "₹4,600.00", status: "Pending" },
+  { id: "#10", name: "Rohit Sharma", price: "₹7,500.00", status: "Approved" },
+];
+
+const getStatusStyle = (status) => {
+  switch (status) {
+    case "Approved":
+      return "bg-green-100 text-green-700 dark:bg-green-700 dark:text-white";
+    case "Pending":
+      return "bg-yellow-100 text-yellow-700 dark:bg-yellow-600 dark:text-white";
+    case "Rejected":
+      return "bg-red-100 text-red-700 dark:bg-red-600 dark:text-white";
+    default:
+      return "bg-gray-200";
+  }
+};
+
 const Dashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [users, setUsers] = useState(145);
@@ -33,6 +64,9 @@ const Dashboard = () => {
   const [showComments, setShowComments] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [activePage, setActivePage] = useState("dashboard");
+  const [search, setSearch] = useState("");
+  const [pageSize, setPageSize] = useState(5);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const stored = localStorage.getItem("darkMode");
@@ -84,6 +118,16 @@ const Dashboard = () => {
       ? "dark:border-gray-700 bg-gray-700 text-white placeholder-gray-300"
       : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
   }`;
+
+  const filtered = salesData.filter(
+    (item) =>
+      (item.name || "").toLowerCase().includes(search.toLowerCase()) ||
+      (item.product || "").toLowerCase().includes(search.toLowerCase()) ||
+      (item.status || "").toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const displayed = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div
@@ -440,7 +484,7 @@ const Dashboard = () => {
               </div>
 
               <div
-                className={`p-4 md:p-6 rounded-lg shadow-md ${
+                className={`p-4 md:p-6 rounded-lg shadow-md mb-8 ${
                   darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
                 }`}
               >
@@ -478,6 +522,110 @@ const Dashboard = () => {
                     />
                   </LineChart>
                 </ResponsiveContainer>
+              </div>
+
+              <div
+                className={`p-6 rounded-lg shadow-md transition-colors duration-300 ${
+                  darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+                }`}
+              >
+                {/* Heading */}
+                <div className="mb-4">
+                  <h2 className="text-xl font-semibold">
+                    Recent Sales{" "}
+                    <span className="text-xl font-semibold">| Today</span>
+                  </h2>
+                </div>
+
+                {/* Page Size and Search */}
+                <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
+                  <div>
+                    <label>
+                      <select
+                        className="p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+                        value={pageSize}
+                        onChange={(e) => {
+                          setPageSize(parseInt(e.target.value));
+                          setPage(1);
+                        }}
+                      >
+                        {[5, 10, 20].map((size) => (
+                          <option key={size}>{size}</option>
+                        ))}
+                      </select>
+                      <span className="ms-2">entries per page</span>
+                    </label>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+
+                {/* Table */}
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead>
+                      <tr className="text-left border-b dark:border-gray-600">
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {displayed.map((sale, idx) => (
+                        <tr key={idx} className="border-b dark:border-gray-700">
+                          <td className="py-2">{sale.id}</td>
+                          <td>{sale.name}</td>
+                          <td>{sale.price}</td>
+                          <td>
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-semibold ${getStatusStyle(
+                                sale.status
+                              )}`}
+                            >
+                              {sale.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="mt-4 flex flex-col md:flex-row justify-between items-center text-sm">
+                  <span>
+                    Showing {filtered.length ? (page - 1) * pageSize + 1 : 0} to{" "}
+                    {Math.min(page * pageSize, filtered.length)} of{" "}
+                    {filtered.length} entries
+                  </span>
+                  <div className="space-x-2 mt-2 md:mt-0">
+                    <button
+                      onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                      disabled={page === 1}
+                      className="px-2 py-1 border rounded-md disabled:opacity-50"
+                    >
+                      Prev
+                    </button>
+                    <span>
+                      Page {page} of {totalPages}
+                    </span>
+                    <button
+                      onClick={() =>
+                        setPage((p) => Math.min(p + 1, totalPages))
+                      }
+                      disabled={page === totalPages}
+                      className="px-2 py-1 border rounded-md disabled:opacity-50"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
               </div>
             </>
           )}
