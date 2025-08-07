@@ -92,9 +92,14 @@ const connectToNewUser = (userId, stream) => {
   });
 };
 
+// peer.on("open", (id) => {
+//   console.log("My PeerJS ID is: " + id);
+//   socket.emit("join-room", ROOM_ID, id, user);
+// });
+
 peer.on("open", (id) => {
-  console.log("My PeerJS ID is: " + id);
-  socket.emit("join-room", ROOM_ID, id, user);
+  console.log("Emitting to backend. USER_ID = ", USER_ID);
+  socket.emit("join-room", ROOM_ID, id, user, USER_ID);
 });
 
 const addVideoStream = (video, stream) => {
@@ -144,10 +149,21 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
+// inviteButton.addEventListener("click", () => {
+//   prompt(
+//     "Copy this link and send it to people you want to meet with",
+//     window.location.href
+//   );
+// });
 inviteButton.addEventListener("click", () => {
+  const url = new URL(window.location.href);
+
+  // Remove token query parameter (if any)
+  url.search = "";
+
   prompt(
     "Copy this link and send it to people you want to meet with",
-    window.location.href
+    url.toString()
   );
 });
 

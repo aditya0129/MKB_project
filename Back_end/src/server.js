@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
@@ -8,6 +9,9 @@ const io = require("socket.io")(server, {
   },
 });
 const { ExpressPeerServer } = require("peer");
+const connectDB = require("./config/db");
+const User = require("./models/userModel");
+const { isAuthenticated } = require("./Auth/Middi");
 
 const opinions = {
   debug: true,
@@ -18,13 +22,28 @@ app.use("/peerjs", ExpressPeerServer(server, opinions));
 app.use(express.static("public"));
 
 // Generate a new room ID and redirect
+// app.get("/", (req, res) => {
+//   res.redirect(`/${uuidv4()}?token=${token}`);
+// });
+
 app.get("/", (req, res) => {
-  res.redirect(`/${uuidv4()}`);
+  const token = req.query.token; // Get token from ?token=xxx
+
+  if (!token) {
+    return res.status(400).send("Token is required");
+  }
+
+  const roomId = uuidv4();
+  res.redirect(`/${roomId}?token=${token}`);
 });
 
 // Render the room page with the specific room ID
-app.get("/:room", (req, res) => {
-  res.render("room", { roomId: req.params.room });
+app.get("/:room", isAuthenticated, (req, res) => {
+  // res.render("room", { roomId: req.params.room });
+  res.render("room", {
+    roomId: req.params.room,
+    userId: req.user.userId, // <- assuming req.user is populated
+  });
 });
 
 // Manage active rooms and their timers
@@ -34,7 +53,24 @@ const roomUsers = {}; // To track the number of users in each room
 // Socket.io connection handling
 io.on("connection", (socket) => {
   // User joins a room
-  socket.on("join-room", (roomId, userId, userName) => {
+  socket.on("join-room", (roomId, userId, userName, dbUserId) => {
+    console.log(
+      `User ${userName} (peerId: ${userId}, dbId: ${dbUserId}) joined room: ${roomId}`
+    );
+    // Optionally fetch from DB
+    if (dbUserId) {
+      User.findById(dbUserId)
+        .then((userDoc) => {
+          if (userDoc) {
+            console.log("MongoDB User Found:", userDoc.name || userDoc.email);
+          } else {
+            console.log("No user found in DB with ID:", dbUserId);
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching user from DB:", err.message);
+        });
+    }
     if (!roomUsers[roomId]) {
       roomUsers[roomId] = 0;
     }
@@ -85,7 +121,14 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 3030;
+connectDB();
+
+// const PORT = process.env.PORT || 3030;
+// server.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
+
+const PORT = process.env.SOCKET_PORT || 3030; // <-- changed port
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Socket server is running on port ${PORT}`);
 });

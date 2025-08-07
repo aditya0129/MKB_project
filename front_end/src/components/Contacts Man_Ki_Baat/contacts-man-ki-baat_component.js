@@ -193,7 +193,22 @@ export function ContactsManKiBaat() {
     SetFilteredAdvisorData(filtered);
   }, [SearchTerm, AdvisorDatas]);
 
-  const [link] = useState("http://127.0.0.1:3030/");
+  // const [link] = useState("http://127.0.0.1:3030/");
+  const token = localStorage.getItem("token");
+  const socketServerUrl = "http://127.0.0.1:3030/";
+
+  // Optionally append the token as a query parameter
+  const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
+
+  const redirectToSocketServer = () => {
+    if (!token) {
+      alert("Please login first. Token not found.");
+      return;
+    }
+
+    window.open(redirectUrl, "_blank"); // Open in new tab
+  };
+
   const [ShowModal, SetShowModal] = useState(false);
 
   const HandleModalOpen = () => {
@@ -494,12 +509,47 @@ export function ContactsManKiBaat() {
           <Modal.Title className="bi bi-link-45deg"> Room Link</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>
+          {/* <p>
             Your Room Link is:{" "}
             <a href={link} target="_blank" rel="noopener noreferrer">
               {link}
             </a>
+          </p> */}
+
+          <p>
+            <strong>Your Room Link is: </strong>
+            {redirectUrl ? (
+              <a
+                href={redirectUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#007bff", textDecoration: "underline" }}
+              >
+                Click here to open your room
+              </a>
+            ) : (
+              <span style={{ color: "red" }}>
+                Login required to generate link.
+              </span>
+            )}
           </p>
+
+          <button
+            className="bi bi-door-open"
+            onClick={redirectToSocketServer}
+            style={{
+              marginTop: "10px",
+              padding: "8px 16px",
+              backgroundColor: "#28a745",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            {" "}
+            Go to Room
+          </button>
         </Modal.Body>
         <Modal.Footer>
           <Button

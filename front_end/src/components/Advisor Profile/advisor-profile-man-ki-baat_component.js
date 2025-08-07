@@ -1159,7 +1159,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         <Modal.Header closeButton>
           <Modal.Title className="bi bi-link-45deg"> Meet Link</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        {/* <Modal.Body>
           <p>
             Your Meet Link is:{" "}
             {advisors.map((advisor, index) => (
@@ -1174,6 +1174,25 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 <br />
               </span>
             ))}
+          </p>
+        </Modal.Body> */}
+        <Modal.Body>
+          <p style={{ wordBreak: "break-word" }}>
+            Your Meet Link is:{" "}
+            {advisors.map((advisor, index) => {
+              const token = localStorage.getItem("token"); // or get it from context/props
+              const baseUrl = advisor.Notification.split("?")[0]; // clean URL without query
+              const fullUrl = token ? `${baseUrl}?token=${token}` : baseUrl;
+
+              return (
+                <span key={index}>
+                  <a href={fullUrl} target="_blank" rel="noopener noreferrer">
+                    {baseUrl}
+                  </a>
+                  <br />
+                </span>
+              );
+            })}
           </p>
         </Modal.Body>
         <Modal.Footer>

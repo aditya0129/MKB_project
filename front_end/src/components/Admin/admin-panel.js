@@ -525,24 +525,26 @@ const Dashboard = () => {
               </div>
 
               <div
-                className={`p-6 rounded-lg shadow-md transition-colors duration-300 ${
+                className={`p-4 sm:p-6 rounded-2xl shadow-md ${
                   darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
                 }`}
               >
                 {/* Heading */}
-                <div className="mb-4">
-                  <h2 className="text-xl font-semibold">
+                <div className="mb-6 text-center sm:text-left">
+                  <h2 className="text-2xl font-bold">
                     Recent Sales{" "}
-                    <span className="text-xl font-semibold">| Today</span>
+                    <span className="text-primary text-xl font-medium">
+                      | Today
+                    </span>
                   </h2>
                 </div>
 
-                {/* Page Size and Search */}
-                <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
-                  <div>
-                    <label>
+                {/* Page Size & Search */}
+                <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                  <div className="w-full md:w-auto">
+                    <label className="block text-sm font-medium">
                       <select
-                        className="p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+                        className="w-full md:w-auto p-2 border rounded-md dark:bg-gray-700 dark:text-white"
                         value={pageSize}
                         onChange={(e) => {
                           setPageSize(parseInt(e.target.value));
@@ -553,24 +555,25 @@ const Dashboard = () => {
                           <option key={size}>{size}</option>
                         ))}
                       </select>
-                      <span className="ms-2">entries per page</span>
+                      <span className="ml-2">entries per page</span>
                     </label>
                   </div>
+
                   <input
                     type="text"
                     placeholder="Search..."
-                    className="p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+                    className="w-full md:w-60 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
 
-                {/* Table */}
-                <div className="overflow-x-auto">
+                {/* Responsive Table */}
+                <div className="overflow-x-auto hidden md:block">
                   <table className="min-w-full text-sm">
                     <thead>
                       <tr className="text-left border-b dark:border-gray-600">
-                        <th>#</th>
+                        <th className="py-2">#</th>
                         <th>Customer</th>
                         <th>Price</th>
                         <th>Status</th>
@@ -578,7 +581,10 @@ const Dashboard = () => {
                     </thead>
                     <tbody>
                       {displayed.map((sale, idx) => (
-                        <tr key={idx} className="border-b dark:border-gray-700">
+                        <tr
+                          key={idx}
+                          className="border-b dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
                           <td className="py-2">{sale.id}</td>
                           <td>{sale.name}</td>
                           <td>{sale.price}</td>
@@ -597,18 +603,47 @@ const Dashboard = () => {
                   </table>
                 </div>
 
-                {/* Pagination Controls */}
-                <div className="mt-4 flex flex-col md:flex-row justify-between items-center text-sm">
-                  <span>
+                {/* Mobile Card View */}
+                <div className="block md:hidden space-y-4">
+                  {displayed.map((sale, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-4 rounded-lg shadow border dark:border-gray-700 ${
+                        darkMode ? "bg-gray-700 text-white" : "bg-gray-50"
+                      }`}
+                    >
+                      <p className="text-sm font-semibold mb-1">
+                        #{sale.id} - {sale.name}
+                      </p>
+                      <p className="text-sm">
+                        <strong>Price:</strong> {sale.price}
+                      </p>
+                      <p className="text-sm">
+                        <strong>Status:</strong>{" "}
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-semibold ${getStatusStyle(
+                            sale.status
+                          )}`}
+                        >
+                          {sale.status}
+                        </span>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                <div className="mt-6 flex flex-col sm:flex-row justify-between items-center text-sm">
+                  <span className="mb-2 sm:mb-0">
                     Showing {filtered.length ? (page - 1) * pageSize + 1 : 0} to{" "}
                     {Math.min(page * pageSize, filtered.length)} of{" "}
                     {filtered.length} entries
                   </span>
-                  <div className="space-x-2 mt-2 md:mt-0">
+                  <div className="space-x-2">
                     <button
                       onClick={() => setPage((p) => Math.max(p - 1, 1))}
                       disabled={page === 1}
-                      className="px-2 py-1 border rounded-md disabled:opacity-50"
+                      className="px-3 py-1 border rounded-md disabled:opacity-50"
                     >
                       Prev
                     </button>
@@ -620,7 +655,7 @@ const Dashboard = () => {
                         setPage((p) => Math.min(p + 1, totalPages))
                       }
                       disabled={page === totalPages}
-                      className="px-2 py-1 border rounded-md disabled:opacity-50"
+                      className="px-3 py-1 border rounded-md disabled:opacity-50"
                     >
                       Next
                     </button>

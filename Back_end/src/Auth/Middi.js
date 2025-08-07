@@ -39,7 +39,7 @@ const jwt = require("jsonwebtoken");
 // }
 
 const isAuthenticated =  async function (req, res, next) {
-  let token = req.headers["x-auth-token"];
+  let token = req.headers["x-auth-token"] || req.query.token;
 
   if (!token) {
     return res.status(400).send({
@@ -54,6 +54,7 @@ const isAuthenticated =  async function (req, res, next) {
       return res.status(401).send({ status: false, message: err.message});
     } else {
       req.token = decoded;
+      req.user = decoded;
       let data = req.token;
     //   console.log(data);
     //   console.log(req.token.userId)
