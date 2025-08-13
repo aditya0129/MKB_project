@@ -31,6 +31,8 @@ import {
   faCircleUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export function ManKiBaatComponent({ data, users }) {
   const [msgHovered, setMsgHovered] = useState(false);
@@ -847,6 +849,30 @@ export function ManKiBaatComponent({ data, users }) {
       {data.label}
     </div>
   );
+
+  useEffect(() => {
+    if (!wallet || wallet.length === 0) return;
+
+    const hasLowBalance = wallet.some((b) => Number(b.walletBalance) <= 24);
+    if (hasLowBalance) {
+      const timer = setTimeout(() => {
+        toast.warning(
+          "Your wallet balance is low, please recharge your wallet.",
+          {
+            position: "top-left",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "dark",
+          }
+        );
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [wallet]);
 
   return (
     <>
@@ -2282,7 +2308,7 @@ export function ManKiBaatComponent({ data, users }) {
               </Modal.Footer>
             </Modal>
 
-            {wallet.map((balance, index) => (
+            {/* {wallet.map((balance, index) => (
               <p key={index} className="mt-4 fw-semibold fs-5">
                 <FontAwesomeIcon
                   icon={faWallet}
@@ -2294,7 +2320,39 @@ export function ManKiBaatComponent({ data, users }) {
                 />{" "}
                 ₹ {balance.walletBalance}/-
               </p>
+            ))} */}
+
+            {wallet.map((balance, index) => (
+              <p key={index} className="mt-4 fw-semibold fs-5">
+                <FontAwesomeIcon
+                  icon={faWallet}
+                  onClick={handleWalletClick}
+                  style={{ cursor: "pointer", color: "brown" }}
+                />{" "}
+                <span
+                  style={{
+                    color: balance.walletBalance <= 24 ? "red" : "green",
+                  }}
+                >
+                  ₹ {balance.walletBalance}/-
+                </span>
+                {balance.walletBalance <= 24 && (
+                  <span
+                    className="bi bi-exclamation-triangle-fill"
+                    style={{
+                      color: "red",
+                      marginLeft: "10px",
+                      fontSize: "14px",
+                    }}
+                  >
+                    (Low Balance)
+                  </span>
+                )}
+              </p>
             ))}
+
+            <ToastContainer />
+
             <button
               className="btn btn-outline-success p-1 w-25 bi bi-yelp"
               onClick={HandleShowsModals}
