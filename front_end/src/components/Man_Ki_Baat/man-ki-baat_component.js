@@ -1267,8 +1267,10 @@ export function ManKiBaatComponent({ data, users }) {
             {redirectUrl ? (
               <a
                 href={redirectUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault(); // stop normal link behaviour
+                  redirectToSocketServer();
+                }}
                 style={{ color: "#007bff", textDecoration: "underline" }}
               >
                 Click here to open your room
@@ -1279,7 +1281,6 @@ export function ManKiBaatComponent({ data, users }) {
               </span>
             )}
           </p>
-
           <button
             className="bi bi-door-open"
             onClick={redirectToSocketServer}
