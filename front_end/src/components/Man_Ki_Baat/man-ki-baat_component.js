@@ -330,6 +330,20 @@ export function ManKiBaatComponent({ data, users }) {
       return;
     }
 
+    if (!wallet || wallet.length === 0) {
+      alert("Unable to check wallet balance. Please try again.");
+      return;
+    }
+
+    // Check if any wallet balance is 24 or below
+    const hasLowBalance = wallet.some((b) => Number(b.walletBalance) <= 4);
+    if (hasLowBalance) {
+      alert(
+        "Your wallet balance is too low. Please recharge before continuing."
+      );
+      return;
+    }
+
     window.open(redirectUrl, "_blank"); // Open in new tab
   };
 
@@ -2957,7 +2971,7 @@ export function ManKiBaatComponent({ data, users }) {
         data-aos="zoom-in"
         data-aos-delay="100"
       >
-        <h3 className="description-title">Description</h3>
+        <h3 className="description-title bi bi-journal-album"> Description</h3>
         <div className="description-grid">
           {user.map((u, index) => (
             <div key={index} className="flip-card">
