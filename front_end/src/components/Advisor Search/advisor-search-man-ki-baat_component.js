@@ -26,6 +26,7 @@ import {
 const AdvisorSearchManKiBaatComponent = () => {
   const [advisors, setAdvisors] = useState([]);
   const [user, setUser] = useState([]);
+  const [wallet, setWallet] = useState([]);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const advisorName = queryParams.get("name");
@@ -176,6 +177,28 @@ const AdvisorSearchManKiBaatComponent = () => {
     setIsDialogOpen(true);
   };
 
+  useEffect(() => {
+    async function fetchWallet() {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`http://localhost:3001/wallet`, {
+          headers: {
+            "x-auth-token": token,
+          },
+        });
+        if (response.data.status) {
+          setWallet([response.data.data]);
+        } else {
+          console.error("Failed to fetch wallet data:", response.data.msg);
+        }
+      } catch (error) {
+        console.error("Error fetching wallet data:", error);
+      }
+    }
+
+    fetchWallet();
+  }, []);
+
   // const [link] = useState("http://127.0.0.1:3030/");
   const token = localStorage.getItem("token");
   const socketServerUrl = "http://127.0.0.1:3030/";
@@ -186,6 +209,20 @@ const AdvisorSearchManKiBaatComponent = () => {
   const redirectToSocketServer = () => {
     if (!token) {
       alert("Please login first. Token not found.");
+      return;
+    }
+
+    if (!wallet || wallet.length === 0) {
+      alert("Unable to check wallet balance. Please try again.");
+      return;
+    }
+
+    // Check if any wallet balance is 24 or below
+    const hasLowBalance = wallet.some((b) => Number(b.walletBalance) <= 4);
+    if (hasLowBalance) {
+      alert(
+        "Your wallet balance is too low. Please recharge before continuing."
+      );
       return;
     }
 
@@ -609,13 +646,16 @@ const AdvisorSearchManKiBaatComponent = () => {
               {link}
             </a>
           </p> */}
+
           <p>
             <strong>Your Room Link is: </strong>
             {redirectUrl ? (
               <a
                 href={redirectUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault(); // stop normal link behaviour
+                  redirectToSocketServer();
+                }}
                 style={{ color: "#007bff", textDecoration: "underline" }}
               >
                 Click here to open your room
@@ -626,7 +666,6 @@ const AdvisorSearchManKiBaatComponent = () => {
               </span>
             )}
           </p>
-
           <button
             className="bi bi-door-open"
             onClick={redirectToSocketServer}
