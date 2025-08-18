@@ -1,4 +1,5 @@
 const Call_Model = require("../models/Call_CostCutting_Model");
+const UserModel = require("../models/userModel");
 
 // 1. Start Call API
 const start_call = async (req, res) => {
@@ -75,14 +76,48 @@ const retrieve_calls = async (req, res) => {
     const calls = await Call_Model.find();
     res.status(200).json({ status: true, Data: calls });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        Status: false,
-        error: "Failed to retrieve call data",
-        err: error.message,
-      });
+    res.status(500).json({
+      Status: false,
+      error: "Failed to retrieve call data",
+      err: error.message,
+    });
   }
 };
 
-module.exports = { start_call, update_call, calculate_cost, retrieve_calls };
+const deduct_call_amount = async (req, res) => {
+  try {
+    const { userId, durationInMinutes } = req.body;
+
+    if (!userId || !durationInMinutes) {
+      return res
+        .status(400)
+        .json({ message: "userId and durationInMinutes are required" });
+    }
+
+    const user = await UserModel.findById({_id:userId});
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Logic: 1 min = ₹5
+    const ratePerMinute = 5;
+    const deduction = durationInMinutes * ratePerMinute;
+
+    if (user.walletBalance < deduction) {
+      return res.status(400).json({ message: "Insufficient wallet balance" });
+    }
+
+    user.walletBalance -= deduction;
+    await user.save();
+
+    return res.json({
+      message: `Deducted ₹${deduction} for ${durationInMinutes} minutes`,
+      remainingBalance: user.walletBalance,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { start_call, update_call, calculate_cost, retrieve_calls,deduct_call_amount };

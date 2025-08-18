@@ -57,7 +57,14 @@ const {
   Razor_Key,
 } = require("../Controllers/PaymentGatewayController");
 
-const {start_call,update_call,calculate_cost,retrieve_calls} =require('../Controllers/CostCuttingController')
+const {
+  start_call,
+  update_call,
+  calculate_cost,
+  retrieve_calls,
+  deduct_call_amount,
+} = require("../Controllers/CostCuttingController");
+
 //----------------------------------------------Multer function for uploding Files/Images----------------------------------------------//
 const path = require("path");
 const multer = require("multer");
@@ -172,24 +179,25 @@ const {
 
 router.get("/api/user-mail-verification", mailVerification);
 router.get("/api/advisor-mail-verification", AdvisorMailVerification);
-router.all("/*", function (req, res) {
-  res.status(400).send({ status: false, message: " Path invalid." });
-});
-
 
 // --------------Call_CostCutting-Api's--------------------------//
 
 // 1. Start Call API
-router.post('/start-call', start_call)
+router.post("/start-call", start_call);
 
 // 2. Update Call API
-router.put('/update-call',update_call) 
+router.put("/update-call", update_call);
 
 // 3. Calculate Cost API
-router.post('/calculate-cost',calculate_cost)
+router.post("/calculate-cost", calculate_cost);
 
 // 4. Retrieve Call Data API
-router.get('/retrieve-calls',retrieve_calls)
+router.get("/retrieve-calls", retrieve_calls);
 
+router.post("/deduct_call_amount", deduct_call_amount);
+
+router.all("/*", function (req, res) {
+  res.status(400).send({ status: false, message: " Path invalid." });
+});
 
 module.exports = router;
