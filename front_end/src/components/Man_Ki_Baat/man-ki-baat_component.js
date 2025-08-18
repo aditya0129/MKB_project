@@ -326,12 +326,12 @@ export function ManKiBaatComponent({ data, users }) {
 
   const redirectToSocketServer = () => {
     if (!token) {
-      alert("Please login first. Token not found.");
+      alert("Please Login First. Token Not Found.");
       return;
     }
 
     if (!wallet || wallet.length === 0) {
-      alert("Unable to check wallet balance. Please try again.");
+      alert("Unable To Check Wallet Balance. Please Try Again.");
       return;
     }
 
@@ -339,7 +339,7 @@ export function ManKiBaatComponent({ data, users }) {
     const hasLowBalance = wallet.some((b) => Number(b.walletBalance) <= 4);
     if (hasLowBalance) {
       alert(
-        "Your wallet balance is too low. Please recharge before continuing."
+        "Your Wallet Balance Is Too Low. Please Recharge Before Continuing."
       );
       return;
     }
@@ -871,7 +871,7 @@ export function ManKiBaatComponent({ data, users }) {
     if (hasLowBalance) {
       const timer = setTimeout(() => {
         toast.warning(
-          "Your wallet balance is low, please recharge your wallet.",
+          "Your Wallet Balance Is Low, Please Recharge Your Wallet.",
           {
             position: "top-left",
             autoClose: 3000,
