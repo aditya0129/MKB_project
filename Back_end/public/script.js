@@ -205,3 +205,26 @@ stopVideo.addEventListener("click", () => {
     stopVideo.classList.toggle("background__red");
   }
 });
+
+// End Call Button
+const endCallButton = document.getElementById("endCallButton");
+
+endCallButton.addEventListener("click", () => {
+  // Stop all media tracks
+  if (myVideoStream) {
+    myVideoStream.getTracks().forEach((track) => track.stop());
+  }
+  // Disconnect PeerJS
+  if (peer) {
+    peer.destroy();
+  }
+  // Disconnect socket
+  if (socket) {
+    socket.disconnect();
+  }
+  // Clear timer
+  clearInterval(timerInterval);
+  // Optionally show a "Call Ended" message or redirect
+  alert("Call Ended");
+  window.close(); // close the tab: window.close();
+});

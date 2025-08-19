@@ -199,3 +199,15 @@ video {
   margin-left: auto;
   margin-right: 20px;
 }
+
+.end-call {
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.end-call:hover {
+  background-color: #c0392b;
+}
