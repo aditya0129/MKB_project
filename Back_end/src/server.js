@@ -11,6 +11,7 @@ const io = require("socket.io")(server, {
 const { ExpressPeerServer } = require("peer");
 const connectDB = require("./config/db");
 const User = require("./models/userModel");
+const walletRoutes = require("./routes/route"); // require route.js file
 const { isAuthenticated } = require("./Auth/Middi");
 
 const opinions = {
@@ -20,11 +21,14 @@ const opinions = {
 app.set("view engine", "ejs");
 app.use("/peerjs", ExpressPeerServer(server, opinions));
 app.use(express.static("public"));
+app.use(express.json()); // call express
 
 // Generate a new room ID and redirect
 // app.get("/", (req, res) => {
 //   res.redirect(`/${uuidv4()}?token=${token}`);
 // });
+
+app.use("/api/wallet", walletRoutes); // use walletRoutes
 
 app.get("/", (req, res) => {
   const token = req.query.token; // Get token from ?token=xxx
