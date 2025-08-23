@@ -432,36 +432,83 @@ stopVideo.addEventListener("click", () => {
 });
 
 // End Call Button (with wallet deduction)
+// const endCallButton = document.getElementById("endCallButton");
+
+// endCallButton.addEventListener("click", async () => {
+//   let durationInMinutes = 0;
+//   if (callStartTime) {
+//     const callEndTime = Date.now();
+//     durationInMinutes = Math.ceil((callEndTime - callStartTime) / (1000 * 60));
+//     console.log("Call lasted:", durationInMinutes, "minutes");
+//   }
+
+//   try {
+//     const userId = localStorage.getItem("userId"); // store userId at login
+
+//     const response = await fetch("/api/wallet/deduct_call_amount", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ userId, durationInMinutes }),
+//     });
+
+//     const data = await response.json();
+//     if (response.ok) {
+//       console.log("Wallet updated:", data);
+//     } else {
+//       console.error("Failed to deduct:", data.message);
+//       alert("Error: " + data.message);
+//     }
+//   } catch (err) {
+//     console.error("Error calling API:", err);
+//   }
+
+//   // Stop all media tracks
+//   if (myVideoStream) {
+//     myVideoStream.getTracks().forEach((track) => track.stop());
+//   }
+//   if (peer) peer.destroy();
+//   if (socket) socket.disconnect();
+//   clearInterval(timerInterval);
+
+//   alert("Call Ended");
+//   window.close();
+// });
+
+// Assuming you already have myVideoStream, peer, socket, timerInterval declared globally
 const endCallButton = document.getElementById("endCallButton");
 
-endCallButton.addEventListener("click", async () => {
-  let durationInMinutes = 0;
-  if (callStartTime) {
-    const callEndTime = Date.now();
-    durationInMinutes = Math.ceil(
-      (callEndTime - callStartTime) / (1000 * 60)
-    );
-    console.log("Call lasted:", durationInMinutes, "minutes");
+// ✅ Function to safely get timerText
+function getTimerText() {
+  const timerSpan = document.querySelector("#timer span");
+  return timerSpan ? timerSpan.textContent.trim() : "00:00:00";
+}
+
+// ✅ Function to send deduction request
+async function deductCallAmount(timerText) {
+  const userId = localStorage.getItem("userId"); // must be stored at login
+  if (!userId) {
+    console.warn("User ID not found in localStorage!");
+    return;
   }
 
   try {
-    const response = await fetch("/api/wallet/deduct-call", {
+    // Use normal fetch (works on button click)
+    const res = await fetch("/api/wallet/deduct_call_amount", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ durationInMinutes }),
+      body: JSON.stringify({ userId, timerText }),
     });
 
-    const data = await response.json();
-    if (response.ok) {
-      console.log("Wallet updated:", data);
-    } else {
-      console.error("Failed to deduct:", data.message);
-      alert("Error: " + data.message);
-    }
+    const data = await res.json();
+    console.log("Deduction Response:", data);
+    alert(data.message || "Call Ended, amount deducted");
   } catch (err) {
-    console.error("Error calling API:", err);
+    console.error("Error deducting wallet:", err);
   }
+}
 
+// ✅ End Call button click
+endCallButton.addEventListener("click", async () => {
   // Stop all media tracks
   if (myVideoStream) {
     myVideoStream.getTracks().forEach((track) => track.stop());
@@ -470,6 +517,25 @@ endCallButton.addEventListener("click", async () => {
   if (socket) socket.disconnect();
   clearInterval(timerInterval);
 
-  alert("Call Ended");
-  window.close();
+  const timerText = getTimerText();
+  await deductCallAmount(timerText);
+
+  window.close(); // optional
 });
+
+// ✅ Trigger before tab close/refresh
+window.addEventListener("beforeunload", (e) => {
+  const userId = localStorage.getItem("userId");
+  const timerText = getTimerText();
+
+  if (!userId) return;
+
+  // ❌ fetch gets canceled → instead use sendBeacon
+  const payload = JSON.stringify({ userId, timerText });
+  navigator.sendBeacon("/api/wallet/deduct_call_amount", new Blob([payload], { type: "application/json" }));
+
+  // Optional confirmation popup
+  e.preventDefault();
+  e.returnValue = "";
+});
+

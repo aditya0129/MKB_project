@@ -299,7 +299,12 @@ const Login_user = async function (req, res) {
     );
     // res.setHeader("x-api-key", token);
 
-    res.send({ status: true, Token: token, msg: "login successfully" });
+    res.send({
+      status: true,
+      Token: token,
+      userId: verifyUser._id,
+      msg: "login successfully",
+    });
   } catch (error) {
     return res.status(500).send({ status: false, Msg: error.message });
   }

@@ -85,38 +85,93 @@ const retrieve_calls = async (req, res) => {
 };
 
 const deduct_call_amount = async (req, res) => {
-  try {
-    const { userId, durationInMinutes } = req.body;
+  // try {
+  //   const { userId, durationInMinutes } = req.body;
 
-    if (!userId || !durationInMinutes) {
+  //   if (!userId || !durationInMinutes) {
+  //     return res
+  //       .status(400)
+  //       .json({ message: "userId and durationInMinutes are required" });
+  //   }
+
+  //   const user = await UserModel.findById({_id:userId});
+  //   if (!user) {
+  //     return res.status(404).json({ message: "User not found" });
+  //   }
+
+  //   // Logic: 1 min = ₹5
+  //   const ratePerMinute = 5;
+  //   const deduction = durationInMinutes * ratePerMinute;
+
+  //   if (user.walletBalance < deduction) {
+  //     return res.status(400).json({ message: "Insufficient wallet balance" });
+  //   }
+
+  //   user.walletBalance -= deduction;
+  //   await user.save();
+
+  //   return res.json({
+  //     message: `Deducted ₹${deduction} for ${durationInMinutes} minutes`,
+  //     remainingBalance: user.walletBalance,
+  //   });
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).json({ message: "Server error" });
+  // }
+  try {
+    let { userId, timerText } = req.body;
+
+    if (!userId || !timerText) {
       return res
         .status(400)
-        .json({ message: "userId and durationInMinutes are required" });
+        .json({ message: "userId and timerText are required" });
     }
 
-    const user = await UserModel.findById({_id:userId});
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    // Ensure timerText is always a string
+    if (typeof timerText !== "string") {
+      timerText = String(timerText);
     }
 
-    // Logic: 1 min = ₹5
-    const ratePerMinute = 5;
-    const deduction = durationInMinutes * ratePerMinute;
+    console.log("Received timerText:", timerText);
 
-    if (user.walletBalance < deduction) {
+    // ✅ Parse timerText ("hh:mm:ss")
+    const parts = timerText.split(":");
+    if (parts.length !== 3) {
+      return res.status(400).json({ message: "Invalid timerText format. Expected hh:mm:ss" });
+    }
+
+    const [hours, minutes, seconds] = parts.map(num => parseInt(num, 10) || 0);
+
+    let durationInMinutes = hours * 60 + minutes;
+    if (seconds > 0) durationInMinutes += 1; // round up if partial minute
+
+    // ✅ Deduction logic
+    const ratePerMinute = 10; // Example: 10 tokens/min
+    const totalDeduction = durationInMinutes * ratePerMinute;
+
+    // ✅ Update wallet
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.walletBalance < totalDeduction) {
       return res.status(400).json({ message: "Insufficient wallet balance" });
     }
 
-    user.walletBalance -= deduction;
+    user.walletBalance -= totalDeduction;
     await user.save();
 
+    // ✅ Also save call history (optional)
+    // await CallHistory.create({ userId, duration: timerText, cost: totalDeduction });
+
     return res.json({
-      message: `Deducted ₹${deduction} for ${durationInMinutes} minutes`,
-      remainingBalance: user.walletBalance,
+      message: `Call ended. Deducted ${totalDeduction} tokens.`,
+      wallet: user.walletBalance,
+      durationInMinutes,
+      timerText: `User talked for ${timerText}`,
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+  } catch (err) {
+    console.error("Error in deductCallAmount:", err);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
