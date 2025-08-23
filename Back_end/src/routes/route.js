@@ -65,6 +65,8 @@ const {
   deduct_call_amount,
 } = require("../Controllers/CostCuttingController");
 
+const { Rating, Ratings_Get } = require("../Controllers/Rating_Controller");
+
 //----------------------------------------------Multer function for uploding Files/Images----------------------------------------------//
 const path = require("path");
 const multer = require("multer");
@@ -195,6 +197,10 @@ router.post("/calculate-cost", calculate_cost);
 router.get("/retrieve-calls", retrieve_calls);
 
 router.post("/deduct_call_amount", deduct_call_amount);
+
+// Rating's api
+router.post("/Ratings", Rating);
+router.get("/Ratings_Get/advisorId", Ratings_Get);
 
 router.all("/*", function (req, res) {
   res.status(400).send({ status: false, message: " Path invalid." });
