@@ -61,6 +61,23 @@ export function LoginManKiBaatComponent() {
                     const token = authResponse.data.Token;
                     localStorage.setItem("token", token);
                     setCookie("token", token, { path: "/" });
+                    const profileResponse = await axios.get(
+                      "http://localhost:3001/get_user/profile",
+                      {
+                        headers: { "x-auth-token": token },
+                      }
+                    );
+
+                    if (profileResponse.data.status) {
+                      const userId = profileResponse.data.data[0]._id;
+                      localStorage.setItem("userId", userId);
+                      setCookie("userId", userId, { path: "/" });
+                      console.log(
+                        "User ID stored in localStorage:",
+                        localStorage.getItem("userId")
+                      );
+                      console.log("User ID stored in cookie:", userId);
+                    }
                     alert("Login Successfully...");
                     navigate("/");
                   } catch (error) {
