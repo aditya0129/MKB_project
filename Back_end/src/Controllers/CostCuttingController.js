@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Call_Model = require("../models/Call_CostCutting_Model");
 const UserModel = require("../models/userModel");
 
@@ -144,4 +145,99 @@ const deduct_call_amount = async (req, res) => {
   }
 };
 
-module.exports = { start_call, update_call, calculate_cost, retrieve_calls, deduct_call_amount };
+const deduct_wallet = async (req, res) => {
+  try {
+    const { userId, timerText } = req.body;
+
+    // basic validation
+    if (!userId) return res.status(400).json({ message: "userId is required" });
+    if (!timerText) return res.status(400).json({ message: "timerText is required" });
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid userId" });
+    }
+
+    // ensure timerText is string and parse hh:mm:ss
+    const t = typeof timerText === "string" ? timerText : String(timerText);
+    const parts = t.split(":");
+    if (parts.length !== 3) {
+      return res.status(400).json({ message: "Invalid timerText format. Expected hh:mm:ss" });
+    }
+    const [hh, mm, ss] = parts.map((p) => parseInt(p, 10) || 0);
+    const totalSeconds = hh * 3600 + mm * 60 + ss;
+
+    // find user
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // ensure lastDeductedSeconds exists on the user model (initialize if missing)
+    if (typeof user.lastDeductedSeconds !== "number") {
+      user.lastDeductedSeconds = 0;
+    }
+
+    // new seconds since last deduction (prevents double-deduct)
+    const newSeconds = totalSeconds - user.lastDeductedSeconds;
+    if (newSeconds <= 0) {
+      return res.json({
+        message: "No new time to deduct",
+        wallet: user.walletBalance,
+        popup: user.walletBalance <= 10,
+        durationInSeconds: totalSeconds,
+      });
+    }
+
+    // rate per second — use 0.08 as requested (or change to 5/60 for exact ₹5/min)
+    const ratePerSecond = 0.08;
+    const deduction = Number((newSeconds * ratePerSecond).toFixed(2));
+
+    // check balance
+    if (user.walletBalance < deduction) {
+      return res.status(400).json({
+        message: "Insufficient wallet balance. Please recharge.",
+        wallet: user.walletBalance,
+        popup: true,
+      });
+    }
+
+    // subtract only the incremental deduction and store checkpoint
+    user.walletBalance = Number((user.walletBalance - deduction).toFixed(2));
+    user.lastDeductedSeconds = totalSeconds;
+
+    await user.save();
+
+    return res.json({
+      message: `Deducted ₹${deduction} for ${newSeconds} seconds (total ${totalSeconds}s)`,
+      wallet: user.walletBalance,
+      durationInSeconds: totalSeconds,
+      popup: user.walletBalance <= 10,
+    });
+  } catch (err) {
+    console.error("Error in deduct_wallet:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const end_call = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) return res.status(400).json({ message: "userId is required" });
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid userId" });
+    }
+
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Reset only at call end
+    user.lastDeductedSeconds = 0;
+    await user.save();
+
+    return res.json({ message: "Call ended. lastDeductedSeconds reset to 0." });
+  } catch (err) {
+    console.error("Error in end_call:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+module.exports = { start_call, update_call, calculate_cost, retrieve_calls, deduct_call_amount, deduct_wallet, end_call };

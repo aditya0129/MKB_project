@@ -63,6 +63,8 @@ const {
   calculate_cost,
   retrieve_calls,
   deduct_call_amount,
+  deduct_wallet,
+  end_call,
 } = require("../Controllers/CostCuttingController");
 
 const { Rating, Ratings_Get } = require("../Controllers/Rating_Controller");
@@ -197,6 +199,10 @@ router.post("/calculate-cost", calculate_cost);
 router.get("/retrieve-calls", retrieve_calls);
 
 router.post("/deduct_call_amount", deduct_call_amount);
+
+router.post("/deduct_wallet", deduct_wallet);
+
+router.post("/end_call", end_call);
 
 // Rating's api
 router.post("/Ratings", Rating);

@@ -43,6 +43,8 @@ const UserSchema = new mongoose.Schema(
       default: 0,
     },
 
+    lastDeductedSeconds: { type: Number, default: 0 },
+
     transactions: [{ type: ObjectId, ref: "Transaction" }],
 
     profasion: {
