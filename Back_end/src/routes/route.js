@@ -49,6 +49,7 @@ const {
   wallet,
   add_amount,
   deduct_amount,
+  check_balance_warning
 } = require("../Controllers/Wallet_Controller");
 
 const {
@@ -129,6 +130,8 @@ router.post("/add_amount", isAuthenticated, add_amount);
 // Deduct amount from wallet
 router.post("/deduct_amount", isAuthenticated, deduct_amount);
 
+
+
 //payment-intigration by razorpay*
 // Route to create an order
 //router.post("/create-order", createOrder);
@@ -208,8 +211,10 @@ router.post("/end_call", end_call);
 router.post("/Ratings", Rating);
 router.get("/Ratings_Get/advisorId", Ratings_Get);
 
+router.get("/check_balance_warning/:userId/:advisorId",check_balance_warning)
+
 router.all("/*", function (req, res) {
-  res.status(400).send({ status: false, message: " Path invalid." });
+  res.status(400).send({ status: false, message: " hi,Path invalid." });
 });
 
 module.exports = router;
