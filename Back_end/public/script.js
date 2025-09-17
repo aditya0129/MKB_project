@@ -7,6 +7,7 @@ const timerElement = document.querySelector("#timer span");
 let myVideoStream;
 let timerInterval;
 let callStartTime; // Track call start time
+let isCallPaused = false; // ✅ track pause state
 
 myVideo.muted = true;
 
@@ -122,6 +123,8 @@ const addVideoStream = (video, stream) => {
 function startTimer(startTime) {
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
+    if (isCallPaused) return; // ✅ Skip updates if paused
+
     const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
     const hours = Math.floor(elapsedTime / 3600);
     const minutes = Math.floor((elapsedTime % 3600) / 60);
@@ -273,7 +276,6 @@ function getUserId() {
   return localStorage.getItem("userId"); // fallback
 }
 
-// Get timerText safely from DOM (#timer span → "hh:mm:ss")
 function getTimerText() {
   const timerSpan = document.querySelector("#timer span");
   return timerSpan ? timerSpan.textContent.trim() : "00:00:00";
@@ -281,6 +283,7 @@ function getTimerText() {
 
 const userId = getUserId();
 let deductionInterval = null;
+let popupTimer = null; // 30s countdown for popup
 
 // Start call deduction loop
 function startCallDeduction() {
@@ -303,26 +306,26 @@ function startCallDeduction() {
       const data = await res.json();
       console.log("💰 Deduction Response:", data);
 
-      // Insufficient balance → stop call
       if (res.status === 400 && data.message.includes("Insufficient")) {
         endCall();
         alert("❌ Call ended: Insufficient balance.");
         return;
       }
 
-      // Low balance popup
       if (data.popup) {
         showLowBalancePopup(data.wallet);
       }
     } catch (err) {
       console.error("❌ Deduction error:", err);
     }
-  }, 1000); // every second
+  }, 1000);
 }
 
-// Stop deduction + reset lastDeductedSeconds
 function endCall() {
   if (deductionInterval) clearInterval(deductionInterval);
+  if (popupTimer) clearTimeout(popupTimer);
+  clearInterval(timerInterval);
+  isCallPaused = true;
 
   fetch("http://localhost:3001/end_call", {
     method: "POST",
@@ -334,33 +337,85 @@ function endCall() {
     .catch((err) => console.error("Error ending call:", err));
 
   console.log("📞 Call ended.");
+
+  alert("⚠ Call disconnected due to low balance.");
+
+  // Try closing tab
+  window.close();
+
+  // If blocked, redirect as fallback
+  setTimeout(() => {
+    if (!window.closed) {
+      window.location.href = "http://localhost:3000/call-ended";
+    }
+  }, 200);
 }
 
 // Popup UI
 function showLowBalancePopup(walletBalance) {
-  if (document.getElementById("lowBalancePopup")) return; // prevent duplicate popup
+  if (document.getElementById("lowBalanceOverlay")) return; // prevent duplicate
 
+  // Stop deduction immediately
+  if (deductionInterval) {
+    clearInterval(deductionInterval);
+    deductionInterval = null;
+  }
+
+  isCallPaused = true; // ✅ pause timer & deductions
+
+  // Create dark overlay
+  const overlay = document.createElement("div");
+  overlay.id = "lowBalanceOverlay";
+  overlay.style.cssText = `
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.6); z-index:999;
+    display:flex; justify-content:center; align-items:center;
+  `;
+
+  // Create popup
   const popup = document.createElement("div");
   popup.id = "lowBalancePopup";
   popup.style.cssText = `
-    position:fixed; top:30%; left:50%; transform:translate(-50%, -50%);
     background:white; padding:20px; border:2px solid red; border-radius:10px;
-    box-shadow:0px 4px 10px rgba(0,0,0,0.3); z-index:1000; text-align:center;
+    box-shadow:0px 4px 15px rgba(0,0,0,0.5); text-align:center; width:300px;
   `;
   popup.innerHTML = `
     <h3 style="color:red;">⚠ Wallet Balance Low!</h3>
-    <p>Your wallet balance is ₹${walletBalance.toFixed(2)}.<br>
+    <p>Your wallet balance is ₹${walletBalance.toFixed(2)}.
     Please recharge to continue…</p>
+    <p id="countdown" style="color:blue; font-weight:bold;">
+      Disconnecting in 30s…
+    </p>
     <button id="rechargeBtn" style="
       background:green; color:white; border:none;
       padding:10px 20px; border-radius:5px; cursor:pointer;">
       Recharge Now
     </button>
   `;
-  document.body.appendChild(popup);
 
-  // Recharge button → reset + redirect
+  overlay.appendChild(popup);
+  document.body.appendChild(overlay);
+
+  // Start 30s countdown
+  let secondsLeft = 30;
+  const countdownEl = document.getElementById("countdown");
+
+  popupTimer = setInterval(() => {
+    if (!isCallPaused) return; // freeze countdown if somehow resumed
+    secondsLeft--;
+    countdownEl.textContent = `Disconnecting in ${secondsLeft}s…`;
+
+    if (secondsLeft <= 0) {
+      clearInterval(popupTimer);
+      endCall();
+      document.getElementById("lowBalanceOverlay")?.remove();
+    }
+  }, 1000);
+
+  // Recharge button
   document.getElementById("rechargeBtn").onclick = async () => {
+    clearInterval(popupTimer); // stop auto-disconnect
+
     try {
       await fetch("http://localhost:3001/end_call", {
         method: "POST",
@@ -372,15 +427,15 @@ function showLowBalancePopup(walletBalance) {
       console.error("Error resetting on recharge:", err);
     }
 
-    document.getElementById("lowBalancePopup").remove();
-    window.location.href = "http://localhost:3000/wallet"; // your recharge page
+    document.getElementById("lowBalanceOverlay")?.remove();
+    window.location.href = "http://localhost:3000/wallet"; // recharge page
   };
 }
 
-// Start deduction automatically when call starts
+// Start deduction automatically
 startCallDeduction();
 
-// 👇 Auto reset when user closes tab
+// Reset on tab close
 window.addEventListener("beforeunload", () => {
   navigator.sendBeacon(
     "http://localhost:3001/end_call",
