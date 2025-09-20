@@ -884,7 +884,7 @@ const update_Password = async function (req, res) {
     }
 
     // Hash the new password (using bcrypt for example)
-    const bcrypt = require("bcrypt");
+    const bcrypt = require("bcryptjs");
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
