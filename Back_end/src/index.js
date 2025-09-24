@@ -96,7 +96,7 @@ app.use(
 app.use("/images", express.static("public/images"));
 
 // Routes
-app.use("/", route);
+app.use("/backend", route);
 app.use("/api", AuthRoute);
 
 // Start server
