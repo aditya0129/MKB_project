@@ -82,7 +82,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         console.log("Token:", token);
 
         const response = await axios.get(
-          `http://localhost:3001/get_Advisor/profile`,
+          `/backend/get_Advisor/profile`,
           {
             headers: {
               "x-auth-token": token,
@@ -116,7 +116,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
   // Function to fetch advisors and store their data
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/User_All_Data");
+      const response = await axios.get("/backend/User_All_Data");
       const users = response.data.Data;
 
       if (users.length > 0) {
@@ -162,7 +162,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       }
 
       const response = await axios.post(
-        `http://localhost:3001/Accept/${selectedUserId}`,
+        `/backend/Accept/${selectedUserId}`,
         {},
         {
           headers: {
@@ -202,7 +202,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
   // Function to fetch advisors and store their data
   const FetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/User_All_Data");
+      const response = await axios.get("/backend/User_All_Data");
       const users = response.data.Data;
 
       if (users.length > 0) {
@@ -248,7 +248,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       }
 
       const response = await axios.post(
-        `http://localhost:3001/Reject/${SelectedUserId}`,
+        `/backend/Reject/${SelectedUserId}`,
         {},
         {
           headers: {
@@ -288,7 +288,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
   // Function to fetch advisors and store their data
   const FetchUser = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/User_All_Data");
+      const response = await axios.get("/backend/User_All_Data");
       const users = response.data.Data;
 
       if (users.length > 0) {
@@ -334,7 +334,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       }
 
       const response = await axios.post(
-        `http://localhost:3001/Busy/${SelectedUserIds}`,
+        `/backend/Busy/${SelectedUserIds}`,
         {},
         {
           headers: {
@@ -430,7 +430,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
 
       // Send patch request with form data and token
       const res = await axios.patch(
-        `http://localhost:3001/AdvisorUpdateProfile`,
+        `/backend/AdvisorUpdateProfile`,
         form,
         {
           headers: {
@@ -466,7 +466,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/Advisor_All_Data")
+      .get("/backend/Advisor_All_Data")
       .then((response) => {
         setNumbers(response.data.Data);
       })
@@ -509,7 +509,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/Advisor_All_Data")
+      .get("/backend/Advisor_All_Data")
       .then((response) => {
         setEmail(response.data.Data);
       })
@@ -569,7 +569,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
   const userOptions = filteredUserData.map((user) => ({
     value: user.id,
     label: user.name,
-    image: `http://localhost:3001/${user.image}`,
+    image: `/backend/${user.image}`,
   }));
 
   // Custom Dropdown Option (Show Image + Name)
@@ -610,7 +610,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
   const UserOptions = FilteredUserData.map((user) => ({
     value: user.id,
     label: user.name,
-    image: `http://localhost:3001/${user.image}`,
+    image: `/backend/${user.image}`,
   }));
 
   // Custom Dropdown Option (Show Image + Name)
@@ -651,7 +651,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
   const UsersOptions = FilteredUserDatas.map((user) => ({
     value: user.id,
     label: user.name,
-    image: `http://localhost:3001/${user.image}`,
+    image: `/backend/${user.image}`,
   }));
 
   // Custom Dropdown Option (Show Image + Name)
@@ -845,7 +845,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                     <div key={index} className="profile-wrapper">
                       <div className="neon-ring"></div>
                       <img
-                        src={`http://localhost:3001/${advisor.Image}`}
+                        src={`/backend/${advisor.Image}`}
                         alt="Profile"
                         className="profile-img"
                       />
@@ -3165,7 +3165,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               <img
                 key={index}
                 className=""
-                src={`http://localhost:3001/${advisor.Image}`}
+                src={`/backend/${advisor.Image}`}
                 alt=""
                 style={{
                   height: "350px",
@@ -3677,7 +3677,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
                 <div key={index} className="user-info">
                   <img
                     className="mb-3 m-auto"
-                    src={`http://localhost:3001/${advisor.userDetails.image}`}
+                    src={`/backend/${advisor.userDetails.image}`}
                     alt={advisor.userDetails.name}
                     style={{
                       width: "100px",

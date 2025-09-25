@@ -43,7 +43,7 @@ export function VerifyOTPManKiBaatComponent() {
         return;
       }
 
-      const response = await axios.post("http://localhost:3001/verify_otp", {
+      const response = await axios.post("/backend/verify_otp", {
         user_id: userId,
         otp: otpValue,
       });

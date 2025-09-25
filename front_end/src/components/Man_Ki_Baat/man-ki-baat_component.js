@@ -75,7 +75,7 @@ export function ManKiBaatComponent({ data, users }) {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3001/get_user/profile`,
+          `/backend/get_user/profile`,
           {
             headers: {
               "x-auth-token": token,
@@ -96,7 +96,7 @@ export function ManKiBaatComponent({ data, users }) {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3001/User_Home/Advisor_detail`,
+          `/backend/User_Home/Advisor_detail`,
           {
             headers: {
               "x-auth-token": token,
@@ -116,7 +116,7 @@ export function ManKiBaatComponent({ data, users }) {
     async function fetchWallet() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:3001/wallet`, {
+        const response = await axios.get(`/backend/wallet`, {
           headers: {
             "x-auth-token": token,
           },
@@ -144,7 +144,7 @@ export function ManKiBaatComponent({ data, users }) {
   const fetchAdvisors = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/Advisor_All_Data"
+        "/backend/Advisor_All_Data"
       );
       const advisors = response.data.Data;
 
@@ -191,7 +191,7 @@ export function ManKiBaatComponent({ data, users }) {
       }
 
       const response = await axios.post(
-        `http://localhost:3001/Notification/${selectedAdvisorId}`,
+        `/backend/Notification/${selectedAdvisorId}`,
         {},
         {
           headers: {
@@ -233,7 +233,7 @@ export function ManKiBaatComponent({ data, users }) {
   const FetchAdvisors = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/Advisor_All_Data"
+        "/backend/Advisor_All_Data"
       );
       const advisors = response.data.Data;
 
@@ -286,7 +286,7 @@ export function ManKiBaatComponent({ data, users }) {
       }
 
       const response = await axios.post(
-        `http://localhost:3001/sendLink/${SelectedAdvisorId}`,
+        `/backend/sendLink/${SelectedAdvisorId}`,
         { roomId }, // Send roomId in the request body
         {
           headers: {
@@ -319,7 +319,7 @@ export function ManKiBaatComponent({ data, users }) {
 
   // const [link] = useState("http://127.0.0.1:3030/");
   const token = localStorage.getItem("token");
-  const socketServerUrl = "http://127.0.0.1:3030/";
+  const socketServerUrl = "/socket.io/";
 
   // Optionally append the token as a query parameter
   const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
@@ -440,7 +440,7 @@ export function ManKiBaatComponent({ data, users }) {
     async function fetchAdvisors() {
       try {
         const response = await axios.get(
-          `http://localhost:3001/Advisor_All_Data`
+          `/backend/Advisor_All_Data`
         );
         setAdvisorData(response.data.Data);
       } catch (error) {
@@ -562,7 +562,7 @@ export function ManKiBaatComponent({ data, users }) {
 
       // Send patch request with form data and token
       const res = await axios.patch(
-        `http://localhost:3001/UpdateProfile`,
+        `/backend/UpdateProfile`,
         form,
         {
           headers: {
@@ -598,7 +598,7 @@ export function ManKiBaatComponent({ data, users }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/User_All_Data")
+      .get("/backend/User_All_Data")
       .then((response) => {
         setEmail(response.data.Data);
       })
@@ -625,7 +625,7 @@ export function ManKiBaatComponent({ data, users }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/User_All_Data")
+      .get("/backend/User_All_Data")
       .then((response) => {
         setNumbers(response.data.Data);
       })
@@ -779,7 +779,7 @@ export function ManKiBaatComponent({ data, users }) {
   const advisorOptions = filteredAdvisorData.map((advisor) => ({
     value: advisor.id,
     label: advisor.name,
-    image: `http://localhost:3001/${advisor.image}`, // Advisor's image URL
+    image: `/backend/${advisor.image}`, // Advisor's image URL
   }));
 
   // Custom Option Renderer
@@ -827,7 +827,7 @@ export function ManKiBaatComponent({ data, users }) {
   const AdvisorOptions = FilteredAdvisorData.map((advisor) => ({
     value: advisor.id,
     label: advisor.name,
-    image: `http://localhost:3001/${advisor.image}`,
+    image: `/backend/${advisor.image}`,
   }));
 
   // Custom Dropdown Option (Show Image + Name)
@@ -1098,7 +1098,7 @@ export function ManKiBaatComponent({ data, users }) {
                     <div key={index} className="profile-wrapper">
                       <div className="neon-ring"></div>
                       <img
-                        src={`http://localhost:3001/${u.image}`}
+                        src={`/backend/${u.image}`}
                         alt="Profile"
                         className="profile-img"
                       />
@@ -2165,7 +2165,7 @@ export function ManKiBaatComponent({ data, users }) {
               <img
                 key={index}
                 className="styled-image p-1"
-                src={`http://localhost:3001/${u.image}`}
+                src={`/backend/${u.image}`}
                 alt=""
               />
             ))}
@@ -2640,7 +2640,7 @@ export function ManKiBaatComponent({ data, users }) {
                   >
                     <img
                       className="mt-4"
-                      src={`http://localhost:3001/${details.Image}`}
+                      src={`/backend/${details.Image}`}
                       alt=""
                       style={{
                         width: "70px",
@@ -2767,7 +2767,7 @@ export function ManKiBaatComponent({ data, users }) {
                   >
                     <img
                       className="mt-4"
-                      src={`http://localhost:3001/${details.Image}`}
+                      src={`/backend/${details.Image}`}
                       alt=""
                       style={{
                         width: "70px",
@@ -3043,7 +3043,7 @@ export function ManKiBaatComponent({ data, users }) {
                   <div key={index} className="text-center">
                     <img
                       className="mb-3 m-auto"
-                      src={`http://localhost:3001/${u.image}`}
+                      src={`/backend/${u.image}`}
                       alt=""
                       style={{
                         width: "150px",
@@ -3192,7 +3192,7 @@ export function ManKiBaatComponent({ data, users }) {
                       <div key={index} className="text-center">
                         <img
                           className="mb-3 m-auto"
-                          src={`http://localhost:3001/${u.image}`}
+                          src={`/backend/${u.image}`}
                           alt=""
                           style={{
                             width: "150px",
@@ -3454,7 +3454,7 @@ export function ManKiBaatComponent({ data, users }) {
                 <div key={index} className="user-info">
                   <img
                     className="mb-3 m-auto"
-                    src={`http://localhost:3001/${u.advisorDetails.Image}`}
+                    src={`/backend/${u.advisorDetails.Image}`}
                     alt={u.advisorDetails.Name}
                     style={{
                       width: "100px",

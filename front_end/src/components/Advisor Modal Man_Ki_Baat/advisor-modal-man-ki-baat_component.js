@@ -32,7 +32,7 @@ const AdvisorModal = ({ isOpen, advisor, onClose }) => {
         }}
       >
         <img
-          src={`http://localhost:3001/${advisor.Image}`}
+          src={`/backend/${advisor.Image}`}
           alt=""
           className="rounded-2 mb-3 m-auto"
           style={{ width: "150px", height: "150px" }}

@@ -439,7 +439,7 @@ export function AdvisorRegisterManKiBaatComponent() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/Advisor_All_Data")
+      .get("/backend/Advisor_All_Data")
       .then((response) => {
         setNumbers(response.data.Data);
       })
@@ -482,7 +482,7 @@ export function AdvisorRegisterManKiBaatComponent() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/Advisor_All_Data")
+      .get("/backend/Advisor_All_Data")
       .then((response) => {
         setEmail(response.data.Data);
       })
@@ -646,7 +646,7 @@ export function AdvisorRegisterManKiBaatComponent() {
                   return; // Do not proceed if checkbox is not checked
                 }
                 axios
-                  .post("http://localhost:3001/Advisor_register", formData, {
+                  .post("/backend/Advisor_register", formData, {
                     headers: {
                       "Content-Type": "multipart/form-data",
                     },

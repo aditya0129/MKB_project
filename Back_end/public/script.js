@@ -228,7 +228,7 @@ async function deductCallAmount(timerText) {
   }
 
   try {
-    const res = await fetch("http://localhost:3001/deduct_call_amount", {
+    const res = await fetch("/backend/deduct_call_amount", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, timerText }),
@@ -266,7 +266,7 @@ window.addEventListener("beforeunload", (e) => {
 
   const payload = JSON.stringify({ userId, timerText });
   navigator.sendBeacon(
-    "http://localhost:3001/deduct_call_amount",
+    "/backend/deduct_call_amount",
     new Blob([payload], { type: "application/json" })
   );
 });
@@ -297,7 +297,7 @@ function startCallDeduction() {
     console.log("⏱ Sending timerText:", timerText);
 
     try {
-      const res = await fetch("http://localhost:3001/deduct_wallet", {
+      const res = await fetch("/backend/deduct_wallet", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, timerText }),
@@ -327,7 +327,7 @@ function endCall() {
   clearInterval(timerInterval);
   isCallPaused = true;
 
-  fetch("http://localhost:3001/end_call", {
+  fetch("/backend/end_call", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId }),
@@ -346,7 +346,7 @@ function endCall() {
   // If blocked, redirect as fallback
   setTimeout(() => {
     if (!window.closed) {
-      window.location.href = "http://localhost:3000/call-ended";
+      window.location.href = "/backend/call-ended";
     }
   }, 200);
 }
@@ -417,7 +417,7 @@ function showLowBalancePopup(walletBalance) {
     clearInterval(popupTimer); // stop auto-disconnect
 
     try {
-      await fetch("http://localhost:3001/end_call", {
+      await fetch("/backend/end_call", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
@@ -428,7 +428,7 @@ function showLowBalancePopup(walletBalance) {
     }
 
     document.getElementById("lowBalanceOverlay")?.remove();
-    window.location.href = "http://localhost:3000/wallet"; // recharge page
+    window.location.href = "/backend/wallet"; // recharge page
   };
 }
 
@@ -438,7 +438,7 @@ startCallDeduction();
 // Reset on tab close
 window.addEventListener("beforeunload", () => {
   navigator.sendBeacon(
-    "http://localhost:3001/end_call",
+    "/backend/end_call",
     JSON.stringify({ userId })
   );
 });

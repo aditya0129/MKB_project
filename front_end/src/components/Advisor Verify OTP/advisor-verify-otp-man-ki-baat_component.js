@@ -44,7 +44,7 @@ export function AdvisorVerifyOTPManKiBaatComponent() {
       }
 
       const response = await axios.post(
-        "http://localhost:3001/advisor_verify_otp",
+        "/backend/advisor_verify_otp",
         {
           advisor_id: advisorId,
           Otp: otpValue,

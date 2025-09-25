@@ -52,7 +52,7 @@ export function SetPasswordManKiBaatComponent() {
 
       // Send a POST request to update the password
       const response = await axios.post(
-        `http://localhost:3001/UpdatePassword/${userId}`, // Pass user_id in the URL params
+        `/backend/UpdatePassword/${userId}`, // Pass user_id in the URL params
         {
           newPassword: password, // Send new password
           reEnterPassword: rePassword, // Send re-entered password

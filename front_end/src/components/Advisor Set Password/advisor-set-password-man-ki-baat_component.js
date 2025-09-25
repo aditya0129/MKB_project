@@ -52,7 +52,7 @@ export function AdvisorSetPasswordManKiBaatComponent() {
 
       // Send a POST request to update the password
       const response = await axios.post(
-        `http://localhost:3001/AdvisorUpdatePassword/${advisorId}`, // Pass advisor_id in the URL params
+        `/backend/AdvisorUpdatePassword/${advisorId}`, // Pass advisor_id in the URL params
         {
           newPassword: Password, // Send new password
           reEnterPassword: rePassword, // Send re-entered password

@@ -52,7 +52,7 @@ export function AdvisorLoginManKiBaatComponent() {
                 onSubmit={async (values, { setSubmitting }) => {
                   try {
                     const authResponse = await axios.post(
-                      "http://localhost:3001/Advisor_login",
+                      "/backend/Advisor_login",
                       {
                         Email: values.Email,
                         Password: values.Password,

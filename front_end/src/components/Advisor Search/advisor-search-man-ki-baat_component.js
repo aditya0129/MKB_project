@@ -40,7 +40,7 @@ const AdvisorSearchManKiBaatComponent = () => {
   const fetchAdvisors = async (name) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/Advisor_All_Data?name=${encodeURIComponent(
+        `/backend/Advisor_All_Data?name=${encodeURIComponent(
           name
         )}`
       );
@@ -62,7 +62,7 @@ const AdvisorSearchManKiBaatComponent = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3001/get_user/profile`,
+          `/backend/get_user/profile`,
           {
             headers: {
               "x-auth-token": token,
@@ -181,7 +181,7 @@ const AdvisorSearchManKiBaatComponent = () => {
     async function fetchWallet() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:3001/wallet`, {
+        const response = await axios.get(`/backend/wallet`, {
           headers: {
             "x-auth-token": token,
           },
@@ -201,7 +201,7 @@ const AdvisorSearchManKiBaatComponent = () => {
 
   // const [link] = useState("http://127.0.0.1:3030/");
   const token = localStorage.getItem("token");
-  const socketServerUrl = "http://127.0.0.1:3030/";
+  const socketServerUrl = "/socket.io/";
 
   // Optionally append the token as a query parameter
   const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
@@ -252,7 +252,7 @@ const AdvisorSearchManKiBaatComponent = () => {
   const FetchAdvisors = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/Advisor_All_Data"
+        "/backend/Advisor_All_Data"
       );
       const advisors = response.data.Data;
 
@@ -304,7 +304,7 @@ const AdvisorSearchManKiBaatComponent = () => {
       }
 
       const response = await axios.post(
-        `http://localhost:3001/sendLink/${SelectedAdvisorId}`,
+        `/backend/sendLink/${SelectedAdvisorId}`,
         { roomId }, // Send roomId in the request body
         {
           headers: {
@@ -339,7 +339,7 @@ const AdvisorSearchManKiBaatComponent = () => {
   const AdvisorOptions = FilteredAdvisorData.map((advisor) => ({
     value: advisor.id,
     label: advisor.name,
-    image: `http://localhost:3001/${advisor.image}`,
+    image: `/backend/${advisor.image}`,
   }));
 
   // Custom Dropdown Option (Show Image + Name)
@@ -486,7 +486,7 @@ const AdvisorSearchManKiBaatComponent = () => {
                     <div key={index} className="profile-wrapper">
                       <div className="neon-ring"></div>
                       <img
-                        src={`http://localhost:3001/${detail.image}`}
+                        src={`/backend/${detail.image}`}
                         onClick={handleUserProfileClick}
                         alt="Profile"
                         className="profile-img"
@@ -576,7 +576,7 @@ const AdvisorSearchManKiBaatComponent = () => {
                 <div key={index} className="user-info">
                   <img
                     className="mb-3 m-auto"
-                    src={`http://localhost:3001/${u.advisorDetails.Image}`}
+                    src={`/backend/${u.advisorDetails.Image}`}
                     alt={u.advisorDetails.Name}
                     style={{
                       width: "100px",
@@ -851,7 +851,7 @@ const AdvisorSearchManKiBaatComponent = () => {
                   <div className="card-body">
                     <div className="text-center">
                       <img
-                        src={`http://localhost:3001/${details.Image}`}
+                        src={`/backend/${details.Image}`}
                         alt=""
                         style={{
                           height: "110px",

@@ -40,7 +40,7 @@ export function ContactsManKiBaat() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3001/get_user/profile`,
+          `/backend/get_user/profile`,
           {
             headers: {
               "x-auth-token": token,
@@ -110,7 +110,7 @@ export function ContactsManKiBaat() {
   const FetchAdvisors = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/Advisor_All_Data"
+        "/backend/Advisor_All_Data"
       );
       const advisors = response.data.Data;
 
@@ -163,7 +163,7 @@ export function ContactsManKiBaat() {
       }
 
       const response = await axios.post(
-        `http://localhost:3001/sendLink/${SelectedAdvisorId}`,
+        `/backend/sendLink/${SelectedAdvisorId}`,
         { roomId }, // Send roomId in the request body
         {
           headers: {
@@ -198,7 +198,7 @@ export function ContactsManKiBaat() {
     async function fetchWallet() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:3001/wallet`, {
+        const response = await axios.get(`/backend/wallet`, {
           headers: {
             "x-auth-token": token,
           },
@@ -218,7 +218,7 @@ export function ContactsManKiBaat() {
 
   // const [link] = useState("http://127.0.0.1:3030/");
   const token = localStorage.getItem("token");
-  const socketServerUrl = "http://127.0.0.1:3030/";
+  const socketServerUrl = "/socket.io/";
 
   // Optionally append the token as a query parameter
   const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
@@ -299,7 +299,7 @@ export function ContactsManKiBaat() {
   const AdvisorOptions = FilteredAdvisorData.map((advisor) => ({
     value: advisor.id,
     label: advisor.name,
-    image: `http://localhost:3001/${advisor.image}`,
+    image: `/backend/${advisor.image}`,
   }));
 
   // Custom Dropdown Option (Show Image + Name)
@@ -445,7 +445,7 @@ export function ContactsManKiBaat() {
                     <div key={index} className="profile-wrapper">
                       <div className="neon-ring"></div>
                       <img
-                        src={`http://localhost:3001/${detail.image}`}
+                        src={`/backend/${detail.image}`}
                         onClick={handleUserProfileClick}
                         alt="Profile"
                         className="profile-img"
@@ -724,7 +724,7 @@ export function ContactsManKiBaat() {
             >
               <img
                 className="p-1 mb-5"
-                src={`http://localhost:3001/${contactdetail.image}`}
+                src={`/backend/${contactdetail.image}`}
                 alt=""
                 style={{
                   height: "350px",
@@ -856,7 +856,7 @@ export function ContactsManKiBaat() {
                 <div key={index} className="user-info">
                   <img
                     className="mb-3 m-auto"
-                    src={`http://localhost:3001/${u.advisorDetails.Image}`}
+                    src={`/backend/${u.advisorDetails.Image}`}
                     alt={u.advisorDetails.Name}
                     style={{
                       width: "100px",

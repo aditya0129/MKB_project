@@ -24,7 +24,7 @@ export function WalletManKiBaatComponent() {
         const token = localStorage.getItem("token");
         console.log("Token:", token);
         const response = await axios.get(
-          `http://localhost:3001/get_user/profile`,
+          `/backend/get_user/profile`,
           {
             headers: {
               "x-auth-token": token,
@@ -45,7 +45,7 @@ export function WalletManKiBaatComponent() {
     async function fetchWallet() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:3001/wallet`, {
+        const response = await axios.get(`/backend/wallet`, {
           headers: {
             "x-auth-token": token,
           },
@@ -80,7 +80,7 @@ export function WalletManKiBaatComponent() {
       // Fetch the Razorpay key from the backend
       const {
         data: { key },
-      } = await axios.get("http://localhost:3001/getkey", {
+      } = await axios.get("/backend/getkey", {
         headers: {
           "x-auth-token": token, // Add the token to headers
         },
@@ -90,7 +90,7 @@ export function WalletManKiBaatComponent() {
       const {
         data: { order },
       } = await axios.post(
-        "http://localhost:3001/checkout",
+        "/backend/checkout",
         { amount }, // Include the amount in the request body
         {
           headers: {
@@ -107,9 +107,9 @@ export function WalletManKiBaatComponent() {
         name: "M.K.B",
         description: "RazorPay Payment",
         image:
-          "http://localhost:3001/images/1723453472893-20627014_1920110458255767_1308681765579609352_o.jpg",
+          "/backend/images/1723453472893-20627014_1920110458255767_1308681765579609352_o.jpg",
         order_id: order.id,
-        callback_url: "http://localhost:3001/paymentverification",
+        callback_url: "/backend/paymentverification",
         prefill: {
           name: "Gaurav Kumar",
           email: "gaurav.kumar@example.com",

@@ -335,7 +335,7 @@ export function SignupManKiBaatComponent() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/User_All_Data")
+      .get("/backend/User_All_Data")
       .then((response) => {
         setEmail(response.data.Data);
       })
@@ -362,7 +362,7 @@ export function SignupManKiBaatComponent() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/User_All_Data")
+      .get("/backend/User_All_Data")
       .then((response) => {
         setNumbers(response.data.Data);
       })
@@ -531,7 +531,7 @@ export function SignupManKiBaatComponent() {
                     return; // Do not proceed if checkbox is not checked
                   }
                   axios
-                    .post("http://localhost:3001/Register", formData, {
+                    .post("/backend/Register", formData, {
                       headers: {
                         "Content-Type": "multipart/form-data",
                       },

@@ -44,7 +44,7 @@ export function AdvisorForgetPasswordMankiBaatComponent() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:3001/advisor_send_otp",
+        "/backend/advisor_send_otp",
         {
           Email,
         }
