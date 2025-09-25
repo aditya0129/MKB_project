@@ -65,7 +65,7 @@ export function HomeManKiBaatComponenet() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `backend/User_Home/Advisor_detail`,
+          `/backend/User_Home/Advisor_detail`,
           {
             headers: {
               "x-auth-token": token,
@@ -86,7 +86,7 @@ export function HomeManKiBaatComponenet() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `backend/get_user/profile`,
+          `/backend/get_user/profile`,
           {
             headers: {
               "x-auth-token": token,
@@ -107,7 +107,7 @@ export function HomeManKiBaatComponenet() {
     async function fetchAdvisors() {
       try {
         const response = await axios.get(
-          `backend/Advisor_All_Data`
+          `/backend/Advisor_All_Data`
         );
         setAdvisors(response.data.Data);
       } catch (error) {
@@ -160,7 +160,7 @@ export function HomeManKiBaatComponenet() {
   const FetchAdvisors = async () => {
     try {
       const response = await axios.get(
-        "backend/Advisor_All_Data"
+        "/backend/Advisor_All_Data"
       );
       const advisors = response.data.Data;
 
@@ -213,7 +213,7 @@ export function HomeManKiBaatComponenet() {
       }
 
       const response = await axios.post(
-        `backend/sendLink/${SelectedAdvisorId}`,
+        `/backend/sendLink/${SelectedAdvisorId}`,
         { roomId }, // Send roomId in the request body
         {
           headers: {
@@ -248,7 +248,7 @@ export function HomeManKiBaatComponenet() {
     async function fetchWallet() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`backend/wallet`, {
+        const response = await axios.get(`/backend/wallet`, {
           headers: {
             "x-auth-token": token,
           },
@@ -361,7 +361,7 @@ export function HomeManKiBaatComponenet() {
   const AdvisorOptions = FilteredAdvisorData.map((advisor) => ({
     value: advisor.id,
     label: advisor.name,
-    image: `backend/${advisor.image}`,
+    image: `/backend/${advisor.image}`,
   }));
 
   // Custom Dropdown Option (Show Image + Name)
@@ -610,7 +610,7 @@ export function HomeManKiBaatComponenet() {
                     <div key={index} className="profile-wrapper">
                       <div className="neon-ring"></div>
                       <img
-                        src={`backend/${u.image}`}
+                        src={`/backend/${u.image}`}
                         onClick={handleUserProfileClick}
                         alt="Profile"
                         className="profile-img"
@@ -883,7 +883,7 @@ export function HomeManKiBaatComponenet() {
                     <div className="card-body">
                       <div className="text-center">
                         <img
-                          src={`backend/${details.Image}`}
+                          src={`/backend/${details.Image}`}
                           alt=""
                           style={{
                             height: "110px",
@@ -1008,7 +1008,7 @@ export function HomeManKiBaatComponenet() {
                     <div className="card-body">
                       <div className="text-center">
                         <img
-                          src={`backend/${details.Image}`}
+                          src={`/backend/${details.Image}`}
                           alt=""
                           style={{
                             height: "110px",
@@ -1142,7 +1142,7 @@ export function HomeManKiBaatComponenet() {
                 <div key={index} className="user-info">
                   <img
                     className="mb-3 m-auto"
-                    src={`backend/${u.advisorDetails.Image}`}
+                    src={`/backend/${u.advisorDetails.Image}`}
                     alt={u.advisorDetails.Name}
                     style={{
                       width: "100px",
