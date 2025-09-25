@@ -52,7 +52,7 @@ export function LoginManKiBaatComponent() {
                 onSubmit={async (values, { setSubmitting }) => {
                   try {
                     const authResponse = await axios.post(
-                      "/Login",
+                      "backend/Login",
                       {
                         email: values.email,
                         password: values.password,
@@ -62,7 +62,7 @@ export function LoginManKiBaatComponent() {
                     localStorage.setItem("token", token);
                     setCookie("token", token, { path: "/" });
                     const profileResponse = await axios.get(
-                      "/get_user/profile",
+                      "backend/get_user/profile",
                       {
                         headers: { "x-auth-token": token },
                       }
