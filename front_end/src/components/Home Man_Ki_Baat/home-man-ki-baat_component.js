@@ -299,7 +299,7 @@ export function HomeManKiBaatComponenet() {
   // You can still build a redirect URL with token
   const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
 
-  const redirectToSocketServer = (wallet) => {
+  const redirectToSocketServer = () => {
     if (!token) {
       alert("Please Login First. Token Not Found.");
       return;
