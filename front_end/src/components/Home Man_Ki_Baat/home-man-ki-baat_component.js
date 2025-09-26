@@ -268,7 +268,9 @@ export function HomeManKiBaatComponenet() {
 
   // const [link] = useState("http://127.0.0.1:3030/");
   const token = localStorage.getItem("token");
-  const socketServerUrl = "/socket.io/";
+  const socketServerUrl = process.env.NODE_ENV === "production"
+    ? "/socket.io/"
+    : "http://127.0.0.1:3030/";
 
   // Optionally append the token as a query parameter
   const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;

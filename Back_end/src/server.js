@@ -3,10 +3,22 @@ const express = require("express");
 const app = express();
 const server = require("http").Server(app);
 const { v4: uuidv4 } = require("uuid");
-const io = require("socket.io")(server, {
+/* const io = require("socket.io")(server, {
   cors: {
     origin: "*",
   },
+}); */
+
+const io = require("socket.io")(server, {
+  cors: {
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "*" // ✅ Or better: "http://your-server-ip" or "https://your-domain.com"
+        : "http://localhost:3000", // ✅ React dev server origin
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+  path: "/socket.io/", // ✅ must match Nginx location block
 });
 const { ExpressPeerServer } = require("peer");
 const connectDB = require("./config/db");
