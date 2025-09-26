@@ -21,6 +21,7 @@ import {
   faCircleUp,
   faBell,
 } from "@fortawesome/free-solid-svg-icons";
+import { io } from "socket.io-client";
 
 export function HomeManKiBaatComponenet() {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,14 +65,11 @@ export function HomeManKiBaatComponenet() {
     async function fetchAdvisorExpertise() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `/backend/User_Home/Advisor_detail`,
-          {
-            headers: {
-              "x-auth-token": token,
-            },
-          }
-        );
+        const response = await axios.get(`/backend/User_Home/Advisor_detail`, {
+          headers: {
+            "x-auth-token": token,
+          },
+        });
         setExpertise(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
@@ -85,14 +83,11 @@ export function HomeManKiBaatComponenet() {
     async function fetchUser() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `/backend/get_user/profile`,
-          {
-            headers: {
-              "x-auth-token": token,
-            },
-          }
-        );
+        const response = await axios.get(`/backend/get_user/profile`, {
+          headers: {
+            "x-auth-token": token,
+          },
+        });
         setUser(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
@@ -106,9 +101,7 @@ export function HomeManKiBaatComponenet() {
   useEffect(() => {
     async function fetchAdvisors() {
       try {
-        const response = await axios.get(
-          `/backend/Advisor_All_Data`
-        );
+        const response = await axios.get(`/backend/Advisor_All_Data`);
         setAdvisors(response.data.Data);
       } catch (error) {
         console.error("Error fetching advisors data:", error);
@@ -159,9 +152,7 @@ export function HomeManKiBaatComponenet() {
   // Function to fetch advisors and store their data
   const FetchAdvisors = async () => {
     try {
-      const response = await axios.get(
-        "/backend/Advisor_All_Data"
-      );
+      const response = await axios.get("/backend/Advisor_All_Data");
       const advisors = response.data.Data;
 
       if (advisors.length > 0) {
@@ -267,7 +258,7 @@ export function HomeManKiBaatComponenet() {
   }, []);
 
   // const [link] = useState("http://127.0.0.1:3030/");
-  const token = localStorage.getItem("token");
+  /*  const token = localStorage.getItem("token");
   const socketServerUrl = process.env.NODE_ENV === "production"
     ? "/socket.io/"
     : "http://127.0.0.1:3030/";
@@ -296,6 +287,62 @@ export function HomeManKiBaatComponenet() {
     }
 
     window.open(redirectUrl, "_blank"); // Open in new tab
+  }; */
+
+  const token = localStorage.getItem("token");
+
+  const socketServerUrl =
+    process.env.NODE_ENV === "production"
+      ? "/socket.io/" // Nginx will handle proxy
+      : "http://127.0.0.1:3030/socket.io/"; // Dev server
+
+  // You can still build a redirect URL with token
+  const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
+
+  const redirectToSocketServer = (wallet) => {
+    if (!token) {
+      alert("Please Login First. Token Not Found.");
+      return;
+    }
+
+    if (!wallet || wallet.length === 0) {
+      alert("Unable To Check Wallet Balance. Please Try Again.");
+      return;
+    }
+
+    const hasLowBalance = wallet.some((b) => Number(b.walletBalance) <= 4);
+    if (hasLowBalance) {
+      alert(
+        "Your Wallet Balance Is Too Low. Please Recharge Before Continuing."
+      );
+      return;
+    }
+
+    // OPTIONAL: If you want to open the server in a new tab
+    // window.open(redirectUrl, "_blank");
+
+    // Connect to socket server
+    const socket = io(socketServerUrl, {
+      query: { token }, // send token to backend
+      transports: ["websocket"], // force WebSocket
+    });
+
+    socket.on("connect", () => {
+      console.log("✅ Connected to Socket.IO server", socket.id);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("⚠️ Disconnected from Socket.IO server");
+    });
+
+    // Example: join a room
+    const roomId = "some-room-id"; // replace with actual roomId
+    socket.emit("join-room", roomId, socket.id, "User Name", "DBUserId");
+
+    // Example: listen for chat messages
+    socket.on("createMessage", (message, userName) => {
+      console.log(`${userName}: ${message}`);
+    });
   };
 
   const [ShowModal, SetShowModal] = useState(false);
