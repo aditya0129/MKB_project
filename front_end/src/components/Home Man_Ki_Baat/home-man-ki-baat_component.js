@@ -659,7 +659,7 @@ export function HomeManKiBaatComponenet() {
                     <div key={index} className="profile-wrapper">
                       <div className="neon-ring"></div>
                       <img
-                        src={`/images/${u.image}`}
+                        src={`/backend/${u.image}`}
                         onClick={handleUserProfileClick}
                         alt="Profile"
                         className="profile-img"
