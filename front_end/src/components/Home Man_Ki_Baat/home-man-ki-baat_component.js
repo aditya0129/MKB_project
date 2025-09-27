@@ -292,9 +292,9 @@ export function HomeManKiBaatComponenet() {
   const token = localStorage.getItem("token");
 
   const socketServerUrl =
-    process.env.NODE_ENV === "production"
-      ? "/socket.io/" // Nginx will handle proxy
-      : "http://127.0.0.1:3030/socket.io/"; // Dev server
+  process.env.NODE_ENV === "production"
+    ? "/" // rely on Nginx proxying /socket.io/
+    : "http://127.0.0.1:3030";
 
   // You can still build a redirect URL with token
   const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
@@ -319,7 +319,7 @@ export function HomeManKiBaatComponenet() {
     }
 
     // OPTIONAL: If you want to open the server in a new tab
-    // window.open(redirectUrl, "_blank");
+     window.open(redirectUrl, "_blank");
 
     // Connect to socket server
     const socket = io(socketServerUrl, {
@@ -659,7 +659,7 @@ export function HomeManKiBaatComponenet() {
                     <div key={index} className="profile-wrapper">
                       <div className="neon-ring"></div>
                       <img
-                        src={`/backend/${u.image}`}
+                        src={`/images/${u.image}`}
                         onClick={handleUserProfileClick}
                         alt="Profile"
                         className="profile-img"
