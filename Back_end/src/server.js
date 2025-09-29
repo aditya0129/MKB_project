@@ -13,12 +13,12 @@ const io = require("socket.io")(server, {
   cors: {
     origin:
       process.env.NODE_ENV === "production"
-        ? "*" // ✅ Or better: "http://your-server-ip" or "https://your-domain.com"
-        : "http://localhost:3000", // ✅ React dev server origin
+        ? "http://147.93.105.21"
+        : "http://localhost:3000",
     methods: ["GET", "POST"],
     credentials: true,
   },
-  path: "/socket.io/", // ✅ must match Nginx location block
+  path: "/socket.io/", // ✅ must match Nginx
 });
 const { ExpressPeerServer } = require("peer");
 const connectDB = require("./config/db");

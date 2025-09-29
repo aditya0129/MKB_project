@@ -293,9 +293,8 @@ export function HomeManKiBaatComponenet() {
 
   const socketServerUrl =
     process.env.NODE_ENV === "production"
-      ? "/socket.io/" // ✅ Nginx proxies this path to backend
-      : "http://127.0.0.1:3030/socket.io/"; // Dev server
-
+      ? "/socket.io/" // Let Nginx handle it
+      : "http://127.0.0.1:3030";
   // You can still build a redirect URL with token
   const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
 
@@ -321,10 +320,10 @@ export function HomeManKiBaatComponenet() {
     // OPTIONAL: If you want to open the server in a new tab
     window.open(redirectUrl, "_blank");
 
-    // Connect to socket server
     const socket = io(socketServerUrl, {
       query: { token }, // send token to backend
-      transports: ["websocket"], // force WebSocket
+      path: "/socket.io/", // ✅ ensure client & server use same path
+      transports: ["websocket", "polling"], // ✅ allow fallback
     });
 
     socket.on("connect", () => {
