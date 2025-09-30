@@ -31,7 +31,7 @@ showChat.addEventListener("click", () => {
 const user = prompt("Enter Your Name");
 
 // Initialize PeerJS
-var peer = new Peer({
+/* var peer = new Peer({
   host: "127.0.0.1",
   port: 3030,
   path: "/peerjs",
@@ -55,6 +55,30 @@ var peer = new Peer({
         url: "turn:192.158.29.39:3478?transport=tcp",
         credential: "JZEOEt2V3Qb0y27GRntt2u2PAYA=",
         username: "28224511:1379330808",
+      },
+    ],
+  },
+  debug: 3,
+}); */
+
+var peer = new Peer(undefined, {
+  host: location.hostname,          // dynamically use server IP/domain
+  port: location.protocol === "https:" ? 443 : 80, // match protocol
+  path: "/peerjs",                  // must match server path
+  secure: location.protocol === "https:", // true if using https
+  config: {
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      { urls: "stun:stun1.l.google.com:19302" },
+      {
+        urls: "turn:turn.anyfirewall.com:3478?transport=udp",
+        credential: "webrtc",
+        username: "webrtc",
+      },
+      {
+        urls: "turn:turn.anyfirewall.com:3478?transport=tcp",
+        credential: "webrtc",
+        username: "webrtc",
       },
     ],
   },
