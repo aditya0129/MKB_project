@@ -46,10 +46,10 @@ app.get("/", (req, res) => {
 });
 
 // Render the room page with the specific room ID
-app.get("/room/:room", isAuthenticated, (req, res) => {
+app.get("/room/:roomId", isAuthenticated, (req, res) => {
   // res.render("room", { roomId: req.params.room });
   res.render("room", {
-    roomId: req.params.room,
+    roomId: req.params.roomId,
     userId: req.user.userId, // <- assuming req.user is populated
   });
 });
