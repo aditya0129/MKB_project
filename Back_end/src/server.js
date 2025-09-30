@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
   }
 
   const roomId = uuidv4();
-  res.redirect(`/${roomId}?token=${token}`);
+  res.redirect(`/room/${roomId}?token=${token}`);
 });
 
 // Render the room page with the specific room ID
