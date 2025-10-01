@@ -1,7 +1,12 @@
 //const socket = io("/");
-const socket = io("/", {
+/* const socket = io("/", {
   transports: ["websocket"], // force WebSocket to avoid polling issues
+}); */
+
+const socket = io("http://147.93.105.21:3030", {
+  transports: ["websocket"],
 });
+
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
@@ -65,9 +70,9 @@ const user = prompt("Enter Your Name");
 }); */
 
 var peer = new Peer(undefined, {
-  host: location.hostname,          // dynamically use server IP/domain
+  host: location.hostname, // dynamically use server IP/domain
   port: location.protocol === "https:" ? 443 : 80, // match protocol
-  path: "/peerjs",                  // must match server path
+  path: "/peerjs", // must match server path
   secure: location.protocol === "https:", // true if using https
   config: {
     iceServers: [
@@ -464,8 +469,5 @@ startCallDeduction();
 
 // Reset on tab close
 window.addEventListener("beforeunload", () => {
-  navigator.sendBeacon(
-    "/backend/end_call",
-    JSON.stringify({ userId })
-  );
+  navigator.sendBeacon("/backend/end_call", JSON.stringify({ userId }));
 });
