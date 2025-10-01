@@ -1,4 +1,7 @@
-const socket = io("/");
+//const socket = io("/");
+const socket = io("/", {
+  transports: ["websocket"], // force WebSocket to avoid polling issues
+});
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
