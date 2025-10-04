@@ -3,7 +3,7 @@
   transports: ["websocket"], // force WebSocket to avoid polling issues
 }); */
 
-const socket = io("http://147.93.105.21:3030", {
+const socket = io("https://myvideochat.space", {
   transports: ["websocket"],
 });
 

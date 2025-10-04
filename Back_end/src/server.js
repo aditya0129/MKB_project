@@ -13,7 +13,7 @@ const io = require("socket.io")(server, {
   cors: {
     origin:
       process.env.NODE_ENV === "production"
-        ? "http://147.93.105.21"
+        ? "https://myvideochat.space"
         : "http://localhost:3000",
     methods: ["GET", "POST"],
     credentials: true,
