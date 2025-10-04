@@ -293,7 +293,7 @@ export function HomeManKiBaatComponenet() {
 
   const socketServerUrl =
     process.env.NODE_ENV === "production"
-      ? "https://myvideochat.space" // Let Nginx handle it
+      ? "/socket.io/" // Let Nginx handle it
       : "http://127.0.0.1:3030";
   // You can still build a redirect URL with token
   const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
