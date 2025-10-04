@@ -70,10 +70,10 @@ const user = prompt("Enter Your Name");
 }); */
 
 var peer = new Peer(undefined, {
-  host: location.hostname, // dynamically use server IP/domain
-  port: location.protocol === "https:" ? 443 : 80, // match protocol
+  host: "myvideochat.space", // dynamically use server IP/domain
+  port: 443, // match protocol
   path: "/peerjs", // must match server path
-  secure: location.protocol === "https:", // true if using https
+  secure: true, // true if using https
   config: {
     iceServers: [
       { urls: "stun:stun.l.google.com:19302" },
