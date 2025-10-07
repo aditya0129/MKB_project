@@ -103,9 +103,9 @@ io.on("connection", (socket) => {
     }
 
     // Notify other users about the new connection after a delay
-   /*  setTimeout(() => {
+     setTimeout(() => {
       socket.to(roomId).emit("user-connected", userId);
-    }, 1000); */
+    }, 1000); 
 
     // Handle incoming chat messages and broadcast them
     socket.on("message", (message) => {

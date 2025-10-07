@@ -293,7 +293,7 @@ export function HomeManKiBaatComponenet() {
 
   const socketServerUrl =
     process.env.NODE_ENV === "production"
-      ? "/socket.io/" // Let Nginx handle it
+      ? "https://myvideochat.space" // Let Nginx handle it
       : "http://127.0.0.1:3030";
   // You can still build a redirect URL with token
   const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
@@ -324,6 +324,9 @@ export function HomeManKiBaatComponenet() {
       query: { token }, // send token to backend
       path: "/socket.io/", // ✅ ensure client & server use same path
       transports: ["websocket", "polling"], // ✅ allow fallback
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
     });
 
     socket.on("connect", () => {

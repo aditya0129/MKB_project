@@ -4,7 +4,11 @@
 }); */
 
 const socket = io("https://myvideochat.space", {
-  transports: ["websocket"],
+  path: "/socket.io/",
+  transports: ["websocket", "polling"], // ✅ allow fallback
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
 });
 
 const videoGrid = document.getElementById("video-grid");
