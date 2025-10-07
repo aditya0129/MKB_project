@@ -34,7 +34,7 @@ app.use("/peerjs", ExpressPeerServer(server, opinions));
 app.use(express.static("public"));
 app.use(express.json()); // call express
 
-app.get("/", (req, res) => {
+/* app.get("/", (req, res) => {
   const token = req.query.token; // Get token from ?token=xxx
 
   if (!token) {
@@ -43,6 +43,23 @@ app.get("/", (req, res) => {
 
   const roomId = uuidv4();
   res.redirect(`/room/${roomId}?token=${token}`);
+}); */
+// ✅ Generate room only if not provided, else join the same room
+app.get("/", (req, res) => {
+  const { token, roomId } = req.query;
+
+  if (!token) {
+    return res.status(400).send("Token is required");
+  }
+
+  // If a roomId exists (advisor joining), redirect to that same room
+  if (roomId) {
+    return res.redirect(`/room/${roomId}?token=${token}`);
+  }
+
+  // If no roomId, create a new one (user starting chat)
+  const newRoomId = uuidv4();
+  res.redirect(`/room/${newRoomId}?token=${token}`);
 });
 
 // Render the room page with the specific room ID
