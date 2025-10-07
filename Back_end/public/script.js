@@ -5,7 +5,7 @@
 
 const socket = io("https://myvideochat.space", {
   path: "/socket.io/",
-  transports: ["websocket", "polling"], // ✅ allow fallback
+  transports: ["websocket"], // ✅ allow fallback
   reconnection: true,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,

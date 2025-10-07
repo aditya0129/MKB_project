@@ -326,7 +326,7 @@ export function HomeManKiBaatComponenet() {
     const socket = io(socketServerUrl, {
       query: { token }, // send token to backend
       path: "/socket.io/", // ✅ ensure client & server use same path
-      transports: ["websocket", "polling"], // ✅ allow fallback
+      transports: ["websocket"], // ✅ allow fallback
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
