@@ -45,7 +45,7 @@ app.use(express.json()); // call express
   res.redirect(`/room/${roomId}?token=${token}`);
 }); */
 // ✅ Generate room only if not provided, else join the same room
-app.get("/", (req, res) => {
+/* app.get("/", (req, res) => {
   const { token, roomId } = req.query;
 
   if (!token) {
@@ -60,16 +60,46 @@ app.get("/", (req, res) => {
   // If no roomId, create a new one (user starting chat)
   const newRoomId = uuidv4();
   res.redirect(`/room/${newRoomId}?token=${token}`);
+}); */
+app.get("/", (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).send("Token is required");
+  }
+
+  // Generate new room for user start
+  const newRoomId = uuidv4();
+  console.log("✅ New room created:", newRoomId);
+
+  // Redirect user to new room
+  res.redirect(`/room/${newRoomId}?token=${token}`);
+});
+
+// ✅ When advisor or user joins existing room
+app.get("/room/:room", isAuthenticated, (req, res) => {
+  const roomId = req.params.room;
+  const token = req.query.token;
+
+  if (!token) {
+    return res.status(400).send("Token missing");
+  }
+
+  // Render EJS page with room and user info
+  res.render("room", {
+    roomId,
+    userId: req.user.userId,
+  });
 });
 
 // Render the room page with the specific room ID
-app.get("/:room", isAuthenticated, (req, res) => {
+/* app.get("/:room", isAuthenticated, (req, res) => {
   // res.render("room", { roomId: req.params.room });
   res.render("room", {
     roomId: req.params.room,
     userId: req.user.userId, // <- assuming req.user is populated
   });
-});
+}); */
 
 // Manage active rooms and their timers
 const roomTimers = {}; // To track timers for rooms
@@ -120,9 +150,9 @@ io.on("connection", (socket) => {
     }
 
     // Notify other users about the new connection after a delay
-     setTimeout(() => {
+    setTimeout(() => {
       socket.to(roomId).emit("user-connected", userId);
-    }, 1000); 
+    }, 1000);
 
     // Handle incoming chat messages and broadcast them
     socket.on("message", (message) => {
