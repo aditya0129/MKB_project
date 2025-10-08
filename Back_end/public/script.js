@@ -322,7 +322,7 @@ let deductionInterval = null;
 let popupTimer = null; // 30s countdown for popup
 
 // Start call deduction loop
-function startCallDeduction() {
+/* function startCallDeduction() {
   if (!userId) {
     console.error("❌ No userId found. Cannot start deduction.");
     return;
@@ -355,7 +355,7 @@ function startCallDeduction() {
       console.error("❌ Deduction error:", err);
     }
   }, 1000);
-}
+} */
 
 function endCall() {
   if (deductionInterval) clearInterval(deductionInterval);
