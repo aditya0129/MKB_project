@@ -469,7 +469,7 @@ function showLowBalancePopup(walletBalance) {
 }
 
 // Start deduction automatically
-startCallDeduction();
+//startCallDeduction();
 
 // Reset on tab close
 window.addEventListener("beforeunload", () => {
