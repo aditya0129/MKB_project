@@ -77,7 +77,7 @@ app.get("/", (req, res) => {
 });
 
 // ✅ When advisor or user joins existing room
-app.get("/room/:room", isAuthenticated, (req, res) => {
+app.get("/:room", isAuthenticated, (req, res) => {
   const roomId = req.params.room;
   const token = req.query.token;
 
@@ -85,10 +85,16 @@ app.get("/room/:room", isAuthenticated, (req, res) => {
     return res.status(400).send("Token missing");
   }
 
-  // Render EJS page with room and user info
+  const user = req.user;
+
+  // Detect who joined
+  const userId = user.userId || user.advisorId;
+  const advisorId = user.userId ? "user" : "advisor";
+
   res.render("room", {
     roomId,
-    userId: req.user.userId,
+    userId,
+    advisorId,
   });
 });
 
