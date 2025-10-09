@@ -142,9 +142,25 @@ const connectToNewUser = (userId, stream) => {
   });
 };
 
-peer.on("open", (id) => {
+/* peer.on("open", (id) => {
   console.log("Emitting to backend. USER_ID = ", USER_ID);
   socket.emit("join-room", ROOM_ID, id, user, USER_ID);
+}); */
+peer.on("open", (peerId) => {
+  // choose dbId depending on role
+  const dbId =
+    typeof ROLE !== "undefined" && ROLE === "advisor" ? ADVISOR_ID : USER_ID;
+
+  console.log("Emitting join-room:", {
+    ROOM_ID,
+    peerId,
+    displayName: user,
+    dbId,
+    ROLE,
+  });
+
+  // Emit signature: roomId, peerId (peerjs id), displayName, dbId, role
+  socket.emit("join-room", ROOM_ID, peerId, user, dbId, ROLE);
 });
 
 const addVideoStream = (video, stream) => {

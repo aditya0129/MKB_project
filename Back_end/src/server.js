@@ -77,6 +77,7 @@ app.get("/", (req, res) => {
 });
 
 // ✅ When advisor or user joins existing room
+// --- join existing room (user or advisor) ---
 app.get("/:room", isAuthenticated, (req, res) => {
   const roomId = req.params.room;
   const token = req.query.token;
@@ -85,19 +86,32 @@ app.get("/:room", isAuthenticated, (req, res) => {
     return res.status(400).send("Token missing");
   }
 
-  const user = req.user;
+  const user = req.user || {};
+  let userId = null;
+  let advisorId = null;
+  let role = "";
 
-  // Detect who joined
-  const userId = user.userId || user.advisorId;
-  const advisorId = user.userId ? "user" : "advisor";
+  if (user.userId) {
+    userId = user.userId;
+    role = "user";
+  } else if (user.advisorId) {
+    advisorId = user.advisorId;
+    role = "advisor";
+  } else {
+    // unexpected token payload
+    console.warn("Token decoded but no userId/advisorId found:", user);
+    return res.status(400).send("Invalid token payload");
+  }
+
+  console.log(`✅ ${role} (${userId || advisorId}) joined room ${roomId}`);
 
   res.render("room", {
     roomId,
-    userId,
-    advisorId,
+    userId, // real DB id if role === "user", else null
+    advisorId, // real DB id if role === "advisor", else null
+    role,
   });
 });
-
 // Render the room page with the specific room ID
 /* app.get("/:room", isAuthenticated, (req, res) => {
   // res.render("room", { roomId: req.params.room });
@@ -112,7 +126,7 @@ const roomTimers = {}; // To track timers for rooms
 const roomUsers = {}; // To track the number of users in each room
 
 // Socket.io connection handling
-io.on("connection", (socket) => {
+/* io.on("connection", (socket) => {
   // User joins a room
   socket.on("join-room", (roomId, userId, userName, dbUserId) => {
     console.log(
@@ -178,6 +192,75 @@ io.on("connection", (socket) => {
         );
       }
       socket.to(roomId).emit("user-disconnected", userId);
+    });
+  });
+}); */
+
+io.on("connection", (socket) => {
+  socket.on("join-room", (roomId, peerId, displayName, dbId, role) => {
+    // peerId = PeerJS id; dbId = user's DB id (userId or advisorId); role = "user"|"advisor"
+    console.log(
+      `Socket join-room: role=${role}, dbId=${dbId}, peerId=${peerId}, name=${displayName}, room=${roomId}`
+    );
+
+    // Optional: Lookup DB user if dbId present
+    if (dbId) {
+      User.findById(dbId)
+        .then((userDoc) => {
+          if (userDoc) {
+            console.log(
+              `MongoDB Found [${role}]:`,
+              userDoc.name || userDoc.email
+            );
+          } else {
+            console.log(`No DB record for id ${dbId}`);
+          }
+        })
+        .catch((err) => console.error("DB lookup error:", err.message));
+    }
+
+    // manage room user counts
+    if (!roomUsers[roomId]) roomUsers[roomId] = 0;
+    roomUsers[roomId]++;
+
+    socket.join(roomId);
+    console.log(`${displayName} joined room: ${roomId}`);
+    console.log(`Users in room ${roomId}: ${roomUsers[roomId]}`);
+
+    // start timer at 2 participants
+    if (roomUsers[roomId] === 2 && !roomTimers[roomId]) {
+      roomTimers[roomId] = Date.now();
+      io.to(roomId).emit("start-timer", roomTimers[roomId]);
+      console.log(`Timer started for room: ${roomId}`);
+    } else if (roomUsers[roomId] > 2) {
+      socket.emit("start-timer", roomTimers[roomId]);
+    }
+
+    // notify others
+    setTimeout(() => {
+      socket.to(roomId).emit("user-connected", peerId);
+    }, 1000);
+
+    socket.on("message", (message) => {
+      io.to(roomId).emit(
+        "createMessage",
+        message,
+        displayName || "Unknown User"
+      );
+    });
+
+    socket.on("disconnect", () => {
+      roomUsers[roomId] = Math.max(0, (roomUsers[roomId] || 0) - 1);
+      if (roomUsers[roomId] === 0) {
+        delete roomTimers[roomId];
+        delete roomUsers[roomId];
+        console.log(`Room ${roomId} empty, timer cleared.`);
+      } else {
+        console.log(
+          `Users in room ${roomId} after disconnect: ${roomUsers[roomId]}`
+        );
+      }
+      socket.to(roomId).emit("user-disconnected", peerId);
     });
   });
 });

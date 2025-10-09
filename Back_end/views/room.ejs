@@ -9,11 +9,17 @@
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/js/all.min.js"></script>
   <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
-  <script>
+  <!-- <script>
     const ROOM_ID = "<%= roomId %>";
     const USER_ID = "<%= userId %>";
-    const ADVISOR_ID = "<%= advisorId %>";
-  </script>
+  </script> -->
+
+  <script>
+  const ROOM_ID = "<%= roomId %>";
+  const USER_ID = "<%= userId || '' %>";      // user DB id or empty
+  const ADVISOR_ID = "<%= advisorId || '' %>";// advisor DB id or empty
+  const ROLE = "<%= role %>";                 // "user" or "advisor"
+</script>
 </head>
 
 <body>
