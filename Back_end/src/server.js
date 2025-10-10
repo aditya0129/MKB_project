@@ -68,17 +68,25 @@ app.get("/", (req, res) => {
     return res.status(400).send("Token is required");
   }
 
-  // Generate new room for user start
+  // Store token in a secure HTTP-only cookie
+  res.cookie("auth_token", token, {
+    httpOnly: true, // ✅ cannot be accessed by JS
+    secure: process.env.NODE_ENV === "production", // HTTPS only
+    sameSite: "Strict", // optional
+    maxAge: 15 * 60 * 1000, // 15 minutes, adjust as needed
+  });
+
+  // Generate new room
   const newRoomId = uuidv4();
   console.log("✅ New room created:", newRoomId);
 
-  // Redirect user to new room
-  res.redirect(`/room/${newRoomId}?token=${token}`);
+  // Redirect without token in URL
+  res.redirect(`/room/${newRoomId}`);
 });
 
 // ✅ When advisor or user joins existing room
 // --- join existing room (user or advisor) ---
-app.get("/:room", isAuthenticated, (req, res) => {
+/* app.get("/:room", isAuthenticated, (req, res) => {
   const roomId = req.params.room;
   const token = req.query.token;
 
@@ -110,7 +118,7 @@ app.get("/:room", isAuthenticated, (req, res) => {
     advisorId,
     role,
   });
-});
+}); */
 // Render the room page with the specific room ID
 /* app.get("/:room", isAuthenticated, (req, res) => {
   // res.render("room", { roomId: req.params.room });
@@ -120,6 +128,36 @@ app.get("/:room", isAuthenticated, (req, res) => {
   });
 }); */
 
+app.get("/:room", isAuthenticated, (req, res) => {
+  const roomId = req.params.room;
+
+  const user = req.user || {};
+  let userId = "";
+  let advisorId = "";
+  let role = "";
+
+  if (user.userId) {
+    // Normal user logged in
+    userId = user.userId;
+    role = "user";
+  } else if (user.advisorId) {
+    // Advisor logged in
+    advisorId = user.advisorId;
+    role = "advisor";
+  } else {
+    console.warn("Invalid token payload:", user);
+    return res.status(400).send("Invalid token payload");
+  }
+
+  console.log(`✅ ${role} joined room ${roomId}`);
+
+  res.render("room", {
+    roomId,
+    userId,
+    advisorId,
+    role,
+  });
+});
 // Manage active rooms and their timers
 const roomTimers = {}; // To track timers for rooms
 const roomUsers = {}; // To track the number of users in each room

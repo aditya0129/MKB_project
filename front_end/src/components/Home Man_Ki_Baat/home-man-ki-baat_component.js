@@ -297,9 +297,10 @@ export function HomeManKiBaatComponenet() {
       : "http://127.0.0.1:3030";
   // You can still build a redirect URL with token
   //const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
-  const redirectUrl = token
+  /* const redirectUrl = token
     ? `${socketServerUrl}/room/${roomId}?token=${token}`
-    : null;
+    : null; */
+  const redirectUrl = `${socketServerUrl}/room/${roomId}`;
 
   const redirectToSocketServer = () => {
     if (!token) {

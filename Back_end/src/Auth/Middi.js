@@ -38,7 +38,7 @@ const jwt = require("jsonwebtoken");
 //     }
 // }
 
-const isAuthenticated =  async function (req, res, next) {
+/* const isAuthenticated =  async function (req, res, next) {
   let token = req.headers["x-auth-token"] || req.query.token;
 
   if (!token) {
@@ -61,6 +61,35 @@ const isAuthenticated =  async function (req, res, next) {
       next();
     }
   });
+}; */
+
+const isAuthenticated = async function (req, res, next) {
+  try {
+    // Get token from headers, query, or cookie
+    let token = req.headers["x-auth-token"] || req.query.token || req.cookies?.auth_token;
+
+    if (!token) {
+      return res.status(400).send({
+        status: false,
+        message: "Please provide your number and verify yourself",
+      });
+    }
+
+    // Verify token
+    const decoded = jwt.verify(token, "man-ki-baat");
+
+    // Attach decoded info to request
+    req.user = decoded;
+    req.token = decoded;
+
+    next();
+  } catch (err) {
+    console.log("JWT verification failed:", err.message);
+    return res.status(401).send({
+      status: false,
+      message: err.message,
+    });
+  }
 };
 
 //============================================ Autherisation ==============================================//
