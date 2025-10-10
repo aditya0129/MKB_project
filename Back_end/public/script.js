@@ -148,8 +148,8 @@ const connectToNewUser = (userId, stream) => {
 }); */
 peer.on("open", (peerId) => {
   // choose dbId depending on role
-  const dbId =
-    typeof ROLE !== "undefined" && ROLE === "advisor" ? ADVISOR_ID : USER_ID;
+  const dbId = ROLE === "advisor" ? ADVISOR_ID : USER_ID;
+  // const dbId = typeof ROLE !== "undefined" && ROLE === "advisor" ? ADVISOR_ID : USER_ID;
 
   console.log("Emitting join-room:", {
     ROOM_ID,
@@ -160,7 +160,9 @@ peer.on("open", (peerId) => {
   });
 
   // Emit signature: roomId, peerId (peerjs id), displayName, dbId, role
-  socket.emit("join-room", ROOM_ID, peerId, user, dbId, ROLE);
+  //socket.emit("join-room", ROOM_ID, peerId, user, dbId, ROLE);
+
+  socket.emit("join-room", ROOM_ID, myPeer.id, myName, dbId, ROLE);
 });
 
 const addVideoStream = (video, stream) => {

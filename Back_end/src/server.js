@@ -82,33 +82,32 @@ app.get("/:room", isAuthenticated, (req, res) => {
   const roomId = req.params.room;
   const token = req.query.token;
 
-  if (!token) {
-    return res.status(400).send("Token missing");
-  }
+  if (!token) return res.status(400).send("Token missing");
 
   const user = req.user || {};
-  let userId = null;
-  let advisorId = null;
+  let userId = "";
+  let advisorId = "";
   let role = "";
 
   if (user.userId) {
+    // Normal user logged in
     userId = user.userId;
     role = "user";
   } else if (user.advisorId) {
+    // Advisor logged in
     advisorId = user.advisorId;
     role = "advisor";
   } else {
-    // unexpected token payload
-    console.warn("Token decoded but no userId/advisorId found:", user);
+    console.warn("Invalid token payload:", user);
     return res.status(400).send("Invalid token payload");
   }
 
-  console.log(`✅ ${role} (${userId || advisorId}) joined room ${roomId}`);
+  console.log(`✅ ${role} joined room ${roomId}`);
 
   res.render("room", {
     roomId,
-    userId, // real DB id if role === "user", else null
-    advisorId, // real DB id if role === "advisor", else null
+    userId,
+    advisorId,
     role,
   });
 });
