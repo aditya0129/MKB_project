@@ -160,9 +160,7 @@ peer.on("open", (peerId) => {
   });
 
   // Emit signature: roomId, peerId (peerjs id), displayName, dbId, role
-  //socket.emit("join-room", ROOM_ID, peerId, user, dbId, ROLE);
-
-  socket.emit("join-room", ROOM_ID, myPeer.id, myName, dbId, ROLE);
+  socket.emit("join-room", ROOM_ID, peerId, user, dbId, ROLE);
 });
 
 const addVideoStream = (video, stream) => {
