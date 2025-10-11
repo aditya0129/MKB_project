@@ -288,26 +288,14 @@ export function HomeManKiBaatComponenet() {
 
     window.open(redirectUrl, "_blank"); // Open in new tab
   }; */
-
-  const token = localStorage.getItem("token");
-
   const socketServerUrl =
     process.env.NODE_ENV === "production"
-      ? "https://myvideochat.space" // Let Nginx handle it
+      ? "https://myvideochat.space"
       : "http://127.0.0.1:3030";
-  // You can still build a redirect URL with token
-  //const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
-  /* const redirectUrl = token
-    ? `${socketServerUrl}/room/${roomId}?token=${token}`
-    : null; */
+
   const redirectUrl = `${socketServerUrl}/room/${roomId}`;
-
-  const redirectToSocketServer = () => {
-    if (!token) {
-      alert("Please Login First. Token Not Found.");
-      return;
-    }
-
+  const redirectToSocketServer = async () => {
+    // --- Wallet checks ---
     if (!wallet || wallet.length === 0) {
       alert("Unable To Check Wallet Balance. Please Try Again.");
       return;
@@ -321,33 +309,44 @@ export function HomeManKiBaatComponenet() {
       return;
     }
 
-    // OPTIONAL: If you want to open the server in a new tab
+    // --- Backend room URL ---
+
+    // Open the room in a new tab (token is in cookie)
     window.open(redirectUrl, "_blank");
 
+    // --- Socket.IO connection ---
     const socket = io(socketServerUrl, {
-      query: { token }, // send token to backend
-      path: "/socket.io/", // ✅ ensure client & server use same path
-      transports: ["websocket"], // ✅ allow fallback
+      path: "/socket.io/",
+      transports: ["websocket"],
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
+      withCredentials: true, // ✅ ensures cookies are sent automatically
     });
 
     socket.on("connect", () => {
       console.log("✅ Connected to Socket.IO server", socket.id);
+
+      // Join the room (you can send user info if needed)
+      socket.emit("join-room", roomId, socket.id, "User Name", null, "user");
     });
 
     socket.on("disconnect", () => {
       console.log("⚠️ Disconnected from Socket.IO server");
     });
 
-    // Example: join a room
-    const roomId = "some-room-id"; // replace with actual roomId
-    socket.emit("join-room", roomId, socket.id, "User Name", "DBUserId");
-
-    // Example: listen for chat messages
+    // Listen for messages
     socket.on("createMessage", (message, userName) => {
       console.log(`${userName}: ${message}`);
+    });
+
+    // Listen for other events like user-connected/disconnected
+    socket.on("user-connected", (peerId) => {
+      console.log("User connected:", peerId);
+    });
+
+    socket.on("user-disconnected", (peerId) => {
+      console.log("User disconnected:", peerId);
     });
   };
 

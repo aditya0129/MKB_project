@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const server = require("http").Server(app);
 const { v4: uuidv4 } = require("uuid");
+const cookieParser = require("cookie-parser");
+
 /* const io = require("socket.io")(server, {
   cors: {
     origin: "*",
@@ -33,6 +35,7 @@ app.set("view engine", "ejs");
 app.use("/peerjs", ExpressPeerServer(server, opinions));
 app.use(express.static("public"));
 app.use(express.json()); // call express
+app.use(cookieParser());
 
 /* app.get("/", (req, res) => {
   const token = req.query.token; // Get token from ?token=xxx
