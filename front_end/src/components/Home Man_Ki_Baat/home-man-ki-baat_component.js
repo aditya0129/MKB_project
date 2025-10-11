@@ -288,14 +288,15 @@ export function HomeManKiBaatComponenet() {
 
     window.open(redirectUrl, "_blank"); // Open in new tab
   }; */
+  const token = localStorage.getItem("token");
   const socketServerUrl =
     process.env.NODE_ENV === "production"
       ? "https://myvideochat.space"
       : "http://127.0.0.1:3030";
 
-  const redirectUrl = `${socketServerUrl}/room/${roomId}`;
+  const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
+
   const redirectToSocketServer = async () => {
-    // --- Wallet checks ---
     if (!wallet || wallet.length === 0) {
       alert("Unable To Check Wallet Balance. Please Try Again.");
       return;
@@ -309,45 +310,55 @@ export function HomeManKiBaatComponenet() {
       return;
     }
 
-    // --- Backend room URL ---
+    if (!redirectUrl) {
+      alert("Missing token. Please log in again.");
+      return;
+    }
 
-    // Open the room in a new tab (token is in cookie)
-    window.open(redirectUrl, "_blank");
+    try {
+      // ✅ Step 1: Call backend / (root) with token to create room and set cookie
+      const response = await fetch(redirectUrl, {
+        method: "GET",
+        credentials: "include", // ✅ allows backend to store HTTP-only cookie
+      });
 
-    // --- Socket.IO connection ---
-    const socket = io(socketServerUrl, {
-      path: "/socket.io/",
-      transports: ["websocket"],
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-      withCredentials: true, // ✅ ensures cookies are sent automatically
-    });
+      // ✅ Step 2: The backend redirects to clean /room/:roomId
+      // We extract the redirect from the response URL (if not handled automatically)
+      if (response.redirected) {
+        window.open(response.url, "_blank");
+      } else {
+        const data = await response.text();
+        console.log("Server response:", data);
+      }
 
-    socket.on("connect", () => {
-      console.log("✅ Connected to Socket.IO server", socket.id);
+      // ✅ Step 3: Connect Socket.IO
+      const socket = io(socketServerUrl, {
+        path: "/socket.io/",
+        transports: ["websocket"],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        withCredentials: true, // ✅ ensures cookies (auth_token) are sent
+      });
 
-      // Join the room (you can send user info if needed)
-      socket.emit("join-room", roomId, socket.id, "User Name", null, "user");
-    });
+      socket.on("connect", () => {
+        console.log("✅ Connected to Socket.IO server", socket.id);
+        socket.emit(
+          "join-room",
+          "room-id-here",
+          socket.id,
+          "User Name",
+          null,
+          "user"
+        );
+      });
 
-    socket.on("disconnect", () => {
-      console.log("⚠️ Disconnected from Socket.IO server");
-    });
-
-    // Listen for messages
-    socket.on("createMessage", (message, userName) => {
-      console.log(`${userName}: ${message}`);
-    });
-
-    // Listen for other events like user-connected/disconnected
-    socket.on("user-connected", (peerId) => {
-      console.log("User connected:", peerId);
-    });
-
-    socket.on("user-disconnected", (peerId) => {
-      console.log("User disconnected:", peerId);
-    });
+      socket.on("disconnect", () => {
+        console.log("⚠️ Disconnected from Socket.IO server");
+      });
+    } catch (error) {
+      console.error("Error redirecting:", error);
+    }
   };
 
   const [ShowModal, SetShowModal] = useState(false);
