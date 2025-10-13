@@ -73,18 +73,22 @@ app.get("/", (req, res) => {
 
   // Store token in a secure HTTP-only cookie
   res.cookie("auth_token", token, {
-    httpOnly: true, // ✅ cannot be accessed by JS
-    secure: process.env.NODE_ENV === "production", // HTTPS only
-    sameSite: "Strict", // optional
-    maxAge: 15 * 60 * 1000, // 15 minutes, adjust as needed
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    maxAge: 15 * 60 * 1000, // 15 minutes
   });
 
   // Generate new room
   const newRoomId = uuidv4();
   console.log("✅ New room created:", newRoomId);
 
-  // Redirect without token in URL
-  res.redirect(`/room/${newRoomId}`);
+  // 👉 Instead of redirecting, respond with JSON
+  res.json({
+    success: true,
+    redirectUrl: `/room/${newRoomId}`,
+    roomId: newRoomId,
+  });
 });
 
 // ✅ When advisor or user joins existing room

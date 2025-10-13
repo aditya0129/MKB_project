@@ -288,13 +288,13 @@ export function HomeManKiBaatComponenet() {
 
     window.open(redirectUrl, "_blank"); // Open in new tab
   }; */
+  const [finalUrl, setFinalUrl] = useState(null);
+
   const token = localStorage.getItem("token");
   const socketServerUrl =
     process.env.NODE_ENV === "production"
       ? "https://myvideochat.space"
       : "http://127.0.0.1:3030";
-
-  const redirectUrl = token ? `${socketServerUrl}?token=${token}` : null;
 
   const redirectToSocketServer = async () => {
     if (!wallet || wallet.length === 0) {
@@ -310,42 +310,45 @@ export function HomeManKiBaatComponenet() {
       return;
     }
 
-    if (!redirectUrl) {
+    if (!token) {
       alert("Missing token. Please log in again.");
       return;
     }
 
     try {
-      // ✅ Step 1: Call backend / (root) with token to create room and set cookie
-      const response = await fetch(redirectUrl, {
+      // ✅ Call backend to create a room and set token cookie internally
+      const response = await fetch(`${socketServerUrl}/?token=${token}`, {
         method: "GET",
-        credentials: "include", // ✅ allows backend to store HTTP-only cookie
+        credentials: "include", // ⬅ important for cookies
       });
 
-      // ✅ Step 2: The backend redirects to clean /room/:roomId
-      // We extract the redirect from the response URL (if not handled automatically)
-      if (response.redirected) {
-        window.open(response.url, "_blank");
-      } else {
-        const data = await response.text();
-        console.log("Server response:", data);
+      const data = await response.json();
+
+      if (!data.success || !data.redirectUrl) {
+        console.error("Invalid response:", data);
+        alert("Failed to create room. Try again.");
+        return;
       }
 
-      // ✅ Step 3: Connect Socket.IO
+      // ✅ Clean URL (no token shown)
+      const finalUrl = `${socketServerUrl}${data.redirectUrl}`;
+      setFinalUrl(finalUrl);
+
+      // ✅ Open room in new tab
+      window.open(finalUrl, "_blank");
+
+      // ✅ (Optional) Connect to Socket.IO
       const socket = io(socketServerUrl, {
         path: "/socket.io/",
         transports: ["websocket"],
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
-        withCredentials: true, // ✅ ensures cookies (auth_token) are sent
+        withCredentials: true,
       });
 
       socket.on("connect", () => {
-        console.log("✅ Connected to Socket.IO server", socket.id);
+        console.log("✅ Connected to Socket.IO", socket.id);
         socket.emit(
           "join-room",
-          "room-id-here",
+          data.roomId,
           socket.id,
           "User Name",
           null,
@@ -768,12 +771,13 @@ export function HomeManKiBaatComponenet() {
 
           <p>
             <strong>Your Room Link is: </strong>
-            {redirectUrl ? (
+            {finalUrl ? (
               <a
-                href={redirectUrl}
+                href={finalUrl}
                 onClick={(e) => {
                   e.preventDefault(); // stop normal link behaviour
-                  redirectToSocketServer();
+                  // redirectToSocketServer();
+                  window.open(finalUrl, "_blank"); // ✅ open existing room
                 }}
                 style={{ color: "#007bff", textDecoration: "underline" }}
               >
