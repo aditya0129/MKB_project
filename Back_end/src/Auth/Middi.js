@@ -65,33 +65,37 @@ const jwt = require("jsonwebtoken");
 
 const isAuthenticated = async function (req, res, next) {
   try {
-    // Get token from headers, query, or cookie
-    let token = req.headers["x-auth-token"] || req.query.token || req.cookies?.auth_token;
+    // ✅ Get token from cookie (preferred) or fallback to headers/query
+    const token =
+      req.cookies?.auth_token || req.headers["x-auth-token"] || req.query.token;
 
     if (!token) {
-      return res.status(400).send({
-        status: false,
-        message: "Please provide your number and verify yourself",
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required. Please log in again.",
       });
     }
 
-    // Verify token
+    // ✅ Verify token
     const decoded = jwt.verify(token, "man-ki-baat");
 
-    // Attach decoded info to request
+    // ✅ Attach user info to req
     req.user = decoded;
-    req.token = decoded;
+    req.token = token;
 
     next();
   } catch (err) {
-    console.log("JWT verification failed:", err.message);
-    return res.status(401).send({
-      status: false,
-      message: err.message,
+    console.error("❌ JWT verification failed:", err.message);
+
+    // Clear invalid token cookie if exists
+    res.clearCookie("auth_token");
+
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired session. Please log in again.",
     });
   }
 };
-
 //============================================ Autherisation ==============================================//
 
 const isAuthorized = async function (req, res, next) {
@@ -107,12 +111,10 @@ const isAuthorized = async function (req, res, next) {
           .send({ status: false, message: "UserId must be in string." });
       }
       if (!userId || !userId.trim()) {
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: "User Id must be present for Authorization.",
-          });
+        return res.status(400).send({
+          status: false,
+          message: "User Id must be present for Authorization.",
+        });
       }
       userId = userId.trim();
 
@@ -130,12 +132,10 @@ const isAuthorized = async function (req, res, next) {
       }
 
       if (loggedUserId != userId) {
-        return res
-          .status(403)
-          .send({
-            status: false,
-            message: "You are not authorized,please provide valid user id.",
-          });
+        return res.status(403).send({
+          status: false,
+          message: "You are not authorized,please provide valid user id.",
+        });
       }
       req.body.userId = userId;
     } else {
@@ -154,24 +154,20 @@ const isAuthorized = async function (req, res, next) {
 
       let checkuserId = await userModel.findById(userId);
       if (!checkuserId) {
-        return res
-          .status(404)
-          .send({
-            status: false,
-            message:
-              "Data Not found with this user id, Please enter a valid user id",
-          });
+        return res.status(404).send({
+          status: false,
+          message:
+            "Data Not found with this user id, Please enter a valid user id",
+        });
       }
 
       let authenticatedUserId = checkuserId._id;
 
       if (authenticatedUserId != loggedUserId) {
-        return res
-          .status(403)
-          .send({
-            status: false,
-            message: "Not authorized,please provide your own user id",
-          });
+        return res.status(403).send({
+          status: false,
+          message: "Not authorized,please provide your own user id",
+        });
       }
     }
     next();
