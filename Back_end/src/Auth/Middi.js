@@ -63,39 +63,62 @@ const jwt = require("jsonwebtoken");
   });
 }; */
 
-const isAuthenticated = async function (req, res, next) {
+const isAuthenticated = async (req, res, next) => {
   try {
-    // ✅ Get token from cookie (preferred) or fallback to headers/query
+    // ✅ 1. Get token from multiple sources
+    const authHeader = req.headers["authorization"]; // Bearer token
     const token =
-      req.cookies?.auth_token || req.headers["x-auth-token"] || req.query.token;
+      req.cookies?.auth_token ||        // from cookie
+      req.headers["x-auth-token"] ||    // custom header
+      req.query.token ||                // query param
+      (authHeader && authHeader.startsWith("Bearer ") 
+        ? authHeader.split(" ")[1] 
+        : null);                        // Bearer header
 
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Authentication required. Please log in again.",
+        message: "Authentication required. Please log in.",
       });
     }
 
-    // ✅ Verify token
-    const decoded = jwt.verify(token, "man-ki-baat");
+    // ✅ 2. Verify token
+    const decoded = jwt.verify(token, "man-ki-baat"); // replace with your secret
 
-    // ✅ Attach user info to req
+    // ✅ 3. Attach user info to req
     req.user = decoded;
     req.token = token;
 
+    // ✅ 4. Continue to next middleware or route
     next();
   } catch (err) {
-    console.error("❌ JWT verification failed:", err.message);
+    // ✅ 5. Detailed logging for debugging
+    console.error(
+      "❌ JWT verification failed:",
+      err.name,   // TokenExpiredError, JsonWebTokenError, etc.
+      err.message
+    );
 
-    // Clear invalid token cookie if exists
-    res.clearCookie("auth_token");
+    // ✅ 6. Clear cookie only if it exists
+    if (req.cookies?.auth_token) {
+      res.clearCookie("auth_token");
+    }
+
+    // ✅ 7. Send appropriate response
+    let message = "Invalid or expired session. Please log in again.";
+    if (err.name === "TokenExpiredError") {
+      message = "Session expired. Please log in again.";
+    } else if (err.name === "JsonWebTokenError") {
+      message = "Invalid token. Please log in again.";
+    }
 
     return res.status(401).json({
       success: false,
-      message: "Invalid or expired session. Please log in again.",
+      message,
     });
   }
 };
+
 //============================================ Autherisation ==============================================//
 
 const isAuthorized = async function (req, res, next) {
@@ -111,10 +134,12 @@ const isAuthorized = async function (req, res, next) {
           .send({ status: false, message: "UserId must be in string." });
       }
       if (!userId || !userId.trim()) {
-        return res.status(400).send({
-          status: false,
-          message: "User Id must be present for Authorization.",
-        });
+        return res
+          .status(400)
+          .send({
+            status: false,
+            message: "User Id must be present for Authorization.",
+          });
       }
       userId = userId.trim();
 
@@ -132,10 +157,12 @@ const isAuthorized = async function (req, res, next) {
       }
 
       if (loggedUserId != userId) {
-        return res.status(403).send({
-          status: false,
-          message: "You are not authorized,please provide valid user id.",
-        });
+        return res
+          .status(403)
+          .send({
+            status: false,
+            message: "You are not authorized,please provide valid user id.",
+          });
       }
       req.body.userId = userId;
     } else {
@@ -154,20 +181,24 @@ const isAuthorized = async function (req, res, next) {
 
       let checkuserId = await userModel.findById(userId);
       if (!checkuserId) {
-        return res.status(404).send({
-          status: false,
-          message:
-            "Data Not found with this user id, Please enter a valid user id",
-        });
+        return res
+          .status(404)
+          .send({
+            status: false,
+            message:
+              "Data Not found with this user id, Please enter a valid user id",
+          });
       }
 
       let authenticatedUserId = checkuserId._id;
 
       if (authenticatedUserId != loggedUserId) {
-        return res.status(403).send({
-          status: false,
-          message: "Not authorized,please provide your own user id",
-        });
+        return res
+          .status(403)
+          .send({
+            status: false,
+            message: "Not authorized,please provide your own user id",
+          });
       }
     }
     next();
