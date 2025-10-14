@@ -60,7 +60,8 @@ export function LoginManKiBaatComponent() {
                     );
                     const token = authResponse.data.Token;
                     localStorage.setItem("token", token);
-                    setCookie("token", token, { path: "/" });
+                    //setCookie("token", token, { path: "/" });
+                    setCookie("auth_token", token, { path: "/" })
                     const profileResponse = await axios.get(
                       "/backend/get_user/profile",
                       {
