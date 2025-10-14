@@ -65,13 +65,21 @@ app.use(cookieParser());
   res.redirect(`/room/${newRoomId}?token=${token}`);
 }); */
 app.get("/", (req, res) => {
-  const { token } = req.query;
+  // ✅ Accept token from cookie, header, or query
+  const token =
+    req.cookies?.auth_token ||
+    req.cookies?.token ||
+    req.headers["x-auth-token"] ||
+    req.query.token;
 
   if (!token) {
-    return res.status(400).send("Token is required");
+    return res.status(400).json({
+      success: false,
+      message: "Token is required",
+    });
   }
 
-  // Store token in a secure HTTP-only cookie
+  // ✅ Store token in secure cookie (for next requests)
   res.cookie("auth_token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -79,12 +87,12 @@ app.get("/", (req, res) => {
     maxAge: 15 * 60 * 1000, // 15 minutes
   });
 
-  // Generate new room
+  // ✅ Generate a new room
   const newRoomId = uuidv4();
   console.log("✅ New room created:", newRoomId);
 
-  // 👉 Instead of redirecting, respond with JSON
-  res.json({
+  // ✅ Send JSON (not redirect)
+  return res.json({
     success: true,
     redirectUrl: `/room/${newRoomId}`,
     roomId: newRoomId,
