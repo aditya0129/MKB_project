@@ -320,6 +320,9 @@ export function HomeManKiBaatComponenet() {
       const response = await fetch(`${socketServerUrl}/?token=${token}`, {
         method: "GET",
         credentials: "include", // ⬅ important for cookies
+        headers: {
+        "x-auth-token": token, // extra safety (backend will catch this)
+      },
       });
 
       const data = await response.json();
@@ -342,6 +345,7 @@ export function HomeManKiBaatComponenet() {
         path: "/socket.io/",
         transports: ["websocket"],
         withCredentials: true,
+        auth: { token }, // send token safely to backend for socket validation
       });
 
       socket.on("connect", () => {
