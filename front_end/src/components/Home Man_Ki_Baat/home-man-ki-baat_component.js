@@ -290,62 +290,65 @@ export function HomeManKiBaatComponenet() {
   }; */
   const [finalUrl, setFinalUrl] = useState(null);
 
-  const token = localStorage.getItem("token");
   const socketServerUrl =
     process.env.NODE_ENV === "production"
       ? "https://myvideochat.space"
       : "http://127.0.0.1:3030";
 
   const redirectToSocketServer = async () => {
-    if (!wallet || wallet.length === 0) {
-      alert("Unable To Check Wallet Balance. Please Try Again.");
-      return;
-    }
-
-    const hasLowBalance = wallet.some((b) => Number(b.walletBalance) <= 4);
-    if (hasLowBalance) {
-      alert(
-        "Your Wallet Balance Is Too Low. Please Recharge Before Continuing."
-      );
-      return;
-    }
-
-    if (!token) {
-      alert("Missing token. Please log in again.");
-      return;
-    }
-
     try {
-      // ✅ Call backend to create a room and set token cookie internally
+      // ✅ 1. Check wallet
+      if (!wallet || wallet.length === 0) {
+        alert("Unable to check wallet balance. Please try again.");
+        return;
+      }
+
+      const hasLowBalance = wallet.some((b) => Number(b.walletBalance) <= 4);
+      if (hasLowBalance) {
+        alert(
+          "Your wallet balance is too low. Please recharge before continuing."
+        );
+        return;
+      }
+
+      // ✅ 2. Get token from localStorage
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("auth_token");
+      if (!token) {
+        alert("Missing token. Please log in again.");
+        return;
+      }
+
+      // ✅ 3. Call backend to create a room (returns JSON)
       const response = await fetch(`${socketServerUrl}/?token=${token}`, {
         method: "GET",
-        credentials: "include", // ⬅ important for cookies
+        credentials: "include", // important for cookies
         headers: {
-        "x-auth-token": token, // extra safety (backend will catch this)
-      },
+          "x-auth-token": token, // extra safety
+        },
       });
 
       const data = await response.json();
 
-      if (!data.success || !data.redirectUrl) {
-        console.error("Invalid response:", data);
-        alert("Failed to create room. Try again.");
+      if (!data.success || !data.redirectUrl || !data.roomId) {
+        console.error("Invalid response from backend:", data);
+        alert(data.message || "Failed to create room. Try again.");
         return;
       }
 
-      // ✅ Clean URL (no token shown)
-      const finalUrl = `${socketServerUrl}${data.redirectUrl}`;
-      setFinalUrl(finalUrl);
+      // ✅ 4. Construct final room URL (no token in URL)
+      const roomUrl = `${socketServerUrl}${data.redirectUrl}`;
+      setFinalUrl(roomUrl);
 
-      // ✅ Open room in new tab
-      window.open(finalUrl, "_blank");
+      // ✅ 5. Open room in new tab
+      window.open(roomUrl, "_blank");
 
-      // ✅ (Optional) Connect to Socket.IO
+      // ✅ 6. Connect to Socket.IO
       const socket = io(socketServerUrl, {
         path: "/socket.io/",
         transports: ["websocket"],
         withCredentials: true,
-        auth: { token }, // send token safely to backend for socket validation
+        auth: { token },
       });
 
       socket.on("connect", () => {
@@ -354,7 +357,7 @@ export function HomeManKiBaatComponenet() {
           "join-room",
           data.roomId,
           socket.id,
-          "User Name",
+          "User Name", // replace with actual user name if needed
           null,
           "user"
         );
@@ -365,6 +368,7 @@ export function HomeManKiBaatComponenet() {
       });
     } catch (error) {
       console.error("Error redirecting:", error);
+      alert("Something went wrong. Please try again.");
     }
   };
 
