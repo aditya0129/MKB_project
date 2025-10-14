@@ -64,7 +64,7 @@ app.use(cookieParser());
   const newRoomId = uuidv4();
   res.redirect(`/room/${newRoomId}?token=${token}`);
 }); */
-app.get("/", (req, res) => {
+app.get("/api/create-room", (req, res) => {
   // ✅ Accept token from cookie, header, or query
   const token =
     req.cookies?.auth_token ||

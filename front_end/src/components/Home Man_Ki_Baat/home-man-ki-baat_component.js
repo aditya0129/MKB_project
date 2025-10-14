@@ -320,7 +320,7 @@ export function HomeManKiBaatComponenet() {
       }
 
       // ✅ 3. Call backend to create a room (returns JSON)
-      const response = await fetch(`${socketServerUrl}/?token=${token}`, {
+      const response = await fetch(`${socketServerUrl}/api/create-room`, {
         method: "GET",
         credentials: "include", // important for cookies
         headers: {
