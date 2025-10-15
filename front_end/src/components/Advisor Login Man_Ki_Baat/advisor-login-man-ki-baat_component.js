@@ -15,7 +15,7 @@ import { useCookies } from "react-cookie";
 export function AdvisorLoginManKiBaatComponent() {
   const navigate = useNavigate();
   //const [cookies, setCookie] = useCookies(["token"]);
-  const [cookies, setCookie] = useCookies(["auth_token"]); // 👈 match the cookie name
+  const [cookies, setCookie] = useCookies(["token"]); // 👈 match the cookie name
   const [showPassword, setShowPassword] = useState(false);
 
   const SignupClick = () => {
@@ -86,7 +86,7 @@ export function AdvisorLoginManKiBaatComponent() {
 
                     const token = authResponse.data.Token;
                     localStorage.setItem("token", token);
-                    setCookie("auth_token", token, { path: "/" });
+                    setCookie("token", token, { path: "/" });
 
                     alert("Login Successfully...");
 

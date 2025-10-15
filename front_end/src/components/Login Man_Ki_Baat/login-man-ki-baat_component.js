@@ -15,7 +15,7 @@ import { useCookies } from "react-cookie";
 export function LoginManKiBaatComponent() {
   const navigate = useNavigate();
   //const [cookies, setCookie] = useCookies(["token"]);
-  const [cookies, setCookie] = useCookies(["auth_token"]); // 👈 match the cookie name
+  const [cookies, setCookie] = useCookies(["token"]); // 👈 match the cookie name
   const [showPassword, setShowPassword] = useState(false);
 
   const SignupClick = () => {
@@ -97,7 +97,7 @@ export function LoginManKiBaatComponent() {
                     localStorage.setItem("token", token);
 
                     try {
-                      setCookie("auth_token", token, { path: "/" });
+                      setCookie("token", token, { path: "/" });
                     } catch (err) {
                       console.error("Cookie set failed:", err);
                     }
