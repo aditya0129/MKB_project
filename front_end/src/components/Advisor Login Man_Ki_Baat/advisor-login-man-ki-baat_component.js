@@ -50,7 +50,7 @@ export function AdvisorLoginManKiBaatComponent() {
                     .required("Email Required")
                     .email("Invalid Email"),
                 })}
-                onSubmit={async (values, { setSubmitting }) => {
+                /* onSubmit={async (values, { setSubmitting }) => {
                   try {
                     const authResponse = await axios.post(
                       "/backend/Advisor_login",
@@ -67,6 +67,35 @@ export function AdvisorLoginManKiBaatComponent() {
                     navigate("/advisor-profile");
                   } catch (error) {
                     console.error("Error:", error);
+                    navigate("/invalid");
+                  } finally {
+                    setSubmitting(false);
+                  }
+                }} */
+                onSubmit={async (values, { setSubmitting }) => {
+                  try {
+                    axios.defaults.withCredentials = true;
+
+                    const authResponse = await axios.post(
+                      "/backend/Advisor_login",
+                      {
+                        Email: values.Email,
+                        Password: values.Password,
+                      }
+                    );
+
+                    const token = authResponse.data.Token;
+                    localStorage.setItem("token", token);
+                    setCookie("auth_token", token, { path: "/" });
+
+                    alert("Login Successfully...");
+
+                    // Delay navigation slightly to ensure cookie persistence
+                    setTimeout(() => {
+                      navigate("/advisor-profile");
+                    }, 500);
+                  } catch (error) {
+                    console.error("Error during login:", error);
                     navigate("/invalid");
                   } finally {
                     setSubmitting(false);

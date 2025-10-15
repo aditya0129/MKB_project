@@ -50,7 +50,7 @@ export function LoginManKiBaatComponent() {
                     .required("Email Required")
                     .email("Invalid Email"),
                 })}
-                onSubmit={async (values, { setSubmitting }) => {
+                /*  onSubmit={async (values, { setSubmitting }) => {
                   try {
                     const authResponse = await axios.post("/backend/Login", {
                       email: values.email,
@@ -81,6 +81,47 @@ export function LoginManKiBaatComponent() {
                     navigate("/");
                   } catch (error) {
                     console.error("Error:", error);
+                    navigate("/invalid");
+                  } finally {
+                    setSubmitting(false);
+                  }
+                }} */
+                onSubmit={async (values, { setSubmitting }) => {
+                  try {
+                    const authResponse = await axios.post("/backend/Login", {
+                      email: values.email,
+                      password: values.password,
+                    });
+
+                    const token = authResponse.data.Token;
+                    localStorage.setItem("token", token);
+
+                    try {
+                      setCookie("auth_token", token, { path: "/" });
+                    } catch (err) {
+                      console.error("Cookie set failed:", err);
+                    }
+
+                    alert("Login Successfully...");
+                    navigate("/");
+
+                    axios
+                      .get("/backend/get_user/profile", {
+                        headers: { "x-auth-token": token },
+                      })
+                      .then((profileResponse) => {
+                        if (profileResponse.data.status) {
+                          const userId = profileResponse.data.data[0]._id;
+                          localStorage.setItem("userId", userId);
+                          setCookie("userId", userId, { path: "/" });
+                        }
+                      })
+                      .catch((err) =>
+                        console.error("Profile fetch error:", err)
+                      );
+                  } catch (error) {
+                    console.error("Login error:", error);
+                    alert("Invalid email or password!");
                     navigate("/invalid");
                   } finally {
                     setSubmitting(false);
