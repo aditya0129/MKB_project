@@ -14,7 +14,8 @@ import { useCookies } from "react-cookie";
 
 export function AdvisorLoginManKiBaatComponent() {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["token"]);
+  //const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie] = useCookies(["auth_token"]); // 👈 match the cookie name
   const [showPassword, setShowPassword] = useState(false);
 
   const SignupClick = () => {

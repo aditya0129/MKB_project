@@ -14,7 +14,8 @@ import { useCookies } from "react-cookie";
 
 export function LoginManKiBaatComponent() {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["token"]);
+  //const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie] = useCookies(["auth_token"]); // 👈 match the cookie name
   const [showPassword, setShowPassword] = useState(false);
 
   const SignupClick = () => {
@@ -51,17 +52,14 @@ export function LoginManKiBaatComponent() {
                 })}
                 onSubmit={async (values, { setSubmitting }) => {
                   try {
-                    const authResponse = await axios.post(
-                      "/backend/Login",
-                      {
-                        email: values.email,
-                        password: values.password,
-                      }
-                    );
+                    const authResponse = await axios.post("/backend/Login", {
+                      email: values.email,
+                      password: values.password,
+                    });
                     const token = authResponse.data.Token;
                     localStorage.setItem("token", token);
                     //setCookie("token", token, { path: "/" });
-                    setCookie("auth_token", token, { path: "/" })
+                    setCookie("auth_token", token, { path: "/" });
                     const profileResponse = await axios.get(
                       "/backend/get_user/profile",
                       {
