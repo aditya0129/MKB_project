@@ -63,7 +63,7 @@ const jwt = require("jsonwebtoken");
   });
 }; */
 
-const isAuthenticated = async function (req, res, next) {
+/* const isAuthenticated = async function (req, res, next) {
   try {
     // Get token from headers, query, or cookie
     //let token = req.headers["x-auth-token"] || req.query.token || req.cookies?.auth_token;
@@ -93,6 +93,56 @@ const isAuthenticated = async function (req, res, next) {
     return res.status(401).send({
       status: false,
       message: err.message,
+    });
+  }
+}; */
+const isAuthenticated = async function (req, res, next) {
+  try {
+    // ✅ Try getting token from all possible locations
+    const token =
+      req.cookies?.auth_token ||
+      req.cookies?.token ||
+      req.headers["x-auth-token"] ||
+      req.query.token;
+
+    if (!token) {
+      return res.status(400).json({
+        status: false,
+        message: "Authentication token is required",
+      });
+    }
+
+    // ✅ Verify token using your secret key
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "man-ki-baat");
+
+    if (!decoded) {
+      return res.status(401).json({
+        status: false,
+        message: "Invalid token",
+      });
+    }
+
+    // ✅ Check if payload contains user or advisor info
+    if (decoded.userId) {
+      req.user = { userId: decoded.userId, role: "user" };
+    } else if (decoded.advisorId) {
+      req.user = { advisorId: decoded.advisorId, role: "advisor" };
+    } else {
+      return res.status(401).json({
+        status: false,
+        message: "Invalid token payload: missing user/advisor ID",
+      });
+    }
+
+    // ✅ Optionally attach the raw token
+    req.token = token;
+
+    next();
+  } catch (err) {
+    console.error("JWT verification failed:", err.message);
+    return res.status(401).json({
+      status: false,
+      message: "Unauthorized: " + err.message,
     });
   }
 };
