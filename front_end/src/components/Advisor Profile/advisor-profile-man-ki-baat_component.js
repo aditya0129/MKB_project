@@ -81,14 +81,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
         const token = localStorage.getItem("token");
         console.log("Token:", token);
 
-        const response = await axios.get(
-          `/backend/get_Advisor/profile`,
-          {
-            headers: {
-              "x-auth-token": token,
-            },
-          }
-        );
+        const response = await axios.get(`/backend/get_Advisor/profile`, {
+          headers: {
+            "x-auth-token": token,
+          },
+        });
         console.log("Response:", response);
         setAdvisors(response.data.data);
       } catch (error) {
@@ -429,16 +426,12 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       }
 
       // Send patch request with form data and token
-      const res = await axios.patch(
-        `/backend/AdvisorUpdateProfile`,
-        form,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            "x-auth-token": token, // Ensure backend is expecting this format
-          },
-        }
-      );
+      const res = await axios.patch(`/backend/AdvisorUpdateProfile`, form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "x-auth-token": token, // Ensure backend is expecting this format
+        },
+      });
 
       // Handle response based on backend status
       if (res.status === 200) {
@@ -1177,7 +1170,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           </p>
         </Modal.Body> */}
         <Modal.Body>
-          <p style={{ wordBreak: "break-word" }}>
+          {/* <p style={{ wordBreak: "break-word" }}>
             Your Meet Link is:{" "}
             {advisors.map((advisor, index) => {
               const token = localStorage.getItem("token"); // or get it from context/props
@@ -1187,6 +1180,21 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
               return (
                 <span key={index}>
                   <a href={fullUrl} target="_blank" rel="noopener noreferrer">
+                    {baseUrl}
+                  </a>
+                  <br />
+                </span>
+              );
+            })}
+          </p> */}
+          <p style={{ wordBreak: "break-word" }}>
+            Your Meet Link is:{" "}
+            {advisors.map((advisor, index) => {
+              const baseUrl = advisor.Notification.split("?")[0]; // ensure clean URL
+
+              return (
+                <span key={index}>
+                  <a href={baseUrl} target="_blank" rel="noopener noreferrer">
                     {baseUrl}
                   </a>
                   <br />

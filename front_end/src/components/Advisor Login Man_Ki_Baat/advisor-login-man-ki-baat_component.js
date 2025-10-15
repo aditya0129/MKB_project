@@ -60,7 +60,8 @@ export function AdvisorLoginManKiBaatComponent() {
                     );
                     const token = authResponse.data.Token;
                     localStorage.setItem("token", token);
-                    setCookie("token", token, { path: "/" });
+                    //setCookie("token", token, { path: "/" });
+                    setCookie("auth_token", token, { path: "/" });
                     alert("Login Successfully...");
                     navigate("/advisor-profile");
                   } catch (error) {
