@@ -681,6 +681,52 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
     </div>
   );
 
+  const handleJoinRoom = async (roomBaseUrl) => {
+    try {
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("auth_token");
+      if (!token) {
+        alert("Missing token. Please log in again.");
+        return;
+      }
+
+      // Get the socket server base URL (production or dev)
+      const socketServerUrl =
+        process.env.NODE_ENV === "production"
+          ? "https://myvideochat.space"
+          : "http://127.0.0.1:3030";
+
+      // ✅ Call backend securely (sends cookie)
+      const response = await fetch(`${socketServerUrl}/api-b/create-room`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "x-auth-token": token,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!data.success || !data.roomId) {
+        alert(data.message || "Failed to join room");
+        return;
+      }
+
+      // ✅ Join same room (use provided roomId if from Notification)
+      const joinUrl = roomBaseUrl.includes("/room/")
+        ? roomBaseUrl
+        : `${socketServerUrl}${data.redirectUrl}`;
+
+      console.log("Joining room:", joinUrl);
+
+      // ✅ Open new tab without exposing token
+      window.open(joinUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error joining room:", error);
+      alert("Unable to join meeting");
+    }
+  };
+
   return (
     <>
       {/* *******************************HEADER*************************** */}
@@ -1146,70 +1192,40 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
           </Button>
         </Modal.Footer>
       </Modal>
-
       {/* ********************************VIDEO-MEET-LINK**************************** */}
       <Modal show={ShowSModalS} onHide={HandleModalsClose}>
         <Modal.Header closeButton>
-          <Modal.Title className="bi bi-link-45deg"> Meet Link</Modal.Title>
+          <Modal.Title className="bi bi-link-45deg">Meet Link</Modal.Title>
         </Modal.Header>
-        {/* <Modal.Body>
-          <p>
-            Your Meet Link is:{" "}
-            {advisors.map((advisor, index) => (
-              <span key={index}>
-                <a
-                  href={advisor.Notification}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {advisor.Notification}
-                </a>
-                <br />
-              </span>
-            ))}
-          </p>
-        </Modal.Body> */}
+
         <Modal.Body>
-          {/* <p style={{ wordBreak: "break-word" }}>
-            Your Meet Link is:{" "}
-            {advisors.map((advisor, index) => {
-              const token = localStorage.getItem("token"); // or get it from context/props
-              const baseUrl = advisor.Notification.split("?")[0]; // clean URL without query
-              const fullUrl = token ? `${baseUrl}?token=${token}` : baseUrl;
-
-              return (
-                <span key={index}>
-                  <a href={fullUrl} target="_blank" rel="noopener noreferrer">
-                    {baseUrl}
-                  </a>
-                  <br />
-                </span>
-              );
-            })}
-          </p> */}
           <p style={{ wordBreak: "break-word" }}>
-            Your Meet Link is:{" "}
+            Your Meet Link is:
             {advisors.map((advisor, index) => {
-              const baseUrl = advisor.Notification.split("?")[0]; // ensure clean URL
+              const baseUrl = advisor.Notification?.split("?")[0]; // clean room URL
+              if (!baseUrl?.startsWith("http")) return null;
 
               return (
                 <span key={index}>
-                  <a href={baseUrl} target="_blank" rel="noopener noreferrer">
+                  <button
+                    className="btn btn-link text-info p-0 ms-2"
+                    onClick={() => handleJoinRoom(baseUrl)}
+                  >
                     {baseUrl}
-                  </a>
+                  </button>
                   <br />
                 </span>
               );
             })}
           </p>
         </Modal.Body>
+
         <Modal.Footer>
           <Button
             className="bi bi-x-lg"
             variant="outline-danger"
             onClick={HandleModalsClose}
           >
-            {" "}
             Cancel
           </Button>
         </Modal.Footer>
