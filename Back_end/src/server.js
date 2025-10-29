@@ -4,6 +4,7 @@ const app = express();
 const server = require("http").Server(app);
 const { v4: uuidv4 } = require("uuid");
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 /* const io = require("socket.io")(server, {
   cors: {
@@ -11,7 +12,7 @@ const cookieParser = require("cookie-parser");
   },
 }); */
 
-const io = require("socket.io")(server, {
+/* const io = require("socket.io")(server, {
   cors: {
     origin:
       process.env.NODE_ENV === "production"
@@ -21,6 +22,25 @@ const io = require("socket.io")(server, {
     credentials: true,
   },
   path: "/socket.io/", // ✅ must match Nginx
+}); */
+const allowedOrigins = [
+  "https://myvideochat.space",
+  "https://www.myvideochat.space",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+];
+
+const io = require("socket.io")(server, {
+  cors: {
+    origin: (origin, cb) => {
+      // allow undefined (curl, server-side) or match allowed list
+      if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+      return cb(new Error("Origin not allowed by CORS: " + origin));
+    },
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+  path: "/socket.io/",
 });
 const { ExpressPeerServer } = require("peer");
 const connectDB = require("./config/db");
@@ -80,11 +100,20 @@ app.get("/api-b/create-room", (req, res) => {
   }
 
   // ✅ Store token in secure cookie (for next requests)
-  res.cookie("auth_token", token, {
+  /* res.cookie("auth_token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "None",
     maxAge: 15 * 60 * 1000, // 15 minutes
+  }); */
+
+  res.cookie("auth_token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "None",
+    domain:
+      process.env.NODE_ENV === "production" ? "myvideochat.space" : "localhost",
+    maxAge: 15 * 60 * 1000,
   });
 
   // ✅ Generate a new room
@@ -248,7 +277,46 @@ const roomUsers = {}; // To track the number of users in each room
   });
 }); */
 
-io.on("connection", (socket) => {
+// helper: get token from cookie string
+function parseCookieString(cookieString) {
+  if (!cookieString) return {};
+  return cookieString.split(";").reduce((acc, kv) => {
+    const [k, v] = kv.split("=").map((s) => s && s.trim());
+    if (k) acc[k] = v;
+    return acc;
+  }, {});
+}
+
+io.use((socket, next) => {
+  try {
+    // Prefer token passed in auth, else check cookies in handshake headers
+    const tokenFromAuth = socket.handshake.auth && socket.handshake.auth.token;
+    const cookieHeader = socket.handshake.headers?.cookie;
+    const cookies = parseCookieString(cookieHeader);
+    const token = tokenFromAuth || cookies?.auth_token || cookies?.token;
+
+    if (!token) {
+      const err = new Error("Authentication error: token missing");
+      err.data = { content: "Auth token required" };
+      return next(err);
+    }
+
+    const secret = process.env.JWT_SECRET || "man-ki-baat";
+    const decoded = jwt.verify(token, secret);
+
+    // Attach user info to socket for later use
+    socket.user = decoded;
+    socket.token = token;
+    return next();
+  } catch (err) {
+    console.error("Socket auth failed:", err.message);
+    const e = new Error("Authentication error");
+    e.data = { content: err.message };
+    return next(e);
+  }
+});
+
+/* io.on("connection", (socket) => {
   socket.on("join-room", (roomId, peerId, displayName, dbId, role) => {
     // peerId = PeerJS id; dbId = user's DB id (userId or advisorId); role = "user"|"advisor"
     console.log(
@@ -313,6 +381,95 @@ io.on("connection", (socket) => {
         );
       }
       socket.to(roomId).emit("user-disconnected", peerId);
+    });
+  });
+}); */
+io.on("connection", (socket) => {
+  console.log("🟢 New socket connected:", socket.id);
+
+  socket.on("join-room", async (roomId, peerId, displayName, dbId, role) => {
+    socket.user = { roomId, peerId, displayName, dbId, role };
+
+    console.log(
+      `✅ ${role} joined: ${displayName} (DB ID: ${dbId}) in Room: ${roomId}`
+    );
+
+    // Optional: Lookup in DB
+    if (dbId) {
+      try {
+        const userDoc = await User.findById(dbId);
+        if (userDoc) {
+          console.log(
+            `MongoDB found ${role}: ${userDoc.name || userDoc.email}`
+          );
+        } else {
+          console.log(`⚠️ No DB record for id ${dbId}`);
+        }
+      } catch (err) {
+        console.error("DB lookup error:", err.message);
+      }
+    }
+
+    // Create room if not exists
+    if (!roomUsers[roomId]) {
+      roomUsers[roomId] = [];
+    }
+
+    // Check if already 2 users (1 user + 1 advisor)
+    if (roomUsers[roomId].length >= 2) {
+      socket.emit("room-full", { message: "Room is full, cannot join." });
+      console.log(`❌ Room ${roomId} full. Rejecting ${displayName}.`);
+      return;
+    }
+
+    // Add user to room
+    roomUsers[roomId].push({ socketId: socket.id, peerId, displayName, role });
+    socket.join(roomId);
+
+    console.log(
+      `👥 ${displayName} (${role}) joined room ${roomId}. Total: ${roomUsers[roomId].length}`
+    );
+
+    // Notify others in the room
+    socket.to(roomId).emit("user-connected", { peerId, displayName, role });
+
+    // If both user & advisor are in the room, start timer
+    if (roomUsers[roomId].length === 2 && !roomTimers[roomId]) {
+      roomTimers[roomId] = Date.now();
+      io.to(roomId).emit("start-timer", roomTimers[roomId]);
+      console.log(`⏱️ Timer started for room ${roomId}`);
+    }
+
+    // Listen for chat messages
+    socket.on("message", (message) => {
+      io.to(roomId).emit(
+        "createMessage",
+        message,
+        displayName || "Unknown User"
+      );
+    });
+
+    // Handle disconnection
+    socket.on("disconnect", () => {
+      console.log(
+        `🔴 Disconnected: ${displayName} (${role}) from room ${roomId}`
+      );
+      if (roomUsers[roomId]) {
+        roomUsers[roomId] = roomUsers[roomId].filter(
+          (u) => u.socketId !== socket.id
+        );
+
+        if (roomUsers[roomId].length === 0) {
+          delete roomTimers[roomId];
+          delete roomUsers[roomId];
+          console.log(`🧹 Room ${roomId} empty, timer cleared.`);
+        } else {
+          console.log(
+            `Remaining in room ${roomId}: ${roomUsers[roomId].length}`
+          );
+          socket.to(roomId).emit("user-disconnected", peerId);
+        }
+      }
     });
   });
 });

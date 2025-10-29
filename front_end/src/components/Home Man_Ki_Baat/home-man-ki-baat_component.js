@@ -348,7 +348,8 @@ export function HomeManKiBaatComponenet() {
         path: "/socket.io/",
         transports: ["websocket"],
         withCredentials: true,
-        auth: { token },
+        //auth: { token },
+        auth: { token: localStorage.getItem("token") }, // fallback
       });
 
       socket.on("connect", () => {

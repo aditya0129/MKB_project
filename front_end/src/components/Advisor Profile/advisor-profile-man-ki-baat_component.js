@@ -3727,7 +3727,11 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
 
               {/* Advisor Notifications */}
               {advisors.map((advisor, index) => (
-                <p key={index} className="bi bi-chat-quote-fill">
+                <p
+                  key={index}
+                  className="bi bi-chat-quote-fill"
+                  style={{ wordBreak: "break-word" }}
+                >
                   {" "}
                   {advisor.Notification}
                 </p>
