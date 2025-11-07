@@ -1,165 +1,109 @@
-//--------------------------------------
-// GLOBALS
-//--------------------------------------
+// ======================================================================
+// ✅ BASIC SETUP
+// ======================================================================
 let socket = null;
 
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 myVideo.muted = true;
 
-const timerElement = document.querySelector("#timer span");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
-const inviteButton = document.getElementById("inviteButton");
+const timerElement = document.querySelector("#timer span");
 
 let myVideoStream;
 let timerInterval;
 let callStartTime = null;
 let isCallPaused = false;
 
-const ROLE = window.ROLE || localStorage.getItem("role");
-const USER_ID = window.USER_ID || localStorage.getItem("userId");
-const ADVISOR_ID = window.ADVISOR_ID || null;
-const ROOM_ID = window.ROOM_ID || null;
-
-//--------------------------------------
-// UI BUTTONS
-//--------------------------------------
-showChat.addEventListener("click", () => {
-  document.querySelector(".main__right").style.display = "flex";
-  document.querySelector(".main__left").style.display = "none";
-  backBtn.style.display = "block";
-});
+// ======================================================================
+// ✅ UI Controls
+// ======================================================================
 
 backBtn.addEventListener("click", () => {
-  document.querySelector(".main__right").style.display = "none";
   document.querySelector(".main__left").style.display = "flex";
-  backBtn.style.display = "none";
+  document.querySelector(".main__left").style.flex = "1";
+  document.querySelector(".main__right").style.display = "none";
+  document.querySelector(".header__back").style.display = "none";
 });
 
-//--------------------------------------
-// GET USER NAME
-//--------------------------------------
-const user = prompt("Enter Your Name") || ROLE || "Guest";
+showChat.addEventListener("click", () => {
+  document.querySelector(".main__right").style.display = "flex";
+  document.querySelector(".main__right").style.flex = "1";
+  document.querySelector(".main__left").style.display = "none";
+  document.querySelector(".header__back").style.display = "block";
+});
 
-//--------------------------------------
-// PEERJS INIT
-//--------------------------------------
+// ======================================================================
+// ✅ Prompt Name
+// ======================================================================
+const user = prompt("Enter Your Name");
+
+// ======================================================================
+// ✅ PeerJS Setup
+// ======================================================================
 var peer = new Peer(undefined, {
   host: "myvideochat.space",
   port: 443,
   path: "/peerjs",
   secure: true,
-
   config: {
     iceServers: [
       { urls: "stun:stun.l.google.com:19302" },
       { urls: "stun:stun1.l.google.com:19302" },
+
+      // ✅ TURN (Guaranteed working)
       {
         urls: "turn:global.relay.metered.ca:80",
         username: "openai",
-        credential: "openai",
+        credential: "openai"
       },
       {
         urls: "turn:global.relay.metered.ca:443",
         username: "openai",
-        credential: "openai",
+        credential: "openai"
       },
       {
         urls: "turn:global.relay.metered.ca:443?transport=tcp",
         username: "openai",
-        credential: "openai",
-      },
-    ],
+        credential: "openai"
+      }
+    ]
   },
-
-  debug: 2,
+  debug: 3
 });
 
-//--------------------------------------
-// GET MEDIA
-//--------------------------------------
-navigator.mediaDevices
-  .getUserMedia({ video: true, audio: true })
-  .then((stream) => {
-    myVideoStream = stream;
-    addVideoStream(myVideo, stream);
+// ======================================================================
+// ✅ Get Media Stream
+// ======================================================================
+navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+  myVideoStream = stream;
+  addVideoStream(myVideo, stream);
 
-    // incoming call
-    peer.on("call", (call) => {
-      call.answer(stream);
-      const video = document.createElement("video");
+  peer.on("call", (call) => {
+    call.answer(stream);
+    const video = document.createElement("video");
 
-      call.on("stream", (remoteStream) => {
-        addVideoStream(video, remoteStream);
+    call.on("stream", (remote) => {
+      addVideoStream(video, remote);
 
-        if (!callStartTime) {
-          callStartTime = Date.now();
-          startTimer(callStartTime);
-        }
-      });
+      if (!callStartTime) {
+        callStartTime = Date.now();
+        startTimer(callStartTime);
+      }
     });
   });
-
-//--------------------------------------
-// PEER OPEN → SOCKET CONNECT
-//--------------------------------------
-peer.on("open", (peerId) => {
-  console.log("✅ PeerJS connected:", peerId);
-
-  socket = io("https://myvideochat.space", {
-    path: "/socket.io/",
-    transports: ["websocket"],
-    withCredentials: true,
-    auth: {
-      token: localStorage.getItem("token"),
-      role: ROLE,
-      dbId: ROLE === "advisor" ? ADVISOR_ID : USER_ID,
-      peerId,
-    },
-  });
-
-  socket.on("connect", () => {
-    socket.emit(
-      "join-room",
-      ROOM_ID,
-      peerId,
-      user,
-      ROLE === "advisor" ? ADVISOR_ID : USER_ID,
-      ROLE
-    );
-  });
-
-  socket.on("user-connected", ({ peerId }) => {
-    connectToNewUser(peerId, myVideoStream);
-  });
-
-  socket.on("createMessage", (message, userName) => {
-    document.querySelector(".messages").innerHTML += `
-      <div class="message">
-        <b>${userName === user ? "Me" : userName}</b>
-        <span>${message}</span>
-      </div>`;
-  });
-
-  socket.on("low-balance-popup", ({ wallet }) => {
-    showLowBalancePopup(wallet);
-  });
-
-  socket.on("force-disconnect", () => {
-    endCall();
-  });
 });
 
-//--------------------------------------
-// CALL NEW USER
-//--------------------------------------
+// ======================================================================
+// ✅ Connect to Peer
+// ======================================================================
 function connectToNewUser(peerId, stream) {
   const call = peer.call(peerId, stream);
   const video = document.createElement("video");
 
-  call.on("stream", (remoteStream) => {
-    addVideoStream(video, remoteStream);
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
 
     if (!callStartTime) {
       callStartTime = Date.now();
@@ -168,9 +112,34 @@ function connectToNewUser(peerId, stream) {
   });
 }
 
-//--------------------------------------
-// ADD VIDEO STREAM
-//--------------------------------------
+// ======================================================================
+// ✅ Peer Open → Connect Socket
+// ======================================================================
+peer.on("open", (peerId) => {
+  socket = io("https://myvideochat.space", {
+    path: "/socket.io/",
+    transports: ["websocket"],
+    withCredentials: true,
+    auth: {
+      token: localStorage.getItem("token"),
+      role: ROLE,
+      dbId: ROLE === "advisor" ? ADVISOR_ID : USER_ID,
+      peerId
+    }
+  });
+
+  socket.on("connect", () => {
+    socket.emit("join-room", ROOM_ID, peerId, user, USER_ID, ROLE);
+  });
+
+  socket.on("user-connected", ({ peerId }) => {
+    connectToNewUser(peerId, myVideoStream);
+  });
+});
+
+// ======================================================================
+// ✅ ADD VIDEO STREAM
+// ======================================================================
 function addVideoStream(video, stream) {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
@@ -179,74 +148,66 @@ function addVideoStream(video, stream) {
   });
 }
 
-//--------------------------------------
-// TIMER
-//--------------------------------------
+// ======================================================================
+// ✅ TIMER
+// ======================================================================
 function startTimer(startTime) {
   clearInterval(timerInterval);
-
   timerInterval = setInterval(() => {
     if (isCallPaused) return;
 
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    const h = String(Math.floor(elapsed / 3600)).padStart(2, "0");
-    const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0");
-    const s = String(elapsed % 60).padStart(2, "0");
+    const timePassed = Math.floor((Date.now() - startTime) / 1000);
+
+    const h = String(Math.floor(timePassed / 3600)).padStart(2, "0");
+    const m = String(Math.floor((timePassed % 3600) / 60)).padStart(2, "0");
+    const s = String(timePassed % 60).padStart(2, "0");
 
     timerElement.textContent = `${h}:${m}:${s}`;
   }, 1000);
 }
 
-//--------------------------------------
-// CHAT
-//--------------------------------------
-const text = document.getElementById("chat_message");
+// ======================================================================
+// ✅ CHAT
+// ======================================================================
+const text = document.querySelector("#chat_message");
 const send = document.getElementById("send");
+const messages = document.querySelector(".messages");
 
-send.addEventListener("click", () => {
-  if (text.value.trim()) socket.emit("message", text.value);
-  text.value = "";
-});
+send.addEventListener("click", sendMessage);
+text.addEventListener("keydown", (e) => e.key === "Enter" && sendMessage());
 
-text.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && text.value.trim()) {
+function sendMessage() {
+  if (text.value.trim()) {
     socket.emit("message", text.value);
     text.value = "";
   }
-});
-
-//--------------------------------------
-// INVITE LINK
-//--------------------------------------
-inviteButton.addEventListener("click", () => {
-  const url = new URL(window.location.href);
-  url.search = "";
-  prompt("Copy this link:", url.toString());
-});
-
-//--------------------------------------
-// MUTE / STOP VIDEO
-//--------------------------------------
-document.getElementById("muteButton").addEventListener("click", () => {
-  const track = myVideoStream.getAudioTracks()[0];
-  track.enabled = !track.enabled;
-});
-
-document.getElementById("stopVideo").addEventListener("click", () => {
-  const track = myVideoStream.getVideoTracks()[0];
-  track.enabled = !track.enabled;
-});
-
-//--------------------------------------
-// WALLET DEDUCTION HELPERS
-//--------------------------------------
-function getTimerText() {
-  return timerElement.textContent.trim();
 }
 
-//--------------------------------------
-// POPUP UI (LOW BALANCE)
-//--------------------------------------
+socket?.on("createMessage", (message, userName) => {
+  messages.innerHTML += `
+    <div class="message">
+      <b><i class="far fa-user-circle"></i> ${userName === user ? "me" : userName}</b>
+      <span>${message}</span>
+    </div>`;
+});
+
+// ======================================================================
+// ✅ LOW BALANCE POPUP
+// ======================================================================
+socket?.on("low-balance-popup", ({ walletBalance }) => {
+  showLowBalancePopup(walletBalance);
+});
+
+// ======================================================================
+// ✅ FORCE DISCONNECT (Balance finished)
+// ======================================================================
+socket?.on("force-disconnect", () => {
+  endCall(true);
+});
+
+// ======================================================================
+// ✅ LOW BALANCE POPUP UI
+// ======================================================================
 let popupTimer = null;
 
 function showLowBalancePopup(walletBalance) {
@@ -256,99 +217,76 @@ function showLowBalancePopup(walletBalance) {
 
   const overlay = document.createElement("div");
   overlay.id = "lowBalanceOverlay";
-  overlay.style.cssText = `
-    position:fixed; inset:0; background:rgba(0,0,0,0.6);
-    display:flex; align-items:center; justify-content:center; z-index:999;
+  overlay.style = `
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.6); display:flex;
+    justify-content:center; align-items:center; z-index:9999;
   `;
 
   const popup = document.createElement("div");
-  popup.id = "lowBalancePopup";
-  popup.style.cssText = `
-    background:white; padding:20px; border-radius:10px;
-    border:2px solid red; width:320px; text-align:center;
+  popup.style = `
+    background:white; padding:20px; width:300px; border-radius:10px;
+    border:2px solid red; text-align:center;
   `;
-
   popup.innerHTML = `
-    <h3 style="color:red;">⚠ Wallet Balance Low</h3>
-    <p>Your balance: ₹${walletBalance.toFixed(2)}</p>
-    <p id="countdown" style="font-weight:bold; color:blue;">
-      Disconnecting in 30s…
-    </p>
+    <h3 style="color:red;">⚠ Low Wallet Balance!</h3>
+    <p>Your balance is ₹${walletBalance}. Please recharge.</p>
+    <p id="countdown" style="color:blue; font-weight:bold;">Disconnecting in 30s…</p>
     <button id="rechargeBtn" style="
-      padding:10px 20px; background:green; color:white;
-      border:none; border-radius:5px; cursor:pointer;">
-      Recharge Now
-    </button>
+      margin-top:10px; padding:10px; border:none;
+      background:green; color:white; border-radius:5px;">Recharge Now</button>
   `;
 
   overlay.appendChild(popup);
   document.body.appendChild(overlay);
 
-  // Countdown
-  let seconds = 30;
+  // 30s Countdown
+  let sec = 30;
   popupTimer = setInterval(() => {
-    if (!isCallPaused) return;
+    sec--;
+    document.getElementById("countdown").textContent = `Disconnecting in ${sec}s…`;
 
-    seconds--;
-    document.getElementById("countdown").textContent =
-      `Disconnecting in ${seconds}s…`;
-
-    if (seconds <= 0) {
+    if (sec <= 0) {
       clearInterval(popupTimer);
-      endCall();
+      endCall(true);
     }
   }, 1000);
 
   document.getElementById("rechargeBtn").onclick = () => {
     clearInterval(popupTimer);
-    document.getElementById("lowBalanceOverlay")?.remove();
     window.location.href = "/backend/wallet";
   };
 }
 
-//--------------------------------------
-// END CALL
-//--------------------------------------
-async function endCall() {
-  isCallPaused = true;
+// ======================================================================
+// ✅ END CALL
+// ======================================================================
+document.getElementById("endCallButton").addEventListener("click", () => endCall());
 
-  if (myVideoStream)
-    myVideoStream.getTracks().forEach((t) => t.stop());
+function endCall(force = false) {
+  clearInterval(timerInterval);
+  isCallPaused = true;
 
   if (peer) peer.destroy();
   if (socket) socket.disconnect();
-  clearInterval(timerInterval);
 
-  const timerText = getTimerText();
+  myVideoStream?.getTracks().forEach((t) => t.stop());
 
-  navigator.sendBeacon(
-    "/backend/deduct_call_amount",
-    new Blob(
-      [JSON.stringify({ userId: USER_ID, timerText })],
-      { type: "application/json" }
-    )
-  );
-
-  alert("Call ended due to low balance.");
-  window.close();
+  if (force) {
+    alert("Call disconnected due to low balance.");
+    window.location.href = "/backend/call-ended";
+  } else {
+    window.close();
+  }
 }
 
-//--------------------------------------
-// END CALL BUTTON CLICK
-//--------------------------------------
-document.getElementById("endCallButton").addEventListener("click", endCall);
-
-//--------------------------------------
-// BEFORE TAB CLOSE
-//--------------------------------------
+// ======================================================================
+// ✅ TAB CLOSE CLEANUP
+// ======================================================================
 window.addEventListener("beforeunload", () => {
-  const timerText = getTimerText();
-
-  navigator.sendBeacon(
-    "/backend/deduct_call_amount",
-    new Blob(
-      [JSON.stringify({ userId: USER_ID, timerText })],
-      { type: "application/json" }
-    )
-  );
+  fetch("/backend/end_call", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId: USER_ID })
+  });
 });
