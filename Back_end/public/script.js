@@ -1,446 +1,282 @@
-//const socket = io("/");
-/* const socket = io("/", {
-  transports: ["websocket"], // force WebSocket to avoid polling issues
-}); */
-
-const socket = io("https://myvideochat.space", {
-  path: "/socket.io/",
-  transports: ["websocket"], // ✅ allow fallback
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-});
+//--------------------------------------
+// GLOBALS
+//--------------------------------------
+let socket = null;
 
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
-const showChat = document.querySelector("#showChat");
-const backBtn = document.querySelector(".header__back");
-const timerElement = document.querySelector("#timer span");
-let myVideoStream;
-let timerInterval;
-let callStartTime; // Track call start time
-let isCallPaused = false; // ✅ track pause state
-
 myVideo.muted = true;
 
-// Handle back button
-backBtn.addEventListener("click", () => {
-  document.querySelector(".main__left").style.display = "flex";
-  document.querySelector(".main__left").style.flex = "1";
-  document.querySelector(".main__right").style.display = "none";
-  document.querySelector(".header__back").style.display = "none";
-});
+const timerElement = document.querySelector("#timer span");
+const showChat = document.querySelector("#showChat");
+const backBtn = document.querySelector(".header__back");
+const inviteButton = document.getElementById("inviteButton");
 
-// Show chat
+let myVideoStream;
+let timerInterval;
+let callStartTime = null;
+let isCallPaused = false;
+
+const ROLE = window.ROLE || localStorage.getItem("role");
+const USER_ID = window.USER_ID || localStorage.getItem("userId");
+const ADVISOR_ID = window.ADVISOR_ID || null;
+const ROOM_ID = window.ROOM_ID || null;
+
+//--------------------------------------
+// UI BUTTONS
+//--------------------------------------
 showChat.addEventListener("click", () => {
   document.querySelector(".main__right").style.display = "flex";
-  document.querySelector(".main__right").style.flex = "1";
   document.querySelector(".main__left").style.display = "none";
-  document.querySelector(".header__back").style.display = "block";
+  backBtn.style.display = "block";
 });
 
-// Prompt for user name
-const user = prompt("Enter Your Name");
+backBtn.addEventListener("click", () => {
+  document.querySelector(".main__right").style.display = "none";
+  document.querySelector(".main__left").style.display = "flex";
+  backBtn.style.display = "none";
+});
 
-// Initialize PeerJS
-/* var peer = new Peer({
-  host: "127.0.0.1",
-  port: 3030,
-  path: "/peerjs",
-  config: {
-    iceServers: [
-      { url: "stun:stun01.sipphone.com" },
-      { url: "stun:stun.ekiga.net" },
-      { url: "stun:stunserver.org" },
-      { url: "stun:stun.softjoys.com" },
-      { url: "stun:stun.voiparound.com" },
-      { url: "stun:stun.voipbuster.com" },
-      { url: "stun:stun.voipstunt.com" },
-      { url: "stun:stun.voxgratia.org" },
-      { url: "stun:stun.xten.com" },
-      {
-        url: "turn:192.158.29.39:3478?transport=udp",
-        credential: "JZEOEt2V3Qb0y27GRntt2u2PAYA=",
-        username: "28224511:1379330808",
-      },
-      {
-        url: "turn:192.158.29.39:3478?transport=tcp",
-        credential: "JZEOEt2V3Qb0y27GRntt2u2PAYA=",
-        username: "28224511:1379330808",
-      },
-    ],
-  },
-  debug: 3,
-}); */
+//--------------------------------------
+// GET USER NAME
+//--------------------------------------
+const user = prompt("Enter Your Name") || ROLE || "Guest";
 
+//--------------------------------------
+// PEERJS INIT
+//--------------------------------------
 var peer = new Peer(undefined, {
-  host: "myvideochat.space", // dynamically use server IP/domain
-  port: 443, // match protocol
-  path: "/peerjs", // must match server path
-  secure: true, // true if using https
+  host: "myvideochat.space",
+  port: 443,
+  path: "/peerjs",
+  secure: true,
+
   config: {
     iceServers: [
       { urls: "stun:stun.l.google.com:19302" },
       { urls: "stun:stun1.l.google.com:19302" },
       {
-        urls: "turn:turn.anyfirewall.com:3478?transport=udp",
-        credential: "webrtc",
-        username: "webrtc",
+        urls: "turn:global.relay.metered.ca:80",
+        username: "openai",
+        credential: "openai",
       },
       {
-        urls: "turn:turn.anyfirewall.com:3478?transport=tcp",
-        credential: "webrtc",
-        username: "webrtc",
+        urls: "turn:global.relay.metered.ca:443",
+        username: "openai",
+        credential: "openai",
+      },
+      {
+        urls: "turn:global.relay.metered.ca:443?transport=tcp",
+        username: "openai",
+        credential: "openai",
       },
     ],
   },
-  debug: 3,
+
+  debug: 2,
 });
 
-// Handle media streams
+//--------------------------------------
+// GET MEDIA
+//--------------------------------------
 navigator.mediaDevices
-  .getUserMedia({
-    audio: true,
-    video: true,
-  })
+  .getUserMedia({ video: true, audio: true })
   .then((stream) => {
     myVideoStream = stream;
     addVideoStream(myVideo, stream);
 
+    // incoming call
     peer.on("call", (call) => {
-      console.log("Someone is calling...");
       call.answer(stream);
       const video = document.createElement("video");
-      call.on("stream", (userVideoStream) => {
-        addVideoStream(video, userVideoStream);
 
-        // Start timer when first remote stream arrives
+      call.on("stream", (remoteStream) => {
+        addVideoStream(video, remoteStream);
+
         if (!callStartTime) {
           callStartTime = Date.now();
           startTimer(callStartTime);
         }
       });
     });
-
-    socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, stream);
-    });
   });
 
-const connectToNewUser = (userId, stream) => {
-  console.log("Calling user " + userId);
-  const call = peer.call(userId, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream);
+//--------------------------------------
+// PEER OPEN → SOCKET CONNECT
+//--------------------------------------
+peer.on("open", (peerId) => {
+  console.log("✅ PeerJS connected:", peerId);
 
-    // Start timer when first remote stream arrives
+  socket = io("https://myvideochat.space", {
+    path: "/socket.io/",
+    transports: ["websocket"],
+    withCredentials: true,
+    auth: {
+      token: localStorage.getItem("token"),
+      role: ROLE,
+      dbId: ROLE === "advisor" ? ADVISOR_ID : USER_ID,
+      peerId,
+    },
+  });
+
+  socket.on("connect", () => {
+    socket.emit(
+      "join-room",
+      ROOM_ID,
+      peerId,
+      user,
+      ROLE === "advisor" ? ADVISOR_ID : USER_ID,
+      ROLE
+    );
+  });
+
+  socket.on("user-connected", ({ peerId }) => {
+    connectToNewUser(peerId, myVideoStream);
+  });
+
+  socket.on("createMessage", (message, userName) => {
+    document.querySelector(".messages").innerHTML += `
+      <div class="message">
+        <b>${userName === user ? "Me" : userName}</b>
+        <span>${message}</span>
+      </div>`;
+  });
+
+  socket.on("low-balance-popup", ({ wallet }) => {
+    showLowBalancePopup(wallet);
+  });
+
+  socket.on("force-disconnect", () => {
+    endCall();
+  });
+});
+
+//--------------------------------------
+// CALL NEW USER
+//--------------------------------------
+function connectToNewUser(peerId, stream) {
+  const call = peer.call(peerId, stream);
+  const video = document.createElement("video");
+
+  call.on("stream", (remoteStream) => {
+    addVideoStream(video, remoteStream);
+
     if (!callStartTime) {
       callStartTime = Date.now();
       startTimer(callStartTime);
     }
   });
-};
+}
 
-/* peer.on("open", (id) => {
-  console.log("Emitting to backend. USER_ID = ", USER_ID);
-  socket.emit("join-room", ROOM_ID, id, user, USER_ID);
-}); */
-peer.on("open", (peerId) => {
-  // choose dbId depending on role
-  const dbId = ROLE === "advisor" ? ADVISOR_ID : USER_ID;
-  // const dbId = typeof ROLE !== "undefined" && ROLE === "advisor" ? ADVISOR_ID : USER_ID;
-
-  console.log("Emitting join-room:", {
-    ROOM_ID,
-    peerId,
-    displayName: user,
-    dbId,
-    ROLE,
-  });
-
-  // Emit signature: roomId, peerId (peerjs id), displayName, dbId, role
-  socket.emit("join-room", ROOM_ID, peerId, user, dbId, ROLE);
-});
-
-const addVideoStream = (video, stream) => {
+//--------------------------------------
+// ADD VIDEO STREAM
+//--------------------------------------
+function addVideoStream(video, stream) {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
     videoGrid.append(video);
   });
-};
+}
 
-// Timer logic
+//--------------------------------------
+// TIMER
+//--------------------------------------
 function startTimer(startTime) {
   clearInterval(timerInterval);
+
   timerInterval = setInterval(() => {
-    if (isCallPaused) return; // ✅ Skip updates if paused
+    if (isCallPaused) return;
 
-    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-    const hours = Math.floor(elapsedTime / 3600);
-    const minutes = Math.floor((elapsedTime % 3600) / 60);
-    const seconds = elapsedTime % 60;
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const h = String(Math.floor(elapsed / 3600)).padStart(2, "0");
+    const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0");
+    const s = String(elapsed % 60).padStart(2, "0");
 
-    timerElement.textContent = `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    timerElement.textContent = `${h}:${m}:${s}`;
   }, 1000);
 }
 
-// Chat message handling
-let text = document.querySelector("#chat_message");
-let send = document.getElementById("send");
-let messages = document.querySelector(".messages");
+//--------------------------------------
+// CHAT
+//--------------------------------------
+const text = document.getElementById("chat_message");
+const send = document.getElementById("send");
 
 send.addEventListener("click", () => {
-  if (text.value.length !== 0) {
-    socket.emit("message", text.value);
-    text.value = "";
-  }
+  if (text.value.trim()) socket.emit("message", text.value);
+  text.value = "";
 });
 
 text.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && text.value.length !== 0) {
+  if (e.key === "Enter" && text.value.trim()) {
     socket.emit("message", text.value);
     text.value = "";
   }
 });
 
+//--------------------------------------
+// INVITE LINK
+//--------------------------------------
 inviteButton.addEventListener("click", () => {
   const url = new URL(window.location.href);
-  url.search = ""; // remove token
-  prompt(
-    "Copy this link and send it to people you want to meet with",
-    url.toString()
-  );
+  url.search = "";
+  prompt("Copy this link:", url.toString());
 });
 
-socket.on("createMessage", (message, userName) => {
-  messages.innerHTML += `<div class="message">
-      <b><i class="far fa-user-circle"></i> ${
-        userName === user ? "me" : userName
-      }</b>
-      <span>${message}</span>
-    </div>`;
+//--------------------------------------
+// MUTE / STOP VIDEO
+//--------------------------------------
+document.getElementById("muteButton").addEventListener("click", () => {
+  const track = myVideoStream.getAudioTracks()[0];
+  track.enabled = !track.enabled;
 });
 
-// Mute/Unmute and Video on/off
-const muteButton = document.querySelector("#muteButton");
-const stopVideo = document.querySelector("#stopVideo");
-
-muteButton.addEventListener("click", () => {
-  const enabled = myVideoStream.getAudioTracks()[0].enabled;
-  if (enabled) {
-    myVideoStream.getAudioTracks()[0].enabled = false;
-    muteButton.innerHTML = `<i class="fas fa-microphone-slash"></i>`;
-    muteButton.classList.toggle("background__red");
-  } else {
-    myVideoStream.getAudioTracks()[0].enabled = true;
-    muteButton.innerHTML = `<i class="fas fa-microphone"></i>`;
-    muteButton.classList.toggle("background__red");
-  }
+document.getElementById("stopVideo").addEventListener("click", () => {
+  const track = myVideoStream.getVideoTracks()[0];
+  track.enabled = !track.enabled;
 });
 
-stopVideo.addEventListener("click", () => {
-  const enabled = myVideoStream.getVideoTracks()[0].enabled;
-  if (enabled) {
-    myVideoStream.getVideoTracks()[0].enabled = false;
-    stopVideo.innerHTML = `<i class="fas fa-video-slash"></i>`;
-    stopVideo.classList.toggle("background__red");
-  } else {
-    myVideoStream.getVideoTracks()[0].enabled = true;
-    stopVideo.innerHTML = `<i class="fas fa-video"></i>`;
-    stopVideo.classList.toggle("background__red");
-  }
-});
-
-const endCallButton = document.getElementById("endCallButton");
-
-// ✅ Get userId safely (from EJS or fallback to localStorage)
-function getUserId() {
-  if (typeof USER_ID !== "undefined" && USER_ID) {
-    return USER_ID; // comes from server render
-  }
-  return localStorage.getItem("userId"); // fallback
-}
-
-// ✅ Function to safely get timerText
+//--------------------------------------
+// WALLET DEDUCTION HELPERS
+//--------------------------------------
 function getTimerText() {
-  const timerSpan = document.querySelector("#timer span");
-  return timerSpan ? timerSpan.textContent.trim() : "00:00:00";
+  return timerElement.textContent.trim();
 }
 
-// ✅ Function to send deduction request
-async function deductCallAmount(timerText) {
-  const userId = getUserId();
-  if (!userId) {
-    alert("User ID not found!");
-    return;
-  }
+//--------------------------------------
+// POPUP UI (LOW BALANCE)
+//--------------------------------------
+let popupTimer = null;
 
-  try {
-    const res = await fetch("/backend/deduct_call_amount", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, timerText }),
-    });
+function showLowBalancePopup(walletBalance) {
+  if (document.getElementById("lowBalanceOverlay")) return;
 
-    const data = await res.json();
-    console.log("Deduction Response:", data);
-    alert(data.message || "Call Ended, amount deducted");
-  } catch (err) {
-    console.error("Error deducting wallet:", err);
-  }
-}
-
-// ✅ End Call button click
-endCallButton.addEventListener("click", async () => {
-  if (myVideoStream) {
-    myVideoStream.getTracks().forEach((track) => track.stop());
-  }
-  if (peer) peer.destroy();
-  if (socket) socket.disconnect();
-  clearInterval(timerInterval);
-
-  const timerText = getTimerText();
-  await deductCallAmount(timerText);
-
-  window.close();
-});
-
-// ✅ Trigger before tab close/refresh
-window.addEventListener("beforeunload", (e) => {
-  const userId = getUserId();
-  const timerText = getTimerText();
-
-  if (!userId) return;
-
-  const payload = JSON.stringify({ userId, timerText });
-  navigator.sendBeacon(
-    "/backend/deduct_call_amount",
-    new Blob([payload], { type: "application/json" })
-  );
-});
-
-function getUserId() {
-  if (typeof USER_ID !== "undefined" && USER_ID) return USER_ID;
-  return localStorage.getItem("userId"); // fallback
-}
-
-function getTimerText() {
-  const timerSpan = document.querySelector("#timer span");
-  return timerSpan ? timerSpan.textContent.trim() : "00:00:00";
-}
-
-const userId = getUserId();
-let deductionInterval = null;
-let popupTimer = null; // 30s countdown for popup
-
-// Start call deduction loop
-/* function startCallDeduction() {
-  if (!userId) {
-    console.error("❌ No userId found. Cannot start deduction.");
-    return;
-  }
-
-  deductionInterval = setInterval(async () => {
-    const timerText = getTimerText();
-    console.log("⏱ Sending timerText:", timerText);
-
-    try {
-      const res = await fetch("/backend/deduct_wallet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, timerText }),
-      });
-
-      const data = await res.json();
-      console.log("💰 Deduction Response:", data);
-
-      if (res.status === 400 && data.message.includes("Insufficient")) {
-        endCall();
-        alert("❌ Call ended: Insufficient balance.");
-        return;
-      }
-
-      if (data.popup) {
-        showLowBalancePopup(data.wallet);
-      }
-    } catch (err) {
-      console.error("❌ Deduction error:", err);
-    }
-  }, 1000);
-} */
-
-function endCall() {
-  if (deductionInterval) clearInterval(deductionInterval);
-  if (popupTimer) clearTimeout(popupTimer);
-  clearInterval(timerInterval);
   isCallPaused = true;
 
-  fetch("/backend/end_call", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId }),
-  })
-    .then((res) => res.json())
-    .then((data) => console.log("✅ Reset after endCall:", data.message))
-    .catch((err) => console.error("Error ending call:", err));
-
-  console.log("📞 Call ended.");
-
-  alert("⚠ Call disconnected due to low balance.");
-
-  // Try closing tab
-  window.close();
-
-  // If blocked, redirect as fallback
-  setTimeout(() => {
-    if (!window.closed) {
-      window.location.href = "/backend/call-ended";
-    }
-  }, 200);
-}
-
-// Popup UI
-function showLowBalancePopup(walletBalance) {
-  if (document.getElementById("lowBalanceOverlay")) return; // prevent duplicate
-
-  // Stop deduction immediately
-  if (deductionInterval) {
-    clearInterval(deductionInterval);
-    deductionInterval = null;
-  }
-
-  isCallPaused = true; // ✅ pause timer & deductions
-
-  // Create dark overlay
   const overlay = document.createElement("div");
   overlay.id = "lowBalanceOverlay";
   overlay.style.cssText = `
-    position:fixed; top:0; left:0; width:100%; height:100%;
-    background:rgba(0,0,0,0.6); z-index:999;
-    display:flex; justify-content:center; align-items:center;
+    position:fixed; inset:0; background:rgba(0,0,0,0.6);
+    display:flex; align-items:center; justify-content:center; z-index:999;
   `;
 
-  // Create popup
   const popup = document.createElement("div");
   popup.id = "lowBalancePopup";
   popup.style.cssText = `
-    background:white; padding:20px; border:2px solid red; border-radius:10px;
-    box-shadow:0px 4px 15px rgba(0,0,0,0.5); text-align:center; width:300px;
+    background:white; padding:20px; border-radius:10px;
+    border:2px solid red; width:320px; text-align:center;
   `;
+
   popup.innerHTML = `
-    <h3 style="color:red;">⚠ Wallet Balance Low!</h3>
-    <p>Your wallet balance is ₹${walletBalance.toFixed(2)}.
-    Please recharge to continue…</p>
-    <p id="countdown" style="color:blue; font-weight:bold;">
+    <h3 style="color:red;">⚠ Wallet Balance Low</h3>
+    <p>Your balance: ₹${walletBalance.toFixed(2)}</p>
+    <p id="countdown" style="font-weight:bold; color:blue;">
       Disconnecting in 30s…
     </p>
     <button id="rechargeBtn" style="
-      background:green; color:white; border:none;
-      padding:10px 20px; border-radius:5px; cursor:pointer;">
+      padding:10px 20px; background:green; color:white;
+      border:none; border-radius:5px; cursor:pointer;">
       Recharge Now
     </button>
   `;
@@ -448,46 +284,71 @@ function showLowBalancePopup(walletBalance) {
   overlay.appendChild(popup);
   document.body.appendChild(overlay);
 
-  // Start 30s countdown
-  let secondsLeft = 30;
-  const countdownEl = document.getElementById("countdown");
-
+  // Countdown
+  let seconds = 30;
   popupTimer = setInterval(() => {
-    if (!isCallPaused) return; // freeze countdown if somehow resumed
-    secondsLeft--;
-    countdownEl.textContent = `Disconnecting in ${secondsLeft}s…`;
+    if (!isCallPaused) return;
 
-    if (secondsLeft <= 0) {
+    seconds--;
+    document.getElementById("countdown").textContent =
+      `Disconnecting in ${seconds}s…`;
+
+    if (seconds <= 0) {
       clearInterval(popupTimer);
       endCall();
-      document.getElementById("lowBalanceOverlay")?.remove();
     }
   }, 1000);
 
-  // Recharge button
-  document.getElementById("rechargeBtn").onclick = async () => {
-    clearInterval(popupTimer); // stop auto-disconnect
-
-    try {
-      await fetch("/backend/end_call", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
-      });
-      console.log("✅ Reset after recharge");
-    } catch (err) {
-      console.error("Error resetting on recharge:", err);
-    }
-
+  document.getElementById("rechargeBtn").onclick = () => {
+    clearInterval(popupTimer);
     document.getElementById("lowBalanceOverlay")?.remove();
-    window.location.href = "/backend/wallet"; // recharge page
+    window.location.href = "/backend/wallet";
   };
 }
 
-// Start deduction automatically
-//startCallDeduction();
+//--------------------------------------
+// END CALL
+//--------------------------------------
+async function endCall() {
+  isCallPaused = true;
 
-// Reset on tab close
+  if (myVideoStream)
+    myVideoStream.getTracks().forEach((t) => t.stop());
+
+  if (peer) peer.destroy();
+  if (socket) socket.disconnect();
+  clearInterval(timerInterval);
+
+  const timerText = getTimerText();
+
+  navigator.sendBeacon(
+    "/backend/deduct_call_amount",
+    new Blob(
+      [JSON.stringify({ userId: USER_ID, timerText })],
+      { type: "application/json" }
+    )
+  );
+
+  alert("Call ended due to low balance.");
+  window.close();
+}
+
+//--------------------------------------
+// END CALL BUTTON CLICK
+//--------------------------------------
+document.getElementById("endCallButton").addEventListener("click", endCall);
+
+//--------------------------------------
+// BEFORE TAB CLOSE
+//--------------------------------------
 window.addEventListener("beforeunload", () => {
-  navigator.sendBeacon("/backend/end_call", JSON.stringify({ userId }));
+  const timerText = getTimerText();
+
+  navigator.sendBeacon(
+    "/backend/deduct_call_amount",
+    new Blob(
+      [JSON.stringify({ userId: USER_ID, timerText })],
+      { type: "application/json" }
+    )
+  );
 });

@@ -681,7 +681,7 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
     </div>
   );
 
-  const handleJoinRoom = async (roomBaseUrl) => {
+  /* const handleJoinRoom = async (roomBaseUrl) => {
     try {
       const token =
         localStorage.getItem("token") || localStorage.getItem("auth_token");
@@ -725,8 +725,30 @@ export function AdvisorProfileManKiBaatComponent({ advisor }) {
       console.error("Error joining room:", error);
       alert("Unable to join meeting");
     }
-  };
+  }; */
 
+  const handleJoinRoom = async (roomBaseUrl) => {
+    try {
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("auth_token");
+
+      if (!token) {
+        alert("Missing token. Please log in again.");
+        return;
+      }
+
+      // ✅ Clean URL (remove query tokens if any)
+      const cleanRoomUrl = roomBaseUrl.split("?")[0];
+
+      console.log("Joining room:", cleanRoomUrl);
+
+      // ✅ Advisor joins using SAME ROOM (NO new room creation)
+      window.open(cleanRoomUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error joining room:", error);
+      alert("Unable to join the meeting");
+    }
+  };
   return (
     <>
       {/* *******************************HEADER*************************** */}

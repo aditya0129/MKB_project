@@ -288,7 +288,7 @@ export function HomeManKiBaatComponenet() {
 
     window.open(redirectUrl, "_blank"); // Open in new tab
   }; */
-  const [finalUrl, setFinalUrl] = useState(null);
+  /*   const [finalUrl, setFinalUrl] = useState(null);
 
   const socketServerUrl =
     process.env.NODE_ENV === "production"
@@ -367,6 +367,71 @@ export function HomeManKiBaatComponenet() {
       socket.on("disconnect", () => {
         console.log("⚠️ Disconnected from Socket.IO server");
       });
+    } catch (error) {
+      console.error("Error redirecting:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  }; */
+
+  const [finalUrl, setFinalUrl] = useState(null);
+
+  const socketServerUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://myvideochat.space"
+      : "http://127.0.0.1:3030";
+
+  const redirectToSocketServer = async () => {
+    try {
+      // ✅ 1. Check wallet
+      if (!wallet || wallet.length === 0) {
+        alert("Unable to check wallet balance. Please try again.");
+        return;
+      }
+
+      const hasLowBalance = wallet.some((b) => Number(b.walletBalance) <= 4);
+      if (hasLowBalance) {
+        alert(
+          "Your wallet balance is too low. Please recharge before continuing."
+        );
+        return;
+      }
+
+      // ✅ 2. Token check
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("auth_token");
+
+      if (!token) {
+        alert("Missing token. Please log in again.");
+        return;
+      }
+
+      // ✅ 3. Create room on backend
+      const response = await fetch(`${socketServerUrl}/api-b/create-room`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "x-auth-token": token,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!data.success || !data.redirectUrl || !data.roomId) {
+        console.error("Invalid response from backend:", data);
+        alert(data.message || "Failed to create room. Try again.");
+        return;
+      }
+
+      // ✅ 4. Room URL
+      const roomUrl = `${socketServerUrl}${data.redirectUrl}`;
+      setFinalUrl(roomUrl);
+
+      // ✅ 5. Open room page IN NEW TAB
+      window.open(roomUrl, "_blank", "noopener,noreferrer");
+
+      // ✅ NO SOCKET.IO HERE ❤️
+      // ✅ NO join-room here
+      // ✅ NO PeerJS here
     } catch (error) {
       console.error("Error redirecting:", error);
       alert("Something went wrong. Please try again.");
