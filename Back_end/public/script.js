@@ -70,7 +70,7 @@ const displayName = (() => {
 const peer = new Peer(undefined, {
   host: "myvideochat.space",
   port: 443,
-  path: "/peerjs",
+  path: "/",
   secure: true,
   config: {
     iceServers: [
