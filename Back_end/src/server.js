@@ -18,7 +18,7 @@ app.use(cookieParser());
 connectDB();
 
 // ------------------- PeerJS
-const peerServer = ExpressPeerServer(server, { debug: true, path: "/peerjs" });
+const peerServer = ExpressPeerServer(server, { debug: true, path: "/" });
 app.use("/peerjs", peerServer);
 
 // ------------------- Socket.IO with CORS and auth
