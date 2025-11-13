@@ -123,7 +123,7 @@ navigator.mediaDevices
   });
 
 /* ----------------- When Peer ready -> connect Socket.IO ----------------- */
-peer.on("open", (peerId) => {
+/* peer.on("open", (peerId) => {
   console.log("Peer connected:", peerId);
 
   socket = io("https://myvideochat.space", {
@@ -190,8 +190,80 @@ peer.on("open", (peerId) => {
   socket.on("force-disconnect", () => {
     showForceDisconnectAndEnd();
   });
-});
+}); */
 
+peer.on("open", (peerId) => {
+  console.log("Peer connected:", peerId);
+
+  function initSocket() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.warn("Token missing… retrying socket connect...");
+      return setTimeout(initSocket, 300);
+    }
+
+    socket = io("https://myvideochat.space", {
+      path: "/socket.io/",
+      transports: ["polling", "websocket"],
+      withCredentials: true,
+      auth: {
+        token,
+        peerId,
+        role: ROLE || null,
+        dbId: ROLE === "advisor" ? ADVISOR_ID : USER_ID,
+      },
+    });
+
+    // All your handlers stay here
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);
+
+      socket.emit(
+        "join-room",
+        ROOM_ID,
+        peerId,
+        displayName,
+        ROLE === "advisor" ? ADVISOR_ID : USER_ID,
+        ROLE || "user"
+      );
+
+      if (USER_ID) {
+        DEDUCT_PAYLOAD.userId = USER_ID;
+        startPeriodicDeduction();
+      }
+    });
+
+    socket.on("user-connected", ({ peerId }) => {
+      console.log("user-connected:", peerId);
+      if (myVideoStream) connectToNewUser(peerId, myVideoStream);
+    });
+
+    socket.on("user-disconnected", (peerId) => {
+      console.log("user-disconnected:", peerId);
+    });
+
+    socket.on("start-timer", (startTime) => {
+      callStartTime = startTime;
+      startTimer(startTime);
+    });
+
+    socket.on("createMessage", (message, userName) => {
+      appendMessage(message, userName);
+    });
+
+    socket.on("low-balance-popup", ({ walletBalance }) => {
+      showLowBalancePopup(walletBalance);
+    });
+
+    socket.on("force-disconnect", () => {
+      showForceDisconnectAndEnd();
+    });
+  }
+
+  // start attempt
+  initSocket();
+});
 /* ----------------- Connect to remote peer ----------------- */
 function connectToNewUser(peerId, stream) {
   try {
