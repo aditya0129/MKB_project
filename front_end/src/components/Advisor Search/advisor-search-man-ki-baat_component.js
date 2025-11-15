@@ -1131,7 +1131,7 @@ const AdvisorSearchManKiBaatComponent = () => {
       )}
 
       {/* ****************************************FOOTER*************************** */}
-      <div
+      {/*  <div
         className="container-fluid text-white"
         style={{
           background: "linear-gradient(135deg, blue,red)",
@@ -1166,6 +1166,28 @@ const AdvisorSearchManKiBaatComponent = () => {
                       (Blink Random Technologies)
                     </span>
                   </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> */}
+      <div
+        className="container-fluid text-white"
+        style={{ background: "linear-gradient(135deg, blue,red)" }}
+      >
+        <div className="container text-center">
+          <div className="row d-flex align-items-center justify-content-center">
+            <div className="col-lg-8 col-md-6">
+              <div className="" style={{ height: "105px" }}>
+                <span
+                  style={{ fontSize: "30px", textShadow: "3px 2px 3px red" }}
+                >
+                  &#9884;
+                </span>
+                <p>
+                  Made with ❤️ Idea and Concept - Deepesh, Programmed and Design
+                  by Saurabh Karn and Aditya Prajapati
                 </p>
               </div>
             </div>
