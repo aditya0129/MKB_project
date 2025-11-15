@@ -409,7 +409,7 @@ async function finalEndCall() {
     myVideoStream?.getTracks().forEach((t) => t.stop());
   } catch (e) {}
 
-  window.location.href = "/backend/call-ended";
+  window.location.href = "/";
 }
 
 /* ----------------- Periodic deduction loop ----------------- */
