@@ -40,9 +40,7 @@ const AdvisorSearchManKiBaatComponent = () => {
   const fetchAdvisors = async (name) => {
     try {
       const response = await fetch(
-        `/backend/Advisor_All_Data?name=${encodeURIComponent(
-          name
-        )}`
+        `/backend/Advisor_All_Data?name=${encodeURIComponent(name)}`
       );
 
       if (!response.ok) {
@@ -61,14 +59,11 @@ const AdvisorSearchManKiBaatComponent = () => {
     async function fetchUser() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `/backend/get_user/profile`,
-          {
-            headers: {
-              "x-auth-token": token,
-            },
-          }
-        );
+        const response = await axios.get(`/backend/get_user/profile`, {
+          headers: {
+            "x-auth-token": token,
+          },
+        });
         setUser(response.data.data);
       } catch (error) {
         console.error("Error fetching advisor data:", error);
@@ -200,7 +195,7 @@ const AdvisorSearchManKiBaatComponent = () => {
   }, []);
 
   // const [link] = useState("http://127.0.0.1:3030/");
-  const token = localStorage.getItem("token");
+  /*   const token = localStorage.getItem("token");
   const socketServerUrl = "/socket.io/";
 
   // Optionally append the token as a query parameter
@@ -227,6 +222,71 @@ const AdvisorSearchManKiBaatComponent = () => {
     }
 
     window.open(redirectUrl, "_blank"); // Open in new tab
+  }; */
+
+  const [finalUrl, setFinalUrl] = useState(null);
+
+  const socketServerUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://myvideochat.space"
+      : "http://127.0.0.1:3030";
+
+  const redirectToSocketServer = async () => {
+    try {
+      // ✅ 1. Check wallet
+      if (!wallet || wallet.length === 0) {
+        alert("Unable to check wallet balance. Please try again.");
+        return;
+      }
+
+      const hasLowBalance = wallet.some((b) => Number(b.walletBalance) <= 4);
+      if (hasLowBalance) {
+        alert(
+          "Your wallet balance is too low. Please recharge before continuing."
+        );
+        return;
+      }
+
+      // ✅ 2. Token check
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("auth_token");
+
+      if (!token) {
+        alert("Missing token. Please log in again.");
+        return;
+      }
+
+      // ✅ 3. Create room on backend
+      const response = await fetch(`${socketServerUrl}/api-b/create-room`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "x-auth-token": token,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!data.success || !data.redirectUrl || !data.roomId) {
+        console.error("Invalid response from backend:", data);
+        alert(data.message || "Failed to create room. Try again.");
+        return;
+      }
+
+      // ✅ 4. Room URL
+      const roomUrl = `${socketServerUrl}${data.redirectUrl}`;
+      setFinalUrl(roomUrl);
+
+      // ✅ 5. Open room page IN NEW TAB
+      window.open(roomUrl, "_blank", "noopener,noreferrer");
+
+      // ✅ NO SOCKET.IO HERE ❤️
+      // ✅ NO join-room here
+      // ✅ NO PeerJS here
+    } catch (error) {
+      console.error("Error redirecting:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   const [ShowModal, SetShowModal] = useState(false);
@@ -251,9 +311,7 @@ const AdvisorSearchManKiBaatComponent = () => {
   // Function to fetch advisors and store their data
   const FetchAdvisors = async () => {
     try {
-      const response = await axios.get(
-        "/backend/Advisor_All_Data"
-      );
+      const response = await axios.get("/backend/Advisor_All_Data");
       const advisors = response.data.Data;
 
       if (advisors.length > 0) {
@@ -647,7 +705,7 @@ const AdvisorSearchManKiBaatComponent = () => {
             </a>
           </p> */}
 
-          <p>
+          {/*  <p>
             <strong>Your Room Link is: </strong>
             {redirectUrl ? (
               <a
@@ -655,6 +713,43 @@ const AdvisorSearchManKiBaatComponent = () => {
                 onClick={(e) => {
                   e.preventDefault(); // stop normal link behaviour
                   redirectToSocketServer();
+                }}
+                style={{ color: "#007bff", textDecoration: "underline" }}
+              >
+                Click here to open your room
+              </a>
+            ) : (
+              <span style={{ color: "red" }}>
+                Login required to generate link.
+              </span>
+            )}
+          </p>
+          <button
+            className="bi bi-door-open"
+            onClick={redirectToSocketServer}
+            style={{
+              marginTop: "10px",
+              padding: "8px 16px",
+              backgroundColor: "#28a745",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            {" "}
+            Go to Room
+          </button> */}
+
+          <p>
+            <strong>Your Room Link is: </strong>
+            {finalUrl ? (
+              <a
+                href={finalUrl}
+                onClick={(e) => {
+                  e.preventDefault(); // stop normal link behaviour
+                  // redirectToSocketServer();
+                  window.open(finalUrl, "_blank"); // ✅ open existing room
                 }}
                 style={{ color: "#007bff", textDecoration: "underline" }}
               >

@@ -520,7 +520,7 @@ function showLowBalancePopup(walletBalance) {
     }).catch((e) => console.error("end_call reset:", e));
     document.getElementById("lowBalanceOverlay")?.remove();
     // navigate to wallet page
-    window.location.href = "/backend/wallet";
+    window.location.href = "/wallet";
   };
 
   // Dismiss keeps call running for the remaining 30s — we already paused deductions; resume deductions and timer
@@ -571,7 +571,7 @@ function showForceDisconnectAndEnd() {
   } catch (e) {}
 
   alert("Call disconnected due to insufficient balance.");
-  window.location.href = "/backend/call-ended";
+  window.location.href = "/";
 }
 
 /* ----------------- Beforeunload final beacon ----------------- */
